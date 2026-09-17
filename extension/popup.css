@@ -1,0 +1,6 @@
+:root { color-scheme: light dark; }
+body { width: 290px; margin: 0; padding: 20px; font: 13px/1.5 system-ui, sans-serif; }
+h1 { font-size: 19px; margin: 0 0 12px; }
+p { overflow-wrap: anywhere; }
+button { width: 100%; margin: 6px 0; padding: 10px 12px; border: 1px solid #8886; border-radius: 8px; font: inherit; cursor: pointer; }
+.note { opacity: .7; font-size: 12px; margin-bottom: 0; }
