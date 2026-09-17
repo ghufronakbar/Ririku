@@ -2,16 +2,16 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotchBox",
+    name: "Ririku",
     platforms: [.macOS(.v14)],
     products: [
-        .executable(name: "NotchBox", targets: ["NotchBox"]),
-        .executable(name: "NotchBoxHost", targets: ["NotchBoxHost"])
+        .executable(name: "Ririku", targets: ["Ririku"]),
+        .executable(name: "RirikuHost", targets: ["RirikuHost"])
     ],
     targets: [
-        .target(name: "NotchCore"),
-        .executableTarget(name: "NotchBox", dependencies: ["NotchCore"]),
-        .executableTarget(name: "NotchBoxHost", dependencies: ["NotchCore"])
+        .target(name: "RirikuCore"),
+        .executableTarget(name: "Ririku", dependencies: ["RirikuCore"]),
+        .executableTarget(name: "RirikuHost", dependencies: ["RirikuCore"])
     ],
     swiftLanguageModes: [.v5]
 )

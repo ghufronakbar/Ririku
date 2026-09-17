@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = [ROOT / "Sources/NotchBox", ROOT / "Sources/NotchCore"]
+SOURCES = [ROOT / "Sources/Ririku", ROOT / "Sources/RirikuCore"]
 LANGUAGES = ["id", "ja"]
 LITERAL = r'"((?:[^"\\]|\\.)*)"'
 PATTERNS = [re.compile(r'\bt\(' + LITERAL), re.compile(r'\bUIText\(' + LITERAL),

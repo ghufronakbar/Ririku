@@ -38,7 +38,7 @@ struct PlayerView: View {
         .onHover(perform: hoverChanged)
         .onTapGesture { model.expanded = true }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(model.t("Notch Box, music player"))
+        .accessibilityLabel(model.t("Ririku, music player"))
         .environment(\.locale, model.locale)
     }
 
@@ -47,7 +47,7 @@ struct PlayerView: View {
             HStack(spacing: 12) {
                 artwork(size: 48)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(model.current?.snapshot.title ?? "Notch Box").font(.headline).lineLimit(1)
+                    Text(model.current?.snapshot.title ?? "Ririku").font(.headline).lineLimit(1)
                     Text(model.current?.snapshot.artist ?? model.t("Waiting for Chrome player")).font(.caption).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
                     Text(model.current.map { model.sourceLabel(for: $0.snapshot) } ?? model.t("Not connected")).font(.caption2).foregroundStyle(model.accent).lineLimit(1)
                 }

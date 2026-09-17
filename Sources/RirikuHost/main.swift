@@ -1,6 +1,6 @@
 import Foundation
 import Darwin
-import NotchCore
+import RirikuCore
 
 signal(SIGPIPE, SIG_IGN)
 
@@ -12,7 +12,7 @@ do {
         guard poll(&input, 1, 500) > 0, let packet = try Frames.read(.standardInput),
               let message = try? JSONSerialization.jsonObject(with: packet) as? [String: Any],
               message["protocolVersion"] as? Int == 1, message["kind"] as? String == "openSetup" else {
-            throw BridgeError.system("Open Notch Box or click Open Setup in the extension.")
+            throw BridgeError.system("Open Ririku or click Open Setup in the extension.")
         }
         initialPacket = packet
         let executable = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
@@ -30,7 +30,7 @@ do {
             }
         }
     }
-    guard let descriptor = connection else { throw BridgeError.system("Unable to connect to the Notch Box app.") }
+    guard let descriptor = connection else { throw BridgeError.system("Unable to connect to the Ririku app.") }
     let socketHandle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
     if let initialPacket { try Frames.write(initialPacket, to: socketHandle) }
     DispatchQueue.global().async {
@@ -39,7 +39,7 @@ do {
                 try Frames.write(packet, to: .standardOutput)
             }
         } catch {
-            FileHandle.standardError.write(Data("Notch Box: app connection ended.\n".utf8))
+            FileHandle.standardError.write(Data("Ririku: app connection ended.\n".utf8))
         }
         exit(0)
     }
@@ -47,6 +47,6 @@ do {
         try Frames.write(packet, to: socketHandle)
     }
 } catch {
-    FileHandle.standardError.write(Data("Notch Box: \(error.localizedDescription)\n".utf8))
+    FileHandle.standardError.write(Data("Ririku: \(error.localizedDescription)\n".utf8))
     exit(1)
 }

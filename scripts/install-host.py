@@ -8,19 +8,19 @@ import re
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("extension_id", help="ID extension dari chrome://extensions")
-parser.add_argument("--app", type=Path, default=Path(__file__).resolve().parents[1] / "build/Notch Box.app")
+parser.add_argument("--app", type=Path, default=Path(__file__).resolve().parents[1] / "build/Ririku.app")
 arguments = parser.parse_args()
 if not re.fullmatch(r"[a-p]{32}", arguments.extension_id):
     parser.error("Extension ID harus 32 karakter a–p.")
-binary = arguments.app.resolve() / "Contents/Resources/NotchBoxHost"
+binary = arguments.app.resolve() / "Contents/Resources/RirikuHost"
 if not binary.is_file() or not os.access(binary, os.X_OK):
     parser.error("Native host belum dibangun. Jalankan bash scripts/build-app.sh terlebih dahulu.")
 folder = Path.home() / "Library/Application Support/Google/Chrome/NativeMessagingHosts"
 folder.mkdir(parents=True, exist_ok=True)
-manifest = folder / "local.notchbox.bridge.json"
+manifest = folder / "io.github.lanstheprodigy.ririku.bridge.json"
 payload = {
-    "name": "local.notchbox.bridge",
-    "description": "Notch Box local music bridge",
+    "name": "io.github.lanstheprodigy.ririku.bridge",
+    "description": "Ririku local music bridge",
     "path": str(binary),
     "type": "stdio",
     "allowed_origins": [f"chrome-extension://{arguments.extension_id}/"],
@@ -32,4 +32,4 @@ with temporary.open("w", encoding="utf-8") as output:
 os.chmod(temporary, 0o600)
 temporary.replace(manifest)
 print(f"Terdaftar: {manifest}")
-print("Buka aplikasi Notch Box, lalu muat ulang tab YouTube/YouTube Music.")
+print("Buka aplikasi Ririku, lalu muat ulang tab YouTube/YouTube Music.")

@@ -1,6 +1,6 @@
 import Foundation
 import Darwin
-import NotchCore
+import RirikuCore
 
 final class BridgeServer {
     private let lock = NSLock()
@@ -9,7 +9,7 @@ final class BridgeServer {
     private var lockFile: Int32 = -1
     private var socketPath: String?
     private var language = "en"
-    private let writer = DispatchQueue(label: "notchbox.bridge.writer")
+    private let writer = DispatchQueue(label: "ririku.bridge.writer")
     var onPacket: ((Data) -> Void)?
     var onDisconnect: (() -> Void)?
 
@@ -18,7 +18,7 @@ final class BridgeServer {
         lockFile = open(path + ".lock", O_CREAT | O_RDWR | O_NOFOLLOW, 0o600)
         guard lockFile >= 0, flock(lockFile, LOCK_EX | LOCK_NB) == 0 else {
             if lockFile >= 0 { Darwin.close(lockFile); lockFile = -1 }
-            throw BridgeError.system("Another Notch Box instance is already running.")
+            throw BridgeError.system("Another Ririku instance is already running.")
         }
         unlink(path)
         var address = try LocalSocket.address(for: path)

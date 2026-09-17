@@ -7,7 +7,7 @@
 "Accent color" = "Warna aksen";
 "Active player" = "Pemutar aktif";
 "Ad · lyrics paused" = "Iklan · lirik dihentikan";
-"Another Notch Box instance is already running." = "Aplikasi Notch Box lain sudah berjalan.";
+"Another Ririku instance is already running." = "Aplikasi Ririku lain sudah berjalan.";
 "Appearance" = "Tampilan";
 "Apple Music and Spotify: not implemented yet." = "Apple Music dan Spotify: belum diimplementasikan.";
 "Applies to compact and expanded islands. The spectrum is decorative, not audio analysis, and settles when paused or stopped. The animation toggle and Reduce Motion also control it." = "Berlaku pada island ringkas dan terbuka. Spectrum bersifat dekoratif, bukan analisis audio; mereda saat pause/stop. Toggle animasi dan Reduce Motion juga mengatur spectrum.";
@@ -79,14 +79,14 @@
 "No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers." = "Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.";
 "No valid LRC timestamps found." = "Tidak ada timestamp LRC yang valid.";
 "Not connected" = "Belum terhubung";
-"Notch Box — Setup" = "Notch Box — Setup";
-"Notch Box, music player" = "Notch Box, pemutar musik";
+"Ririku — Setup" = "Ririku — Setup";
+"Ririku, music player" = "Ririku, pemutar musik";
 "Offset for this song" = "Offset lagu ini";
 "Offset is saved per video or song; positive values delay lyrics, negative values advance them. Not applied to CC. Duration is used to choose candidates, not to stretch timestamps automatically." = "Offset disimpan per video/lagu; positif menunda lirik, negatif memajukan. Tidak diterapkan pada CC. Durasi dipakai untuk memilih kandidat, bukan meregangkan timestamp secara otomatis.";
 "Open music panel" = "Buka panel musik";
 "Open Setup" = "Buka Setup";
 "Open Setup window" = "Buka jendela Setup";
-"Open the Notch Box app first." = "Buka aplikasi Notch Box terlebih dahulu.";
+"Open the Ririku app first." = "Buka aplikasi Ririku terlebih dahulu.";
 "Peach" = "Peach";
 "Play or pause" = "Putar atau jeda";
 "Playback position" = "Posisi pemutaran";
@@ -95,7 +95,7 @@
 "Prefer Japanese on shared timestamps" = "Utamakan Jepang pada timestamp ganda";
 "Previous track" = "Lagu sebelumnya";
 "Prototype" = "Prototipe";
-"Quit Notch Box" = "Keluar Notch Box";
+"Quit Ririku" = "Keluar Ririku";
 "Reset" = "Reset";
 "Reset size" = "Reset ukuran";
 "Search" = "Cari";

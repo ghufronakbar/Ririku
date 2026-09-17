@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchCore
+import RirikuCore
 
 struct SetupView: View {
     @ObservedObject var model: AppModel
@@ -121,7 +121,7 @@ struct SetupView: View {
                 if let error = model.commandError { Text(model.t(error)).font(.caption).foregroundStyle(.orange) }
             }
             Section(model.t("Prototype")) {
-                Text(verbatim: "Notch Box 0.2.5 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                Text(verbatim: "Ririku 0.3.0 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle(model.t("Local demo (no audio)"), isOn: $model.demo)
                 Text(model.t("No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers."))
                     .font(.caption).foregroundStyle(.secondary)

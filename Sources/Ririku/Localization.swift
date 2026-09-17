@@ -1,5 +1,5 @@
 import Foundation
-import NotchCore
+import RirikuCore
 
 enum InterfaceLanguage: String, CaseIterable, Identifiable {
     case system, en, id, ja

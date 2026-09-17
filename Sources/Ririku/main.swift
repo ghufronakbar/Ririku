@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchCore
+import RirikuCore
 
 final class NotchPanel: NSPanel {
     var dismissPanel: (() -> Void)?
@@ -57,14 +57,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func configureMenu() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Notch Box")
+        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Ririku")
         let menu = NSMenu()
         let setup = menu.addItem(withTitle: model.t("Setup…"), action: #selector(showSetup), keyEquivalent: ",")
         setup.target = self
         let expand = menu.addItem(withTitle: model.t("Open music panel"), action: #selector(expandPanel), keyEquivalent: "")
         expand.target = self
         menu.addItem(.separator())
-        menu.addItem(withTitle: model.t("Quit Notch Box"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: model.t("Quit Ririku"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         statusItem.menu = menu
     }
 
@@ -73,16 +73,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if items.count == 4 {
             items[0].title = model.t("Setup…")
             items[1].title = model.t("Open music panel")
-            items[3].title = model.t("Quit Notch Box")
+            items[3].title = model.t("Quit Ririku")
         }
-        settingsWindow?.title = model.t("Notch Box — Setup")
+        settingsWindow?.title = model.t("Ririku — Setup")
         bridge.setLanguage(model.localizer.code)
     }
 
     @objc private func showSetup() {
         if settingsWindow == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 580, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = model.t("Notch Box — Setup")
+            window.title = model.t("Ririku — Setup")
             window.isReleasedWhenClosed = false
             window.contentView = NSHostingView(rootView: SetupView(model: model))
             window.center()

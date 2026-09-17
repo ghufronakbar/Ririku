@@ -53,7 +53,7 @@ public enum Frames {
 
 public enum LocalSocket {
     public static func path() throws -> String {
-        let directory = "/tmp/notchbox-\(getuid())"
+        let directory = "/tmp/ririku-\(getuid())"
         if mkdir(directory, 0o700) != 0 && errno != EEXIST {
             throw BridgeError.system("Unable to create the bridge directory.")
         }
@@ -86,7 +86,7 @@ public enum LocalSocket {
         }
         guard result == 0, isSameUser(descriptor) else {
             Darwin.close(descriptor)
-            throw BridgeError.system("Open the Notch Box app first.")
+            throw BridgeError.system("Open the Ririku app first.")
         }
         return descriptor
     }

@@ -2,7 +2,7 @@ import Foundation
 import AppKit
 import CryptoKit
 import ImageIO
-import NotchCore
+import RirikuCore
 
 struct HTTPResult: Sendable {
     let data: Data
@@ -45,7 +45,7 @@ final class SafeHTTPClient: NSObject, URLSessionTaskDelegate, HTTPFetching, @unc
     func get(_ url: URL, limit: Int) async throws -> HTTPResult {
         guard allows(url) else { throw BridgeError.system("Media address is not allowed.") }
         var request = URLRequest(url: url)
-        request.setValue("NotchBox/0.2.5 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
+        request.setValue("Ririku/0.3.0 (https://github.com/lanstheprodigy/ririku)", forHTTPHeaderField: "User-Agent")
         let (bytes, response) = try await session.bytes(for: request)
         guard let response = response as? HTTPURLResponse, allows(response.url), response.expectedContentLength <= limit else {
             throw BridgeError.system("Media response is invalid or too large.")
@@ -81,7 +81,7 @@ actor LyricsService {
     init(client: any HTTPFetching = SafeHTTPClient(hosts: ["lrclib.net"]), cacheDirectory: URL? = nil) {
         self.client = client
         self.cacheDirectory = cacheDirectory ?? FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("local.notchbox.mac/Lyrics-v2", isDirectory: true)
+            .appendingPathComponent("io.github.lanstheprodigy.ririku/Lyrics-v2", isDirectory: true)
     }
 
     func resolve(_ query: LyricsQuery, force: Bool = false) async throws -> LyricsRecord? {

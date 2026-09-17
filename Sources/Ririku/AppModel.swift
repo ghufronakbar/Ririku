@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
-import NotchCore
+import RirikuCore
 
 struct PlaybackSession {
     var snapshot: PlaybackSnapshot

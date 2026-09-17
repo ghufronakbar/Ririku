@@ -7,7 +7,7 @@
 "Accent color" = "アクセントカラー";
 "Active player" = "使用するプレーヤー";
 "Ad · lyrics paused" = "広告 · 歌詞を停止中";
-"Another Notch Box instance is already running." = "別の Notch Box がすでに起動しています。";
+"Another Ririku instance is already running." = "別の Ririku がすでに起動しています。";
 "Appearance" = "外観";
 "Apple Music and Spotify: not implemented yet." = "Apple Music と Spotify: まだ実装されていません。";
 "Applies to compact and expanded islands. The spectrum is decorative, not audio analysis, and settles when paused or stopped. The animation toggle and Reduce Motion also control it." = "コンパクト表示と展開表示の両方に適用されます。スペクトラムは装飾用で、音声解析ではありません。一時停止・停止中は平らになります。アニメーション設定と「視差効果を減らす」の設定にも従います。";
@@ -79,14 +79,14 @@
 "No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers." = "テレメトリや Cookie は使用しません。自動検索がオンのときは曲のメタデータを LRCLIB に送信し、検索ボタンは入力した語句を送信します。字幕のみモードでは LRCLIB を検索しません。サムネイルは YouTube/Google の画像サーバーから取得します。";
 "No valid LRC timestamps found." = "有効な LRC タイムスタンプが見つかりません。";
 "Not connected" = "未接続";
-"Notch Box — Setup" = "Notch Box — セットアップ";
-"Notch Box, music player" = "Notch Box、音楽プレーヤー";
+"Ririku — Setup" = "Ririku — セットアップ";
+"Ririku, music player" = "Ririku、音楽プレーヤー";
 "Offset for this song" = "この曲のオフセット";
 "Offset is saved per video or song; positive values delay lyrics, negative values advance them. Not applied to CC. Duration is used to choose candidates, not to stretch timestamps automatically." = "オフセットは動画・曲ごとに保存されます。正の値で歌詞を遅らせ、負の値で早めます。CC には適用されません。再生時間は候補の選択に使うもので、タイムスタンプを自動で伸縮することはありません。";
 "Open music panel" = "音楽パネルを開く";
 "Open Setup" = "セットアップを開く";
 "Open Setup window" = "セットアップウインドウを開く";
-"Open the Notch Box app first." = "先に Notch Box アプリを開いてください。";
+"Open the Ririku app first." = "先に Ririku アプリを開いてください。";
 "Peach" = "ピーチ";
 "Play or pause" = "再生または一時停止";
 "Playback position" = "再生位置";
@@ -95,7 +95,7 @@
 "Prefer Japanese on shared timestamps" = "同じタイムスタンプでは日本語を優先";
 "Previous track" = "前の曲";
 "Prototype" = "プロトタイプ";
-"Quit Notch Box" = "Notch Box を終了";
+"Quit Ririku" = "Ririku を終了";
 "Reset" = "リセット";
 "Reset size" = "サイズをリセット";
 "Search" = "検索";
