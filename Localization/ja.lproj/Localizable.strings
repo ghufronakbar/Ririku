@@ -75,12 +75,14 @@
 "Lyrics service unavailable (HTTP %@)." = "歌詞サービスを利用できません(HTTP %@)。";
 "Lyrics service unreachable · retrying automatically" = "歌詞サービスに接続できません · 自動で再試行します";
 "Lyrics source" = "歌詞のソース";
+"macOS is waiting for your approval. Turn Ririku on in System Settings → General → Login Items." = "macOS が承認を待っています。システム設定 → 一般 → ログイン項目 で Ririku をオンにしてください。";
 "Manual LRC" = "手動 LRC";
 "Media address is not allowed." = "許可されていないメディアアドレスです。";
 "Media response exceeds the size limit." = "メディアの応答がサイズ上限を超えました。";
 "Media response is invalid or too large." = "メディアの応答が無効か、大きすぎます。";
 "Minimum size follows the physical notch. Height adapts to content and line count." = "最小サイズは実際のノッチに合わせます。高さは内容と行数に応じて変わります。";
 "Move Ririku to the Applications folder and open it again before connecting Chrome." = "Chrome に接続する前に、Ririku を「アプリケーション」フォルダに移動して開き直してください。";
+"Move Ririku to the Applications folder and open it again before opening it at login." = "ログイン時に開く設定にする前に、Ririku を「アプリケーション」フォルダに移動して開き直してください。";
 "Music paused or stopped" = "一時停止中または停止中";
 "Music playing · decorative spectrum" = "再生中 · 装飾用スペクトラム";
 "Music source" = "音楽ソース";
@@ -98,9 +100,12 @@
 "Offset for this song" = "この曲のオフセット";
 "Offset is saved per video or song; positive values delay lyrics, negative values advance them. Not applied to CC. Duration is used to choose candidates, not to stretch timestamps automatically." = "オフセットは動画・曲ごとに保存されます。正の値で歌詞を遅らせ、負の値で早めます。CC には適用されません。再生時間は候補の選択に使うもので、タイムスタンプを自動で伸縮することはありません。";
 "Open chrome://extensions, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder." = "chrome://extensions を開き、「デベロッパー モード」をオンにして「パッケージ化されていない拡張機能を読み込む」をクリックし、「Chrome Extension」フォルダを選択してください。";
+"Open Login Items settings" = "ログイン項目の設定を開く";
 "Open music panel" = "音楽パネルを開く";
+"Open Ririku at login" = "ログイン時に Ririku を開く";
 "Open Ririku from its app bundle to connect Chrome." = "Chrome に接続するには、アプリバンドルから Ririku を開いてください。";
 "Open Ririku from its app bundle to copy the extension." = "拡張機能をコピーするには、アプリバンドルから Ririku を開いてください。";
+"Open Ririku from its app bundle to open it at login." = "ログイン時に開くには、Ririku をアプリバンドルから開いてください。";
 "Open Setup" = "セットアップを開く";
 "Open Setup window" = "セットアップウインドウを開く";
 "Open the Ririku app first." = "先に Ririku アプリを開いてください。";
@@ -121,6 +126,8 @@
 "Reset" = "リセット";
 "Reset size" = "サイズをリセット";
 "Ririku follows YouTube and YouTube Music in Google Chrome through a companion extension. Complete these steps once." = "Ririku は付属の拡張機能を通じて Google Chrome の YouTube と YouTube Music に連動します。次の手順を一度だけ行ってください。";
+"Ririku opens in the background after you log in." = "ログイン後に Ririku がバックグラウンドで起動します。";
+"Ririku stays closed until you open it yourself." = "Ririku は自分で開くまで起動しません。";
 "Ririku — Setup" = "Ririku — セットアップ";
 "Ririku, music player" = "Ririku、音楽プレーヤー";
 "Search" = "検索";
@@ -136,6 +143,7 @@
 "Show lyrics in the island" = "アイランドに歌詞を表示";
 "Smooth panel transitions (ease-in/ease-out)" = "パネルを滑らかに切り替える(イーズイン/イーズアウト)";
 "Song or duration changed. Search again before choosing." = "曲または再生時間が変わりました。選択する前にもう一度検索してください。";
+"Startup" = "起動";
 "Text lyrics without timing; there is no active line." = "タイミング情報のない歌詞のため、現在の行はありません。";
 "Text lyrics · not synced" = "テキスト歌詞 · 未同期";
 "Text only" = "テキストのみ";

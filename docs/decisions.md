@@ -26,6 +26,7 @@ When a decision changes, add a dated entry here, update the affected documents, 
 | D-012 | Open source under the name **Ririku**, MIT license, maintained by `lanstheprodigy` at `github.com/ghufronakbar/Ririku`. | 2026-09-17. "Notch Box" collided with the NotchBox app on the Mac App Store; "Ririkku" collided with a lyrics music player at ririkku.com. No music or lyrics app named Ririku was found in web searches (not a formal trademark search). MIT is simple and there are no third-party dependencies. |
 | D-013 | Free distribution: ad-hoc signed GitHub releases without notarization, extension installed with Load unpacked and a tutorial, no migration of Notch Box settings. | 2026-09-17. The owner does not want paid programs (Apple Developer Program, Chrome Web Store). |
 | D-014 | English is the primary documentation language; user-facing documentation is also available in other languages. | 2026-09-17. Open-source audience. |
+| D-015 | Ririku can open itself at login, as an option that is off by default. | 2026-09-18. Owner request after the open-source preparation. Implemented with `SMAppService`; macOS keeps the state and can ask the user for approval. |
 
 Earlier approved requirements recorded in the archive include: selectable lyrics source with per-song offset and duration-based version picking (v0.2.2); lyric visibility, 1/2/3 lines, adjustable width, and smoother transitions (v0.2.3); top-anchored resizing, no auto-expand on track change, short "not found" notice, decorative spectrum, and Japanese line preference (v0.2.4).
 
@@ -44,6 +45,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Chrome setup | Fixed extension ID through the manifest `key`; the app registers the native host and copies the extension only when the user clicks Setup buttons; blocked under App Translocation. Confirmed working in Chrome on 2026-09-18: all four Setup steps completed and the app reported extension 0.3.0 | Setup copies `chrome://extensions` to the clipboard instead of opening it, because opening Chrome internal pages from an app is unvalidated. `install-host.py` remains for development. |
 | Documentation | English README, user guide, and developer docs; Indonesian and Japanese README and user guide; original Indonesian planning docs archived; community files added | Translations name the English version they follow. |
 | CI and releases | GitHub Actions on macOS runners: checks, `swift test`, and a bundle build on every push, plus tag-driven draft releases with a zip and checksum | Uses only first-party actions (`actions/checkout`, `actions/upload-artifact`) and `gh`. |
+| Launch at login | `SMAppService.mainApp` registers the app bundle itself; the state is read from macOS instead of being stored in the preferences; unavailable outside the `.app` and while translocated | No helper tool or launch agent. Registration by an ad-hoc signed build still needs validation on a downloaded release. |
 | Tests | Swift Testing suites in `Tests/RirikuCoreTests` and `Tests/RirikuTests`, fixtures only | Executable targets can be tested with SwiftPM, so the app model and Chrome setup are covered without a UI. |
 
 ## Open questions
@@ -56,4 +58,5 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Universal (Intel) builds | Open |
 | GitHub repository settings (issues, labels, private vulnerability reporting) and whether a separate code of conduct with a contact address is needed | Open; basic conduct expectations are in CONTRIBUTING.md |
 | Test coverage for SwiftUI views, the Chrome extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and Chrome setup helpers |
-| Launch at login and other Chromium browsers | Planned, not started |
+| Other Chromium browsers (Brave, Edge, Arc) | Planned, not started |
+| Launch at login registered by an ad-hoc signed, non-notarized build | Needs validation, including the approval prompt in System Settings |

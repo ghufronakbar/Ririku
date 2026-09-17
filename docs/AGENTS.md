@@ -31,5 +31,5 @@ Before changing the project, read `README.md` and the documents relevant to the 
 ## Validation
 
 - Run the verification commands in `docs/development/README.md` that apply to the change, including `swift test`, and the manual smoke test when behavior with Chrome changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
-- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. `swift test` covers core logic, the app model, localization, and Chrome setup helpers with fixtures only; UI rendering, real Chrome behavior, and audio timing still need manual checks.
+- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. `swift test` covers core logic, the app model, localization, and Chrome setup and launch-at-login helpers with fixtures only; UI rendering, real Chrome behavior, registering a login item, and audio timing still need manual checks.
 - For documentation changes, check consistency between documents, that claims match the code, and that relative links work.

@@ -24,7 +24,7 @@ Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and th
 | Target | Responsibility |
 | --- | --- |
 | `RirikuCore` | Code without UI: `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation. |
-| `Ririku` | `main.swift` (app delegate, `NSPanel`, menu bar, hover, resize animation), `AppModel`, `PlayerView`, `SetupView`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `ChromeSetup`, `Localization`. |
+| `Ririku` | `main.swift` (app delegate, `NSPanel`, menu bar, hover, resize animation), `AppModel`, `PlayerView`, `SetupView`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `ChromeSetup`, `LoginItem`, `Localization`. |
 | `RirikuHost` | Relays framed messages between Chrome (stdin/stdout) and the app socket. If the app is not running and the first message is `openSetup`, it launches the enclosing `Ririku.app` with `open -g` and retries for up to 4 seconds. |
 
 ## Bridge protocol
@@ -110,6 +110,12 @@ The extension manifest contains a public `key`, so the unpacked extension always
 - reports whether the manifest is missing, points to another copy of the app, or is current;
 - refuses to register while the app runs from App Translocation (a temporary path used for quarantined apps that were not moved), because that path disappears;
 - copies the bundled extension to `~/Library/Application Support/Ririku/Chrome Extension` through a staging folder and `replaceItemAt`.
+
+## Launch at login
+
+`LoginItem` wraps `SMAppService.mainApp` (ServiceManagement, macOS 13+), so the app bundle registers itself and no helper tool, launch agent, or Terminal command is needed. macOS owns the state, so nothing is stored in the preferences: Setup reads `SMAppService.mainApp.status` on every render and `AppModel.loginItemRevision` forces a re-read after a toggle and when the Setup window opens, because the user can also change login items in System Settings.
+
+The registration is only offered for the real bundle: a plain executable (`swift run`, tests) reports `unavailable`, and a translocated copy reports `translocated` because the path it would register disappears. `requiresApproval` means macOS wants the user to allow the item, so Setup offers a button that opens the Login Items pane. Turning it off is allowed in every location, so a registration from an earlier copy can be removed.
 
 ## Identifiers and files
 

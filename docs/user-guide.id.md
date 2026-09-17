@@ -92,6 +92,10 @@ Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar.
 
 Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau memindahkannya ke folder lain.
 
+### Saat login
+
+**Buka Ririku saat login** (nonaktif secara default): Ririku terbuka di latar belakang setelah Anda login, tanpa ikon Dock maupun jendela. macOS bisa meminta izin pada kali pertama; jika Setup menyatakan sedang menunggu persetujuan, klik **Buka pengaturan Login Items** lalu aktifkan Ririku di sana. Sakelar ini tidak tersedia selama Ririku berjalan dari lokasi sementara, jadi pindahkan dulu ke **Applications**. Anda juga bisa mematikannya di **System Settings → General → Login Items**.
+
 ### Sumber musik
 
 - **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab Chrome yang mulai memutar.
@@ -203,4 +207,3 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - Tidak di-notarize Apple, sehingga peluncuran pertama perlu konfirmasi.
 - Ketersediaan dan timing lirik bergantung pada LRCLIB.
 - Perubahan halaman YouTube dapat mengganggu deteksi sampai Ririku diperbarui.
-- Belum ada fitur buka otomatis saat login.

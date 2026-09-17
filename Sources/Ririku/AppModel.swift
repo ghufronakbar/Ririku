@@ -98,6 +98,9 @@ final class AppModel: ObservableObject {
     @Published var chromeSetupMessage: UIText?
     /// Incremented after a Chrome setup action so the file-based status is read again on the next render.
     @Published private(set) var chromeSetupRevision = 0
+    @Published var loginItemMessage: UIText?
+    /// Incremented after a launch-at-login change or a Setup visit, because macOS owns that state.
+    @Published private(set) var loginItemRevision = 0
     @Published var pendingCommand: String?
     @Published var notchWidth: CGFloat = 180
     @Published var topHeight: CGFloat = 34
@@ -545,6 +548,22 @@ final class AppModel: ObservableObject {
         } catch { chromeSetupMessage = UIText(error: error) }
         chromeSetupRevision += 1
     }
+
+    var launchAtLogin: Bool { LoginItem.state() == .on }
+
+    /// The toggle writes straight to macOS; the interface follows the state it reports back.
+    func setLaunchAtLogin(_ enabled: Bool) {
+        do {
+            try LoginItem.setEnabled(enabled)
+            loginItemMessage = nil
+        } catch { loginItemMessage = UIText(error: error) }
+        loginItemRevision += 1
+    }
+
+    /// Login items can also be changed in System Settings, so the state is read again when Setup opens.
+    func refreshLoginItem() { loginItemRevision += 1 }
+
+    func openLoginItemsSettings() { NSWorkspace.shared.open(LoginItem.settingsURL) }
 
     func copyExtensionsPage() {
         NSPasteboard.general.clearContents()

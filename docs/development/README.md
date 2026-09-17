@@ -99,9 +99,9 @@ GitHub Actions runs the same checks on every push and pull request (`.github/wor
 | Target | Covers |
 | --- | --- |
 | `RirikuCoreTests` | LRC parsing, active line and offset, the Japanese display filter, snapshot validation, the position estimate, title normalization and candidate matching, bridge framing, and island motion |
-| `RirikuTests` | Interface language resolution, `UIText`/`Localizer`, `ChromeSetup` outside an app bundle, source selection, commands and acks, preferences, panel geometry, and lyric rows |
+| `RirikuTests` | Interface language resolution, `UIText`/`Localizer`, `ChromeSetup` outside an app bundle, the launch-at-login state, source selection, commands and acks, preferences, panel geometry, and lyric rows |
 
-The tests use fixtures only: no network requests, no Chrome, and no access to your Chrome profile (`ChromeSetup.home` can be redirected, and model tests use a temporary `UserDefaults` suite and cache folder). UI rendering, real Chrome integration, and audio timing are still verified by hand. Describe in your pull request what you ran and what you could not test.
+The tests use fixtures only: no network requests, no Chrome, and no access to your Chrome profile (`ChromeSetup.home` can be redirected, and model tests use an in-memory `UserDefaults` and a temporary cache folder). The test binary is not an app bundle, so `LoginItem` reports `unavailable` and the tests never read or change your real login items. UI rendering, real Chrome integration, registering a login item, and audio timing are still verified by hand. Describe in your pull request what you ran and what you could not test.
 
 ### Manual smoke test
 
@@ -112,3 +112,4 @@ On both YouTube and YouTube Music:
 3. Close the tab, refresh a tab, and quit/reopen Ririku; the connection recovers without restarting Chrome.
 4. Check that the highlighted lyric line matches the audio, not just that text moves. Try a song without lyrics, captions (CC), an ad, and a live stream.
 5. Switch the interface language and check Setup, the panel, the menu bar, and the extension popup.
+6. Turn **Open Ririku at login** on in Setup, check that macOS lists Ririku under **System Settings → General → Login Items**, log out and back in, then turn it off again.

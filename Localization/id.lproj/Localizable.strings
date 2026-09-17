@@ -75,12 +75,14 @@
 "Lyrics service unavailable (HTTP %@)." = "Layanan lirik belum tersedia (HTTP %@).";
 "Lyrics service unreachable · retrying automatically" = "Lirik belum terhubung · mencoba lagi otomatis";
 "Lyrics source" = "Sumber lirik";
+"macOS is waiting for your approval. Turn Ririku on in System Settings → General → Login Items." = "macOS menunggu persetujuan. Aktifkan Ririku di System Settings → General → Login Items.";
 "Manual LRC" = "LRC manual";
 "Media address is not allowed." = "Alamat media tidak diizinkan.";
 "Media response exceeds the size limit." = "Respons media melebihi batas ukuran.";
 "Media response is invalid or too large." = "Respons media tidak valid atau terlalu besar.";
 "Minimum size follows the physical notch. Height adapts to content and line count." = "Ukuran minimum mengikuti notch fisik. Tinggi menyesuaikan isi dan jumlah baris.";
 "Move Ririku to the Applications folder and open it again before connecting Chrome." = "Pindahkan Ririku ke folder Applications lalu buka kembali sebelum menghubungkan Chrome.";
+"Move Ririku to the Applications folder and open it again before opening it at login." = "Pindahkan Ririku ke folder Applications lalu buka kembali sebelum mengaturnya terbuka saat login.";
 "Music paused or stopped" = "Musik dijeda atau berhenti";
 "Music playing · decorative spectrum" = "Musik diputar · spectrum dekoratif";
 "Music source" = "Sumber musik";
@@ -98,9 +100,12 @@
 "Offset for this song" = "Offset lagu ini";
 "Offset is saved per video or song; positive values delay lyrics, negative values advance them. Not applied to CC. Duration is used to choose candidates, not to stretch timestamps automatically." = "Offset disimpan per video/lagu; positif menunda lirik, negatif memajukan. Tidak diterapkan pada CC. Durasi dipakai untuk memilih kandidat, bukan meregangkan timestamp secara otomatis.";
 "Open chrome://extensions, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder." = "Buka chrome://extensions, aktifkan Developer mode, klik Load unpacked, lalu pilih folder “Chrome Extension”. Nama tombol mengikuti bahasa Chrome.";
+"Open Login Items settings" = "Buka pengaturan Login Items";
 "Open music panel" = "Buka panel musik";
+"Open Ririku at login" = "Buka Ririku saat login";
 "Open Ririku from its app bundle to connect Chrome." = "Buka Ririku dari bundle aplikasinya untuk menghubungkan Chrome.";
 "Open Ririku from its app bundle to copy the extension." = "Buka Ririku dari bundle aplikasinya untuk menyalin extension.";
+"Open Ririku from its app bundle to open it at login." = "Buka Ririku dari bundel aplikasinya untuk membukanya saat login.";
 "Open Setup" = "Buka Setup";
 "Open Setup window" = "Buka jendela Setup";
 "Open the Ririku app first." = "Buka aplikasi Ririku terlebih dahulu.";
@@ -121,6 +126,8 @@
 "Reset" = "Reset";
 "Reset size" = "Reset ukuran";
 "Ririku follows YouTube and YouTube Music in Google Chrome through a companion extension. Complete these steps once." = "Ririku mengikuti YouTube dan YouTube Music di Google Chrome melalui extension pendamping. Selesaikan langkah berikut sekali saja.";
+"Ririku opens in the background after you log in." = "Ririku terbuka di latar belakang setelah login.";
+"Ririku stays closed until you open it yourself." = "Ririku tidak terbuka sampai dibuka sendiri.";
 "Ririku — Setup" = "Ririku — Setup";
 "Ririku, music player" = "Ririku, pemutar musik";
 "Search" = "Cari";
@@ -136,6 +143,7 @@
 "Show lyrics in the island" = "Tampilkan lirik di island";
 "Smooth panel transitions (ease-in/ease-out)" = "Transisi panel halus (ease-in/ease-out)";
 "Song or duration changed. Search again before choosing." = "Lagu/durasi berubah. Cari ulang sebelum memilih.";
+"Startup" = "Saat login";
 "Text lyrics without timing; there is no active line." = "Lirik teks tanpa timing; tidak memiliki baris aktif.";
 "Text lyrics · not synced" = "Lirik teks · belum tersinkron";
 "Text only" = "Teks saja";

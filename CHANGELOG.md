@@ -17,7 +17,8 @@ Verified on 2026-09-18: the Chrome connection completed from Setup without Termi
 - User guide, developer documentation, contributing guide, security policy, and decision log.
 - GitHub Actions: CI that builds the app and checks translations, versions, documentation, and the extension on every push and pull request; a release workflow that builds a tag into a draft release with a zip and SHA-256 checksum.
 - Issue and pull request templates, and `scripts/check-version.py`, `scripts/check-docs.py`, and `scripts/release-notes.py`.
-- Automated tests: `swift test` runs 86 Swift Testing cases for the LRC parser, playback clock, lyrics matching, bridge framing, island motion, localization, Chrome setup, source selection, commands, and preferences. CI and the release workflow run them.
+- **Setup → Startup:** **Open Ririku at login**, off by default. It registers the app bundle with `SMAppService`, so no helper tool or Terminal command is needed, and it stays unavailable while the app runs from a temporary location.
+- Automated tests: `swift test` runs 91 Swift Testing cases for the LRC parser, playback clock, lyrics matching, bridge framing, island motion, localization, Chrome setup, launch at login, source selection, commands, and preferences. CI and the release workflow run them.
 - Maintainer contact links in the README.
 - Repository links point to `github.com/ghufronakbar/Ririku`; app identifiers keep `io.github.lanstheprodigy.ririku` on purpose, so no re-registration is needed.
 

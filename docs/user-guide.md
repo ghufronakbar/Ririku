@@ -91,6 +91,10 @@ Open Setup from the gear button in the expanded panel or **Setup…** in the men
 
 The four install steps above. Come back here after updating Ririku or moving it to another folder.
 
+### Startup
+
+**Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a Dock icon or a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
+
 ### Music source
 
 - **Automatically follow the active player** (on by default): Ririku follows the Chrome tab that starts playing.
@@ -202,4 +206,3 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - Not notarized by Apple, so the first launch needs confirmation.
 - Lyrics availability and timing depend on LRCLIB.
 - YouTube page changes can break detection until Ririku is updated.
-- No launch at login yet.
