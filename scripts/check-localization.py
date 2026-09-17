@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Periksa agar setiap teks UI English di kode punya terjemahan id/ja dengan placeholder yang sama."""
+"""Check that every English interface string in the code has id/ja translations with matching placeholders."""
 import json
 from pathlib import Path
 import re
@@ -31,7 +31,7 @@ for folder in SOURCES:
                 for match in pattern.finditer(line):
                     key = match.group(1).replace('\\"', '"')
                     if "\\(" in key:
-                        sys.exit(f"{file.relative_to(ROOT)}:{number}: key tidak boleh memakai interpolasi Swift: {key}")
+                        sys.exit(f"{file.relative_to(ROOT)}:{number}: a key must not use Swift interpolation: {key}")
                     if re.search(r"[A-Za-z]", PLACEHOLDER.sub("", key)):
                         keys.setdefault(key, f"{file.relative_to(ROOT)}:{number}")
 
@@ -40,14 +40,14 @@ for language in LANGUAGES:
     table = load(language)
     for key, location in sorted(keys.items()):
         if key not in table:
-            problems.append(f"[{language}] belum diterjemahkan ({location}): {key}")
+            problems.append(f"[{language}] not translated ({location}): {key}")
         elif len(PLACEHOLDER.findall(key)) != len(PLACEHOLDER.findall(table[key])):
-            problems.append(f"[{language}] jumlah placeholder berbeda: {key}")
+            problems.append(f"[{language}] different number of placeholders: {key}")
     for key in sorted(set(table) - set(keys)):
-        problems.append(f"[{language}] key tidak dipakai: {key}")
+        problems.append(f"[{language}] unused key: {key}")
 load("en")
 
 if problems:
     print("\n".join(problems))
     sys.exit(1)
-print(f"Lokalisasi lengkap: {len(keys)} key × {', '.join(LANGUAGES)}")
+print(f"Localization complete: {len(keys)} keys × {', '.join(LANGUAGES)}")

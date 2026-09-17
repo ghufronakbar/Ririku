@@ -1,0 +1,42 @@
+name: Translation
+description: Fix wording or add a language
+labels: [translation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Interface text lives in `Localization/<code>.lproj/Localizable.strings` and `extension/i18n.js`;
+        documentation translations are `README.<code>.md` and `docs/user-guide.<code>.md`.
+        See [localization](https://github.com/lanstheprodigy/ririku/blob/main/docs/development/localization.md).
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options:
+        - Bahasa Indonesia
+        - 日本語 (Japanese)
+        - A new language
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      multiple: true
+      options:
+        - App interface (Setup, panel, menu bar)
+        - Chrome extension popup
+        - README
+        - User guide
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Current text and your suggestion
+      placeholder: |
+        Current: "Salin folder extension"
+        Suggested: "…"
+        Reason: …
+    validations:
+      required: true

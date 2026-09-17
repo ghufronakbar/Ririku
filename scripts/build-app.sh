@@ -37,4 +37,4 @@ with (app / "Contents/Info.plist").open("wb") as output:
 PY
 codesign --force --sign - "$APP/Contents/Resources/RirikuHost"
 codesign --force --sign - "$APP"
-printf '\nAplikasi lokal: %s\n' "$APP"
+printf '\nLocal app bundle: %s\n' "$APP"
