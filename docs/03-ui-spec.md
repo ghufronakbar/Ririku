@@ -1,5 +1,9 @@
 # Spesifikasi UI dan motion
 
+## Setup lirik v0.2.2
+
+Pemilih tiga mode, toggle pencarian otomatis LRCLIB, offset per lagu ±60 detik dengan tombol presisi 0,1 detik/reset, serta disclosure **Cari dan pilih versi lirik** berada di Form Setup yang dapat di-scroll. Hasil menampilkan judul, artis, album/ID, durasi, selisih bertanda, dan status bertimestamp/teks/instrumental. Kandidat dengan selisih >3 detik diberi peringatan cek versi dan hanya dapat dipilih eksplisit. Mode caption menonaktifkan kontrol pencarian/impor/offset. Mode Music tanpa CC dapat memakai LRCLIB. Tidak ada pemilih tambahan di panel notch.
+
 ## Caption v0.2.1
 
 Panel expanded memberi label **Caption video** dan hingga dua baris teks saat ini, tanpa prediksi baris sebelumnya/berikutnya. Setup menampilkan status caption aktif. Koreksi timing hanya berlaku untuk LRCLIB/LRC. Caption otomatis tidak dianggap hasil kurasi. Pemilih sumber tetap di Setup.

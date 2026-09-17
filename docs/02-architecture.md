@@ -1,5 +1,11 @@
 # Arsitektur awal
 
+## Pemilihan lirik v0.2.2
+
+Preferensi `lyricSource` tersimpan lokal: `auto` mengutamakan LRC bertimestamp lalu caption, `lrclib` tidak menampilkan caption, `caption` menyembunyikan LRC/plain text dan menghentikan pencarian LRCLIB. Impor LRC merupakan override lokal pada mode non-caption. Pencarian manual memakai `/api/search?q=...` melalui klien HTTP, pembatasan ukuran, dan throttle yang sama. Hasil diurutkan menurut selisih durasi absolut; durasi tidak diketahui terakhir. Kandidat otomatis tetap harus cocok judul/artis dan selisih ≤3 detik, mengutamakan kandidat bertimestamp lalu durasi terdekat. Pencarian alternatif kini dijalankan juga setelah exact match untuk membandingkan kandidat. Cache query menggunakan `Lyrics-v2` agar hasil keputusan lama tidak tertahan.
+
+Offset disimpan di UserDefaults menurut identitas video, dibatasi ±60 detik dan finite; nilai positif menunda. Video ID sama pada YouTube dan YouTube Music berbagi offset. Offset global lama tidak disalin ke semua lagu. Pemilihan hasil manual disimpan dalam memori hingga app ditutup, tidak tertimpa lookup otomatis; tombol kembali ke hasil otomatis menghapus override. Hasil pencarian yang selesai setelah lagu berubah diabaikan/dibatalkan. Durasi bukan faktor scaling waktu; clock playback tetap sumber waktu utama.
+
 ## Caption v0.2.1
 
 Snapshot memiliki `captionEnabled` dan `captionText` opsional (batas 4 KB). Extension membaca caption DOM terlihat, mengirim perubahan dengan coalescing 40 ms dan heartbeat cadangan. Seek/navigation menahan teks lama sampai perubahan caption berikutnya; iklan mengosongkan teks. Native mengutamakan caption aktif, termasuk jeda jika status CC terbaca aktif. Offset LRC tidak diterapkan pada caption. Jika kontrol CC tidak mengekspos status yang dikenali, deteksi memakai segmen terlihat; jeda dapat kembali ke LRCLIB dan perlu validasi situs nyata. Tidak memakai transcript privat, cookies, OCR, atau speech-to-text.

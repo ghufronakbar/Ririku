@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.2.2 — 17 September 2026
+
+Pengguna menyetujui pemilih sumber lirik di Setup, offset, dan pemilihan kandidat yang mendekati durasi pemutar. Otomatis kini LRCLIB-first, menggantikan prioritas caption v0.2.1; pengguna dapat mengunci salah satu sumber. Daftar manual mengurutkan kandidat menurut selisih durasi, sedangkan lookup otomatis tetap konservatif (judul/artis/±3 detik). Offset diterapkan per video, bukan global. Durasi digunakan untuk matching, bukan scaling otomatis yang bisa merusak timing ketika ada intro/outro atau versi rekaman berbeda. Kandidat manual berlaku selama sesi app; persistensi pilihan merupakan pekerjaan lanjutan.
+
 ## Revisi v0.2.1 — 17 September 2026
 
 Laporan pengguna menunjukkan timestamp LRCLIB tidak selalu cocok dengan video dan judul bilingual menghalangi matching. Implementasi kini mengutamakan caption DOM aktif, termasuk caption otomatis jika ditampilkan pemutar. Normalisasi judul diperbaiki tanpa menebak semua alias Inggris/Jepang. LRCLIB tetap fallback, bukan jaminan alignment audio. Tidak menambahkan OCR/transkripsi. Integrasi Chrome nyata masih perlu validasi setelah upgrade extension.

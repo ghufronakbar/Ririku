@@ -1,5 +1,11 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.2.2
+
+Buka **Setup → Lirik → Sumber lirik**. Pilih Otomatis, LRCLIB/LRC saja, atau Subtitle saja. Scroll ke **Cari dan pilih versi lirik**, masukkan judul/artis atau alias, lalu Cari. Bandingkan durasi pemutar dengan kandidat dan klik Pakai; selisih >3 detik perlu pemeriksaan versi. Pilihan manual berlaku sampai app ditutup atau kembali ke hasil otomatis. Offset ±60 detik tersimpan per video, dengan tombol presisi 0,1 detik dan Reset; positif menunda, negatif memajukan. Tidak ada scaling timestamp otomatis.
+
+App native v0.2.2 memakai extension v0.2.1 tanpa perubahan protokol baru, sehingga tidak membutuhkan reload extension lagi jika update caption sebelumnya sudah terpasang. Mode dan offset tersimpan setelah restart; offset global versi lama tidak diterapkan ke semua lagu. Query/cari manual mengirim metadata atau kata pencarian ke LRCLIB; mode Subtitle saja tidak menjalankan lookup LRCLIB.
+
 ## Update v0.2.1
 
 Reload extension unpacked di `chrome://extensions`, lalu refresh tab YouTube/YouTube Music yang sudah terbuka. Aktifkan CC; app mengutamakan caption yang terbaca dengan label **Caption video**. Caption otomatis memakai jalur yang sama; app tidak membuat caption sendiri. Teks yang menyatu dalam gambar video tidak dapat dibaca. Tanpa CC, LRCLIB/LRC menjadi fallback dan timing penyedia belum tentu cocok. Impor LRC tidak wajib. Normalisasi baru menghasilkan query baru sehingga cache miss judul lama tidak menghalangi pencarian baru.

@@ -2,7 +2,7 @@
 
 Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
 
-**Status:** prototipe native lokal v0.2.0, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, dan pencarian lirik LRCLIB dengan cache lokal telah diimplementasikan. Metadata/kontrol dasar v0.1 sudah dicoba pengguna; perubahan extension v0.2 masih perlu reload dan uji situs nyata. Nama proyek masih sementara.
+**Status:** prototipe native lokal v0.2.2, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, serta pencarian LRCLIB telah diimplementasikan. Pemilih sumber lirik, pemilihan kandidat berdasarkan selisih durasi, dan offset per lagu diuji dengan fixture lokal; akurasi timing situs nyata tetap perlu uji pengguna. Nama proyek masih sementara.
 
 ## Arah proyek
 
@@ -37,7 +37,7 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
-**Update v0.2.1:** caption video aktif diprioritaskan di atas LRCLIB, termasuk caption otomatis yang terlihat. Normalisasi judul bilingual/kredit artis ditingkatkan. Reload extension dan refresh tab lama. Build dan fixture lokal diuji; sinkronisasi Chrome nyata masih perlu validasi.
+**Update v0.2.2:** Setup menyediakan mode Otomatis (LRCLIB lalu caption), LRCLIB/LRC saja, dan Subtitle saja. Cari/pilih versi lirik dengan durasi serta selisihnya; offset ±60 detik disimpan per video/lagu. Tidak meregangkan timestamp otomatis. Extension tetap v0.2.1; tidak perlu reload lagi jika versi caption tersebut sudah terpasang.
 
 ```sh
 bash scripts/build-app.sh

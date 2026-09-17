@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi v0.2.2 — 17 September 2026
+
+Build Swift dan fixture sementara lulus: urutan kandidat durasi terdekat, durasi null terakhir, penolakan klip 4 detik untuk pemutar 241 detik, normalisasi artis `- Topic`, lookup otomatis, ketiga mode sumber, tidak ada request pencarian pada mode caption, offset per lagu/persistensi/batas finite, identitas lintas YouTube/Music, serta pembatalan pencarian saat lagu berubah. Setup native berhasil dirender dan diperiksa; Form dapat di-scroll untuk kontrol di bawah layar. Fixture tidak membuktikan timing terhadap audio nyata.
+
+Uji pengguna berikutnya: pilih kandidat 4:03 untuk pemutar sekitar 4:01 dibanding versi 3:44/0:04; pastikan artis/versi cocok; uji offset positif/negatif, berganti lagu lalu kembali, restart app, ketiga mode termasuk Music tanpa CC, serta pencarian alias judul. Pilihan kandidat manual belum persisten setelah restart, sedangkan mode/offset sudah tersimpan. Jangan mengklaim durasi sama menjamin timestamp akurat.
+
 ## Validasi v0.2.1 — 17 September 2026
 
 Fixture JavaScript sementara lulus untuk perubahan caption, teks rolling, jeda, seek, pause, iklan, CC off, dan navigasi. Fixture Swift memeriksa judul bilingual, kredit artis sesudah judul, dan qualifier Live. Build native lulus. Ini bukan bukti sinkronisasi terhadap audio/video nyata.
