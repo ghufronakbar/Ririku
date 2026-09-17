@@ -11,7 +11,9 @@ let package = Package(
     targets: [
         .target(name: "RirikuCore"),
         .executableTarget(name: "Ririku", dependencies: ["RirikuCore"]),
-        .executableTarget(name: "RirikuHost", dependencies: ["RirikuCore"])
+        .executableTarget(name: "RirikuHost", dependencies: ["RirikuCore"]),
+        .testTarget(name: "RirikuCoreTests", dependencies: ["RirikuCore"]),
+        .testTarget(name: "RirikuTests", dependencies: ["Ririku"])
     ],
     swiftLanguageModes: [.v5]
 )
