@@ -43,17 +43,17 @@ final class SafeHTTPClient: NSObject, URLSessionTaskDelegate, HTTPFetching, @unc
     }
 
     func get(_ url: URL, limit: Int) async throws -> HTTPResult {
-        guard allows(url) else { throw BridgeError.system("Alamat media tidak diizinkan.") }
+        guard allows(url) else { throw BridgeError.system("Media address is not allowed.") }
         var request = URLRequest(url: url)
-        request.setValue("NotchBox/0.2.4 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
+        request.setValue("NotchBox/0.2.5 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
         let (bytes, response) = try await session.bytes(for: request)
         guard let response = response as? HTTPURLResponse, allows(response.url), response.expectedContentLength <= limit else {
-            throw BridgeError.system("Respons media tidak valid atau terlalu besar.")
+            throw BridgeError.system("Media response is invalid or too large.")
         }
         var data = Data()
         data.reserveCapacity(min(limit, max(0, Int(response.expectedContentLength))))
         for try await byte in bytes {
-            if data.count >= limit { throw BridgeError.system("Respons media melebihi batas ukuran.") }
+            if data.count >= limit { throw BridgeError.system("Media response exceeds the size limit.") }
             data.append(byte)
         }
         try Task.checkCancellation()
@@ -103,14 +103,14 @@ actor LyricsService {
         if exact.status == 200, let record = try? JSONDecoder().decode(LyricsRecord.self, from: exact.data), query.matches(record) {
             candidates.append(record)
         } else if exact.status != 404 && exact.status != 200 {
-            throw BridgeError.system("Layanan lirik belum tersedia (HTTP \(exact.status)).")
+            throw BridgeError.system("Lyrics service unavailable (HTTP %@).", [String(exact.status)])
         }
         if candidates.first?.instrumental != true {
             var searchURL = URLComponents(string: "https://lrclib.net/api/search")!
             searchURL.queryItems = parameters
             do {
                 let search = try await request(searchURL.url!)
-                guard search.status == 200 else { throw BridgeError.system("Pencarian lirik gagal (HTTP \(search.status)).") }
+                guard search.status == 200 else { throw BridgeError.system("Lyrics search failed (HTTP %@).", [String(search.status)]) }
                 let results = try JSONDecoder().decode([SearchEntry].self, from: search.data)
                 candidates.append(contentsOf: results.compactMap(\.record))
             } catch {
@@ -134,7 +134,7 @@ actor LyricsService {
         busy = true
         defer { busy = false }
         let wait = nextRequest.timeIntervalSinceNow
-        if wait > 5 { throw BridgeError.system("Layanan lirik meminta jeda. Coba lagi dalam \(String(format: "%.0f", ceil(wait))) detik.") }
+        if wait > 5 { throw BridgeError.system("Lyrics service asked to pause. Try again in %@ s.", [String(format: "%.0f", ceil(wait))]) }
         if wait > 0 { try await Task.sleep(for: .seconds(wait)) }
         defer { nextRequest = max(nextRequest, Date(timeIntervalSinceNow: 0.35)) }
         let response = try await client.get(url, limit: 2_000_000)
@@ -148,7 +148,7 @@ actor LyricsService {
                 ?? 60
             let delay = requestedDelay.isFinite ? max(1, requestedDelay) : 60
             nextRequest = Date(timeIntervalSinceNow: delay)
-            throw BridgeError.system("Batas layanan lirik tercapai. Coba lagi dalam \(String(format: "%.0f", ceil(delay))) detik.")
+            throw BridgeError.system("Lyrics service limit reached. Try again in %@ s.", [String(format: "%.0f", ceil(delay))])
         }
         return response
     }
@@ -159,7 +159,7 @@ actor LyricsService {
         var url = URLComponents(string: "https://lrclib.net/api/search")!
         url.queryItems = [URLQueryItem(name: "q", value: term)]
         let response = try await request(url.url!)
-        guard response.status == 200 else { throw BridgeError.system("Pencarian lirik gagal (HTTP \(response.status)).") }
+        guard response.status == 200 else { throw BridgeError.system("Lyrics search failed (HTTP %@).", [String(response.status)]) }
         let records = try JSONDecoder().decode([SearchEntry].self, from: response.data).compactMap(\.record)
         try Task.checkCancellation()
         return LyricsQuery(title: term, artist: "", duration: duration).rankedCandidates(in: records)

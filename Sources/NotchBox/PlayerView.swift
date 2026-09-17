@@ -13,7 +13,10 @@ struct PlayerView: View {
                 Spacer(minLength: model.notchWidth)
                 if model.current != nil {
                     DecorativeSpectrum(playing: model.current?.snapshot.state == "playing" && model.current?.snapshot.isAdvertisement == false,
-                                        animate: model.canAnimate, color: model.accent)
+                                        animate: model.canAnimate, color: model.accent,
+                                        playingLabel: model.t("Music playing · decorative spectrum"),
+                                        pausedLabel: model.t("Music paused or stopped"),
+                                        helpText: model.t("Decorative spectrum, not audio analysis"))
                 }
             }
             .padding(.horizontal, 14)
@@ -35,7 +38,8 @@ struct PlayerView: View {
         .onHover(perform: hoverChanged)
         .onTapGesture { model.expanded = true }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Notch Box, pemutar musik")
+        .accessibilityLabel(model.t("Notch Box, music player"))
+        .environment(\.locale, model.locale)
     }
 
     private var expandedContent: some View {
@@ -44,12 +48,12 @@ struct PlayerView: View {
                 artwork(size: 48)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(model.current?.snapshot.title ?? "Notch Box").font(.headline).lineLimit(1)
-                    Text(model.current?.snapshot.artist ?? "Menunggu pemutar Chrome").font(.caption).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
-                    Text(model.current?.snapshot.sourceLabel ?? "Belum terhubung").font(.caption2).foregroundStyle(model.accent).lineLimit(1)
+                    Text(model.current?.snapshot.artist ?? model.t("Waiting for Chrome player")).font(.caption).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
+                    Text(model.current.map { model.sourceLabel(for: $0.snapshot) } ?? model.t("Not connected")).font(.caption2).foregroundStyle(model.accent).lineLimit(1)
                 }
                 Spacer(minLength: 0)
                 Button { model.openSetup?() } label: { Image(systemName: "gearshape").padding(8) }
-                    .buttonStyle(.plain).help("Buka Setup").accessibilityLabel("Buka jendela Setup")
+                    .buttonStyle(.plain).help(model.t("Open Setup")).accessibilityLabel(model.t("Open Setup window"))
             }
             TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                 VStack(spacing: 12) {
@@ -62,22 +66,22 @@ struct PlayerView: View {
                         })
                         .tint(model.accent)
                         .disabled(!model.canControl || model.current?.snapshot.capabilities.seek != true)
-                        .accessibilityLabel("Posisi pemutaran")
+                        .accessibilityLabel(model.t("Playback position"))
                         HStack {
                             Text(time(scrubbing ? seekPosition : model.position()))
                             Spacer()
-                            Text(model.current?.snapshot.duration.map(time) ?? "LIVE")
+                            Text(model.current?.snapshot.duration.map(time) ?? model.t("LIVE"))
                         }.font(.caption2).monospacedDigit().foregroundStyle(.white.opacity(0.6))
                     }
                 }
             }
             HStack(spacing: 28) {
-                transport("backward.end.fill", label: "Lagu sebelumnya", action: "previous", enabled: model.current?.snapshot.capabilities.previous == true)
-                transport(model.current?.snapshot.state == "playing" ? "pause.fill" : "play.fill", label: "Putar atau jeda", action: "toggle", enabled: model.current?.snapshot.capabilities.playPause == true)
-                transport("forward.end.fill", label: "Lagu berikutnya", action: "next", enabled: model.current?.snapshot.capabilities.next == true)
+                transport("backward.end.fill", label: model.t("Previous track"), action: "previous", enabled: model.current?.snapshot.capabilities.previous == true)
+                transport(model.current?.snapshot.state == "playing" ? "pause.fill" : "play.fill", label: model.t("Play or pause"), action: "toggle", enabled: model.current?.snapshot.capabilities.playPause == true)
+                transport("forward.end.fill", label: model.t("Next track"), action: "next", enabled: model.current?.snapshot.capabilities.next == true)
             }
             if let error = model.commandError {
-                Text(error).font(.caption2).foregroundStyle(.orange).lineLimit(2)
+                Text(model.t(error)).font(.caption2).foregroundStyle(.orange).lineLimit(2)
             }
         }
     }
@@ -93,7 +97,7 @@ struct PlayerView: View {
         VStack(spacing: 4) {
             if model.usesVideoCaption {
                 Text(model.lyricStatus).foregroundStyle(model.accent).lineLimit(model.lyricLineCount)
-                    .help("Caption video aktif; baris sebelum/sesudah belum tersedia dari pemutar.")
+                    .help(model.t("Video captions active; previous and next lines are not available from the player."))
             } else if model.lyricIndex() != nil, !model.currentLines.isEmpty {
                 let rows = model.displayedLyricRows()
                 ForEach(rows.indices, id: \.self) { row in
@@ -102,7 +106,7 @@ struct PlayerView: View {
                 }
             } else if let plain = model.currentPlainLyrics {
                 ScrollView { Text(plain).lineLimit(nil).foregroundStyle(.white.opacity(0.85)).frame(maxWidth: .infinity) }
-                    .help("Lirik teks tanpa timing; tidak memiliki baris aktif.")
+                    .help(model.t("Text lyrics without timing; there is no active line."))
             } else { Text(model.lyricStatus).foregroundStyle(.white.opacity(0.65)) }
         }.font(.system(size: 13)).lineLimit(1).frame(maxWidth: .infinity)
     }

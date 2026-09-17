@@ -39,10 +39,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.geometryChanged = { [weak self] in self?.positionPanel() }
         model.openSetup = { [weak self] in self?.showSetup() }
         model.sendPacket = { [weak self] data in self?.bridge.send(data) }
+        model.languageChanged = { [weak self] in self?.applyLanguage() }
+        bridge.setLanguage(model.localizer.code)
         bridge.onPacket = { [weak self] data in self?.model.receive(data) }
         bridge.onDisconnect = { [weak self] in self?.model.disconnect() }
         do { try bridge.start() }
-        catch { model.bridgeError = error.localizedDescription }
+        catch { model.bridgeError = UIText(error: error) }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
         positionPanel()
@@ -57,19 +59,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Notch Box")
         let menu = NSMenu()
-        let setup = menu.addItem(withTitle: "Setup…", action: #selector(showSetup), keyEquivalent: ",")
+        let setup = menu.addItem(withTitle: model.t("Setup…"), action: #selector(showSetup), keyEquivalent: ",")
         setup.target = self
-        let expand = menu.addItem(withTitle: "Buka panel musik", action: #selector(expandPanel), keyEquivalent: "")
+        let expand = menu.addItem(withTitle: model.t("Open music panel"), action: #selector(expandPanel), keyEquivalent: "")
         expand.target = self
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Keluar Notch Box", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: model.t("Quit Notch Box"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         statusItem.menu = menu
+    }
+
+    private func applyLanguage() {
+        let items = statusItem.menu?.items ?? []
+        if items.count == 4 {
+            items[0].title = model.t("Setup…")
+            items[1].title = model.t("Open music panel")
+            items[3].title = model.t("Quit Notch Box")
+        }
+        settingsWindow?.title = model.t("Notch Box — Setup")
+        bridge.setLanguage(model.localizer.code)
     }
 
     @objc private func showSetup() {
         if settingsWindow == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 580, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = "Notch Box — Setup"
+            window.title = model.t("Notch Box — Setup")
             window.isReleasedWhenClosed = false
             window.contentView = NSHostingView(rootView: SetupView(model: model))
             window.center()

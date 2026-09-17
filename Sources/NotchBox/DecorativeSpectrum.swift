@@ -4,6 +4,9 @@ struct DecorativeSpectrum: View {
     let playing: Bool
     let animate: Bool
     let color: Color
+    let playingLabel: String
+    let pausedLabel: String
+    let helpText: String
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var running: Bool { playing && animate && !reduceMotion }
@@ -20,8 +23,8 @@ struct DecorativeSpectrum: View {
             .frame(width: 24, height: 24)
             .animation(animate && !reduceMotion ? .easeOut(duration: 0.28) : nil, value: running)
         }
-        .accessibilityLabel(playing ? "Musik diputar · spectrum dekoratif" : "Musik dijeda atau berhenti")
-        .help("Spectrum dekoratif, bukan analisis audio")
+        .accessibilityLabel(playing ? playingLabel : pausedLabel)
+        .help(helpText)
     }
 
     private func height(band: Int, time: Double) -> Double {

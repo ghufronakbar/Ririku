@@ -33,10 +33,18 @@ final class AppModel: ObservableObject {
             save()
             lyricTask?.cancel()
             lyricRequestID = nil
-            if !automaticLyrics, let key = trackKey, currentLines.isEmpty { lyricMessages[key] = "Lirik otomatis nonaktif" }
+            if !automaticLyrics, let key = trackKey, currentLines.isEmpty { lyricMessages[key] = UIText("Automatic lyrics off") }
             refreshMedia()
         }
     }
+    @Published var interfaceLanguage: InterfaceLanguage {
+        didSet {
+            localizer = Localizer(code: interfaceLanguage.resolvedCode)
+            save()
+            languageChanged?()
+        }
+    }
+    private(set) var localizer: Localizer
     @Published var expanded = false { didSet { geometryChanged?() } }
     @Published var panelWidth: Double { didSet { save(); geometryChanged?() } }
     @Published var compactWidth: Double { didSet { save(); geometryChanged?() } }
@@ -45,7 +53,7 @@ final class AppModel: ObservableObject {
     @Published var animations: Bool { didSet { save(); geometryChanged?() } }
     @Published var preferJapaneseLyrics: Bool { didSet { displayLineCache.removeAll(); save() } }
     private var displayLineCache: [String: [LyricLine]] = [:]
-    @Published private var lyricNoticeText: String?
+    @Published private var lyricNoticeText: UIText?
     private var lyricNoticeKey: String?
     private var lyricNoticeTask: Task<Void, Never>?
     private var notifiedMissingTracks = Set<String>()
@@ -63,7 +71,7 @@ final class AppModel: ObservableObject {
     }
     @Published private var lyricOffsets: [String: Double]
     @Published var lyricCandidates: [LyricsRecord] = []
-    @Published var lyricSearchStatus = ""
+    @Published var lyricSearchStatus: UIText?
     @Published var lyricSearchBusy = false
     private var searchTask: Task<Void, Never>?
     private var searchToken = UUID()
@@ -80,17 +88,18 @@ final class AppModel: ObservableObject {
     }
     @Published var demo = false { didSet { configureDemo() } }
     @Published var lyrics: [String: [LyricLine]] = [:] { didSet { displayLineCache.removeAll(); geometryChanged?() } }
-    @Published var lyricNames: [String: String] = [:]
-    @Published var lyricMessages: [String: String] = [:]
+    @Published var lyricNames: [String: UIText] = [:]
+    @Published var lyricMessages: [String: UIText] = [:]
     @Published var plainLyrics: [String: String] = [:] { didSet { geometryChanged?() } }
     @Published var artwork: NSImage?
-    @Published var commandError: String? { didSet { geometryChanged?() } }
-    @Published var bridgeError: String?
+    @Published var commandError: UIText? { didSet { geometryChanged?() } }
+    @Published var bridgeError: UIText?
     @Published var pendingCommand: String?
     @Published var notchWidth: CGFloat = 180
     @Published var topHeight: CGFloat = 34
     var geometryChanged: (() -> Void)?
     var openSetup: (() -> Void)?
+    var languageChanged: (() -> Void)?
     var sendPacket: ((Data) -> Void)?
     private var timer: Timer?
     private let defaults: UserDefaults
@@ -110,6 +119,9 @@ final class AppModel: ObservableObject {
     init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard) {
         self.lyricsService = lyricsService
         self.defaults = defaults
+        let storedLanguage = InterfaceLanguage(rawValue: defaults.string(forKey: "interfaceLanguage") ?? "") ?? .system
+        interfaceLanguage = storedLanguage
+        localizer = Localizer(code: storedLanguage.resolvedCode)
         automaticSource = defaults.object(forKey: "automaticSource") as? Bool ?? true
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedWidth = defaults.double(forKey: "panelWidth")
@@ -142,6 +154,15 @@ final class AppModel: ObservableObject {
         return (snapshot.sourceLabel.hasPrefix("YouTube") ? "YouTube" : snapshot.sourceLabel) + ":" + snapshot.trackId
     }
 
+    var locale: Locale { localizer.locale }
+    func t(_ key: String, _ arguments: String...) -> String { localizer.string(key, arguments) }
+    func t(_ text: UIText) -> String { localizer.string(text.key, text.arguments) }
+
+    /// Label demo diterjemahkan; label dari extension adalah nama layanan dan tidak diterjemahkan.
+    func sourceLabel(for snapshot: PlaybackSnapshot) -> String {
+        snapshot.sessionId == "demo" && snapshot.sourceId == "demo" ? t("Local demo") : snapshot.sourceLabel
+    }
+
     var accent: Color {
         switch accentName {
         case "Lavender": return Color(red: 0.78, green: 0.75, blue: 1)
@@ -157,7 +178,8 @@ final class AppModel: ObservableObject {
         showLyrics && (usesVideoCaption || !currentLines.isEmpty || !(currentPlainLyrics?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true))
     }
     var lyricNotice: String? {
-        showLyrics && !hasIslandLyrics && lyricNoticeKey == trackKey ? lyricNoticeText : nil
+        guard showLyrics, !hasIslandLyrics, lyricNoticeKey == trackKey, let lyricNoticeText else { return nil }
+        return t(lyricNoticeText)
     }
     var islandLyricHeight: Double { hasIslandLyrics ? lyricBlockHeight : lyricNotice != nil ? 34 : 0 }
 
@@ -203,16 +225,19 @@ final class AppModel: ObservableObject {
     }
 
     var lyricStatus: String {
-        guard let current else { return "Menunggu musik di Chrome" }
-        if current.snapshot.isAdvertisement { return "Iklan · lirik dihentikan" }
+        guard let current else { return t("Waiting for music in Chrome") }
+        if current.snapshot.isAdvertisement { return t("Ad · lyrics paused") }
         if usesVideoCaption {
             let caption = current.snapshot.captionText ?? ""
             return caption.isEmpty ? "♪" : caption
         }
-        if lyricSource == "caption" { return "Caption tidak tersedia · aktifkan CC atau pilih LRCLIB" }
+        if lyricSource == "caption" { return t("Captions unavailable · turn on CC or choose LRCLIB") }
         if currentLines.isEmpty {
-            if let key = trackKey { return lyricMessages[key] ?? (automaticLyrics ? "Mencari lirik…" : "Lirik otomatis nonaktif") }
-            return "Lirik belum tersedia"
+            if let key = trackKey {
+                if let message = lyricMessages[key] { return t(message) }
+                return automaticLyrics ? t("Searching lyrics…") : t("Automatic lyrics off")
+            }
+            return t("Lyrics not available yet")
         }
         guard let index = lyricIndex() else { return "♪" }
         return currentLines[index].text.isEmpty ? "♪" : currentLines[index].text
@@ -225,7 +250,7 @@ final class AppModel: ObservableObject {
         if envelope["kind"] as? String == "ack" {
             guard let commandId = envelope["commandId"] as? String, commandId == pendingCommand else { return }
             pendingCommand = nil
-            if envelope["ok"] as? Bool != true { commandError = "Kontrol gagal. Coba kembali dari tab pemutar." }
+            if envelope["ok"] as? Bool != true { commandError = UIText("Control failed. Try again from the player tab.") }
             return
         }
         if envelope["kind"] as? String == "remove", let source = envelope["sourceId"] as? String,
@@ -306,7 +331,7 @@ final class AppModel: ObservableObject {
         searchToken = UUID()
         lyricCandidates = []
         lyricSearchBusy = false
-        lyricSearchStatus = ""
+        lyricSearchStatus = nil
         candidateTrackKey = nil
     }
 
@@ -314,18 +339,18 @@ final class AppModel: ObservableObject {
         cancelLyricSearch()
         guard lyricSource != "caption", let key = trackKey, let duration = current?.snapshot.duration,
               duration.isFinite, duration > 0 else {
-            lyricSearchStatus = "Tunggu lagu aktif dan durasinya tersedia."
+            lyricSearchStatus = UIText("Wait for an active song with a known duration.")
             return
         }
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, text.count <= 500 else {
-            lyricSearchStatus = "Isi judul/artis, maksimal 500 karakter."
+            lyricSearchStatus = UIText("Enter a title or artist, up to 500 characters.")
             return
         }
         let token = searchToken
         candidateTrackKey = key
         candidateDuration = duration
         lyricSearchBusy = true
-        lyricSearchStatus = "Mencari kandidat…"
+        lyricSearchStatus = UIText("Searching candidates…")
         searchTask = Task { [weak self] in
             guard let self else { return }
             do {
@@ -334,10 +359,11 @@ final class AppModel: ObservableObject {
                 self.candidateTrackKey = key
                 self.candidateDuration = duration
                 self.lyricCandidates = records
-                self.lyricSearchStatus = records.isEmpty ? "Tidak ada hasil. Coba judul/alias lain." : "\(records.count) kandidat · urutan durasi terdekat, bukan jaminan versi cocok"
+                self.lyricSearchStatus = records.isEmpty ? UIText("No results. Try another title or alias.")
+                    : UIText("Candidates: %@ · sorted by closest duration, not a version guarantee", String(records.count))
             } catch {
                 guard !Task.isCancelled, self.searchToken == token, self.trackKey == key else { return }
-                self.lyricSearchStatus = error.localizedDescription
+                self.lyricSearchStatus = UIText(error: error)
             }
             self.lyricSearchBusy = false
         }
@@ -347,7 +373,7 @@ final class AppModel: ObservableObject {
         guard let key = trackKey, candidateTrackKey == key, lyricSource != "caption",
               let duration = current?.snapshot.duration, let searchedDuration = candidateDuration,
               abs(duration - searchedDuration) <= 3 else {
-            lyricSearchStatus = "Lagu/durasi berubah. Cari ulang sebelum memilih."
+            lyricSearchStatus = UIText("Song or duration changed. Search again before choosing.")
             return
         }
         lyricTask?.cancel()
@@ -355,9 +381,10 @@ final class AppModel: ObservableObject {
         manualLyrics.insert(key)
         lyrics[key] = record.hasValidSyncedLyrics ? LRCParser.parse(record.syncedLyrics ?? "") : nil
         plainLyrics[key] = record.instrumental ? nil : record.plainLyrics
-        lyricNames[key] = "LRCLIB #\(record.id) · \(record.artistName) — \(record.trackName)"
-        lyricMessages[key] = record.instrumental ? "Instrumental" : record.hasValidSyncedLyrics ? "LRCLIB · bertimestamp · dipilih manual" : "LRCLIB · teks saja"
-        lyricSearchStatus = "Dipilih #\(record.id). Cek timing; gunakan offset bila bergeser konstan."
+        lyricNames[key] = UIText("LRCLIB #%@ · %@ — %@", String(record.id), record.artistName, record.trackName)
+        lyricMessages[key] = record.instrumental ? UIText("Instrumental")
+            : record.hasValidSyncedLyrics ? UIText("LRCLIB · timestamped · chosen manually") : UIText("LRCLIB · text only")
+        lyricSearchStatus = UIText("Selected #%@. Check timing; use offset for a constant shift.", String(record.id))
     }
 
     private func refreshMedia(force: Bool = false) {
@@ -407,11 +434,11 @@ final class AppModel: ObservableObject {
         lyricTask?.cancel()
         lyricRequestID = signature
         lyricRetryAfter = .distantFuture
-        guard query.isSearchable else { lyricMessages[key] = "Menunggu metadata lagu yang lengkap"; return }
+        guard query.isSearchable else { lyricMessages[key] = UIText("Waiting for complete song metadata"); return }
         if !force, resolvedQueries[key] == query, lyrics[key]?.isEmpty == false { return }
         lyrics[key] = nil
         plainLyrics[key] = nil
-        lyricMessages[key] = "Mencari lirik otomatis…"
+        lyricMessages[key] = UIText("Searching lyrics automatically…")
         lyricTask = Task { [weak self] in
             guard let self else { return }
             do {
@@ -422,26 +449,26 @@ final class AppModel: ObservableObject {
                 self.lyrics[key] = nil
                 self.plainLyrics[key] = nil
                 guard let record else {
-                    self.lyricMessages[key] = "Lirik yang cocok belum ditemukan"
+                    self.lyricMessages[key] = UIText("No matching lyrics found yet")
                     self.showMissingLyricsNotice(for: key)
                     return
                 }
-                self.lyricNames[key] = "LRCLIB · \(record.artistName) — \(record.trackName)"
-                if record.instrumental { self.lyricMessages[key] = "Instrumental · tidak ada lirik" }
+                self.lyricNames[key] = UIText("LRCLIB · %@ — %@", record.artistName, record.trackName)
+                if record.instrumental { self.lyricMessages[key] = UIText("Instrumental · no lyrics") }
                 else if record.hasValidSyncedLyrics, let synced = record.syncedLyrics {
                     self.lyrics[key] = LRCParser.parse(synced)
-                    self.lyricMessages[key] = "LRCLIB · bertimestamp (timing perlu dicek)"
+                    self.lyricMessages[key] = UIText("LRCLIB · timestamped (check timing)")
                 } else if let plain = record.plainLyrics, !plain.isEmpty {
                     self.plainLyrics[key] = plain
-                    self.lyricMessages[key] = "Lirik teks · belum tersinkron"
+                    self.lyricMessages[key] = UIText("Text lyrics · not synced")
                 } else {
-                    self.lyricMessages[key] = "Lirik belum tersedia"
+                    self.lyricMessages[key] = UIText("Lyrics not available yet")
                     self.showMissingLyricsNotice(for: key)
                 }
             } catch {
                 guard !Task.isCancelled, self.lyricRequestID == signature, self.trackKey == key else { return }
-                self.lyricMessages[key] = "Lirik belum terhubung · mencoba lagi otomatis"
-                self.lyricNames[key] = error.localizedDescription
+                self.lyricMessages[key] = UIText("Lyrics service unreachable · retrying automatically")
+                self.lyricNames[key] = UIText(error: error)
                 self.lyricRetryAfter = Date(timeIntervalSinceNow: 30)
             }
         }
@@ -452,7 +479,7 @@ final class AppModel: ObservableObject {
         notifiedMissingTracks.insert(key)
         lyricNoticeTask?.cancel()
         lyricNoticeKey = key
-        lyricNoticeText = "Lirik belum ditemukan"
+        lyricNoticeText = UIText("Lyrics not found")
         geometryChanged?()
         lyricNoticeTask = Task { [weak self] in
             do { try await Task.sleep(for: .seconds(3)) } catch { return }
@@ -487,7 +514,7 @@ final class AppModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self, self.pendingCommand == identifier else { return }
             self.pendingCommand = nil
-            self.commandError = "Pemutar tidak merespons. Periksa koneksi Chrome."
+            self.commandError = UIText("Player not responding. Check the Chrome connection.")
         }
     }
 
@@ -496,25 +523,26 @@ final class AppModel: ObservableObject {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [UTType(filenameExtension: "lrc") ?? .plainText, .plainText]
         panel.allowsMultipleSelection = false
-        panel.message = "Pilih LRC untuk lagu aktif. Pastikan versi rekamannya cocok."
+        panel.message = t("Choose an LRC for the current song. Make sure the recording version matches.")
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        guard key == trackKey else { commandError = "Lagu berubah saat memilih lirik. Silakan ulangi."; return }
+        guard key == trackKey else { commandError = UIText("The song changed while choosing lyrics. Please try again."); return }
         do {
             let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
-            guard size <= 1_000_000 else { throw BridgeError.system("Berkas lirik maksimal 1 MB.") }
+            guard size <= 1_000_000 else { throw BridgeError.system("Lyrics file must be 1 MB or smaller.") }
             let parsed = LRCParser.parse(try String(contentsOf: url, encoding: .utf8))
-            guard !parsed.isEmpty else { throw BridgeError.system("Tidak ada timestamp LRC yang valid.") }
+            guard !parsed.isEmpty else { throw BridgeError.system("No valid LRC timestamps found.") }
             lyricTask?.cancel()
             manualLyrics.insert(key)
             lyrics[key] = parsed
             plainLyrics[key] = nil
-            lyricMessages[key] = "LRC manual"
-            lyricNames[key] = url.lastPathComponent
+            lyricMessages[key] = UIText("Manual LRC")
+            lyricNames[key] = UIText("%@", url.lastPathComponent)
             commandError = nil
-        } catch { commandError = error.localizedDescription }
+        } catch { commandError = UIText(error: error) }
     }
 
     private func save() {
+        defaults.set(interfaceLanguage.rawValue, forKey: "interfaceLanguage")
         defaults.set(panelWidth, forKey: "panelWidth")
         defaults.set(compactWidth, forKey: "compactWidth")
         defaults.set(lyricLineCount, forKey: "lyricLineCount")

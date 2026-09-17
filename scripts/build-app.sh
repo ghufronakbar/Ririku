@@ -2,12 +2,15 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+/usr/bin/python3 scripts/check-localization.py
 swift build -c release
 BIN="$(swift build -c release --show-bin-path)"
 APP="$ROOT/build/Notch Box.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN/NotchBox" "$APP/Contents/MacOS/NotchBox"
 cp "$BIN/NotchBoxHost" "$APP/Contents/Resources/NotchBoxHost"
+rm -rf "$APP/Contents/Resources/"*.lproj
+cp -R "$ROOT/Localization/"*.lproj "$APP/Contents/Resources/"
 /usr/bin/python3 - "$APP" <<'PY'
 import pathlib
 import plistlib
@@ -19,8 +22,10 @@ metadata = {
     "CFBundleName": "Notch Box",
     "CFBundleDisplayName": "Notch Box",
     "CFBundlePackageType": "APPL",
-    "CFBundleShortVersionString": "0.2.4",
-    "CFBundleVersion": "2",
+    "CFBundleShortVersionString": "0.2.5",
+    "CFBundleVersion": "3",
+    "CFBundleDevelopmentRegion": "en",
+    "CFBundleLocalizations": ["en", "id", "ja"],
     "LSMinimumSystemVersion": "14.0",
     "LSUIElement": True,
     "NSHighResolutionCapable": True,

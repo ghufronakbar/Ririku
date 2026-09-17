@@ -3,13 +3,19 @@ import Darwin
 
 public enum BridgeError: Error, LocalizedError {
     case invalidFrame
-    case system(String)
+    /// Teks sumber English; argumen mengisi `%@` agar aplikasi dapat menerjemahkannya.
+    case system(String, [String] = [])
+
+    public var message: (key: String, arguments: [String]) {
+        switch self {
+        case .invalidFrame: return ("Invalid or oversized bridge message.", [])
+        case .system(let key, let arguments): return (key, arguments)
+        }
+    }
 
     public var errorDescription: String? {
-        switch self {
-        case .invalidFrame: return "Pesan bridge tidak valid atau terlalu besar."
-        case .system(let message): return message
-        }
+        let (key, arguments) = message
+        return arguments.isEmpty ? key : String(format: key, arguments: arguments.map { $0 as NSString as CVarArg })
     }
 }
 
@@ -49,12 +55,12 @@ public enum LocalSocket {
     public static func path() throws -> String {
         let directory = "/tmp/notchbox-\(getuid())"
         if mkdir(directory, 0o700) != 0 && errno != EEXIST {
-            throw BridgeError.system("Tidak dapat membuat direktori bridge.")
+            throw BridgeError.system("Unable to create the bridge directory.")
         }
         var info = stat()
         guard lstat(directory, &info) == 0, (info.st_mode & S_IFMT) == S_IFDIR,
               info.st_uid == getuid(), (info.st_mode & 0o777) == 0o700 else {
-            throw BridgeError.system("Direktori bridge tidak aman; periksa \(directory).")
+            throw BridgeError.system("Bridge directory is unsafe; check %@.", [directory])
         }
         return directory + "/bridge.sock"
     }
@@ -72,7 +78,7 @@ public enum LocalSocket {
     public static func connect() throws -> Int32 {
         var address = try address(for: path())
         let descriptor = socket(AF_UNIX, SOCK_STREAM, 0)
-        guard descriptor >= 0 else { throw BridgeError.system("Socket gagal dibuat.") }
+        guard descriptor >= 0 else { throw BridgeError.system("Unable to create socket.") }
         let result = withUnsafePointer(to: &address) {
             $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
                 Darwin.connect(descriptor, $0, socklen_t(MemoryLayout<sockaddr_un>.size))
@@ -80,7 +86,7 @@ public enum LocalSocket {
         }
         guard result == 0, isSameUser(descriptor) else {
             Darwin.close(descriptor)
-            throw BridgeError.system("Buka aplikasi Notch Box terlebih dahulu.")
+            throw BridgeError.system("Open the Notch Box app first.")
         }
         return descriptor
     }

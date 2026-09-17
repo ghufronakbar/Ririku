@@ -12,7 +12,7 @@ do {
         guard poll(&input, 1, 500) > 0, let packet = try Frames.read(.standardInput),
               let message = try? JSONSerialization.jsonObject(with: packet) as? [String: Any],
               message["protocolVersion"] as? Int == 1, message["kind"] as? String == "openSetup" else {
-            throw BridgeError.system("Buka Notch Box atau klik Buka Setup pada extension.")
+            throw BridgeError.system("Open Notch Box or click Open Setup in the extension.")
         }
         initialPacket = packet
         let executable = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
@@ -30,7 +30,7 @@ do {
             }
         }
     }
-    guard let descriptor = connection else { throw BridgeError.system("Tidak dapat menghubungkan aplikasi Notch Box.") }
+    guard let descriptor = connection else { throw BridgeError.system("Unable to connect to the Notch Box app.") }
     let socketHandle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
     if let initialPacket { try Frames.write(initialPacket, to: socketHandle) }
     DispatchQueue.global().async {
@@ -39,7 +39,7 @@ do {
                 try Frames.write(packet, to: .standardOutput)
             }
         } catch {
-            FileHandle.standardError.write(Data("Notch Box: koneksi aplikasi berakhir.\n".utf8))
+            FileHandle.standardError.write(Data("Notch Box: app connection ended.\n".utf8))
         }
         exit(0)
     }
