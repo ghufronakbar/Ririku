@@ -35,7 +35,7 @@ struct SetupView: View {
             }
             Section("Lirik") {
                 Toggle("Cari lirik otomatis", isOn: $model.automaticLyrics)
-                Text(model.trackKey.flatMap { model.lyricMessages[$0] } ?? "Lirik dicari saat lagu mulai diputar.").font(.caption).foregroundStyle(.secondary)
+                Text(model.usesVideoCaption ? "Caption video aktif · mengikuti CC pemutar" : (model.trackKey.flatMap { model.lyricMessages[$0] } ?? "Lirik dicari saat lagu mulai diputar.")).font(.caption).foregroundStyle(.secondary)
                 HStack {
                     Button("Cari ulang") { model.retryMedia() }.disabled(model.trackKey == nil || !model.automaticLyrics)
                     Button("Impor LRC cadangan…") { model.importLyrics() }.disabled(model.trackKey == nil)
@@ -46,12 +46,12 @@ struct SetupView: View {
                     Slider(value: $model.lyricOffset, in: -10...10, step: 0.1)
                     Text(String(format: "%+.1f s", model.lyricOffset)).monospacedDigit().frame(width: 60)
                 }
-                Text("Lirik otomatis dari LRCLIB dicocokkan menurut judul, artis, dan durasi, lalu disimpan di cache lokal. LRC manual hanya opsi cadangan. Nilai offset positif menunda lirik.")
+                Text("CC aktif diutamakan, termasuk caption otomatis jika ditampilkan pemutar. Teks yang menyatu dalam gambar video tidak terbaca. Tanpa CC, gunakan LRCLIB/LRC; timing penyedia belum tentu cocok. Offset hanya berlaku untuk LRC, bukan CC.")
                     .font(.caption).foregroundStyle(.secondary)
                 if let error = model.commandError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
             Section("Prototipe") {
-                Text("Notch Box 0.2.0 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                Text("Notch Box 0.2.1 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle("Demo lokal (tanpa audio)", isOn: $model.demo)
                 Text("Tanpa telemetry/cookies. Saat lirik otomatis aktif, metadata lagu dikirim ke LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.")
                     .font(.caption).foregroundStyle(.secondary)

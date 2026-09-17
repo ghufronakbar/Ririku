@@ -84,7 +84,10 @@ struct PlayerView: View {
 
     private var lyricBlock: some View {
         VStack(spacing: 6) {
-            if let index = model.lyricIndex(), !model.currentLines.isEmpty {
+            if model.usesVideoCaption {
+                Text("Caption video").font(.caption2).foregroundStyle(.white.opacity(0.45))
+                Text(model.lyricStatus).foregroundStyle(model.accent).lineLimit(2)
+            } else if let index = model.lyricIndex(), !model.currentLines.isEmpty {
                 Text(index > 0 ? model.currentLines[index - 1].text : " ").foregroundStyle(.white.opacity(0.45))
                 Text(model.lyricStatus).foregroundStyle(model.accent).fontWeight(.medium)
                 Text(index + 1 < model.currentLines.count ? model.currentLines[index + 1].text : " ").foregroundStyle(.white.opacity(0.45))

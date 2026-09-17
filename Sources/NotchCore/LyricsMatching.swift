@@ -8,6 +8,25 @@ public struct LyricsQuery: Equatable, Codable, Sendable {
     public init(title: String, artist: String, duration: Double) {
         let cleanedArtist = artist.replacingOccurrences(of: #"\s*(- Topic|VEVO|Official(?: Channel)?)$"#, with: "", options: [.regularExpression, .caseInsensitive]).trimmingCharacters(in: .whitespacesAndNewlines)
         var cleanedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let reversedQuote = try! NSRegularExpression(pattern: #"^["“](.+?)["”]\s*-\s*(.+?)\s+(?:MV|Official Music Video)$"#, options: .caseInsensitive)
+        let reversedSource = cleanedTitle as NSString
+        if let match = reversedQuote.firstMatch(in: cleanedTitle, range: NSRange(location: 0, length: reversedSource.length)) {
+            let creditedArtist = reversedSource.substring(with: match.range(at: 2))
+            let aliases = creditedArtist.components(separatedBy: CharacterSet(charactersIn: "()（）")).map(Self.normalized)
+            if aliases.contains(Self.normalized(cleanedArtist)) {
+                cleanedTitle = reversedSource.substring(with: match.range(at: 1))
+            }
+        }
+        let bilingualParts = cleanedTitle.components(separatedBy: " - ")
+        if bilingualParts.count == 2 {
+            let firstHasJapanese = bilingualParts[0].range(of: #"[\p{Han}\p{Hiragana}\p{Katakana}]"#, options: .regularExpression) != nil
+            let secondIsLatin = bilingualParts[1].range(of: #"^[A-Za-z0-9 '\-]+$"#, options: .regularExpression) != nil
+            let qualifiers = ["live", "remix", "instrumental", "acoustic", "cover", "version", "edit"]
+            let secondWords = bilingualParts[1].lowercased().components(separatedBy: .whitespaces)
+            if firstHasJapanese && secondIsLatin && !qualifiers.contains(where: secondWords.contains) {
+                cleanedTitle = bilingualParts[1]
+            }
+        }
         if let prefix = cleanedTitle.range(of: #"^[【\[][^】\]]+[】\]]\s*"#, options: .regularExpression) {
             let label = String(cleanedTitle[prefix]).trimmingCharacters(in: CharacterSet(charactersIn: "【】[] "))
             if Self.normalized(label) == Self.normalized(cleanedArtist) { cleanedTitle.removeSubrange(prefix) }

@@ -24,6 +24,8 @@ public struct PlaybackSnapshot: Codable, Sendable {
     public var isAdvertisement: Bool
     public var capabilities: Capabilities
     public var artworkURL: String?
+    public var captionEnabled: Bool?
+    public var captionText: String?
 
     public var isValid: Bool {
         protocolVersion == 1 && kind == "snapshot" && !sessionId.isEmpty
@@ -34,6 +36,7 @@ public struct PlaybackSnapshot: Codable, Sendable {
             && ["playing", "paused", "buffering", "ended"].contains(state)
             && title.count <= 500 && artist.count <= 500
             && (artworkURL?.count ?? 0) <= 2048
+            && (captionText?.utf8.count ?? 0) <= 4000
     }
 
     public func position(at now: TimeInterval, receivedAt: TimeInterval, staleAfter: TimeInterval = 5) -> Double {

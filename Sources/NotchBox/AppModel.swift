@@ -109,6 +109,7 @@ final class AppModel: ObservableObject {
     }
 
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+    var usesVideoCaption: Bool { current?.snapshot.captionEnabled == true && current?.snapshot.isAdvertisement == false }
     var currentLines: [LyricLine] { trackKey.flatMap { lyrics[$0] } ?? [] }
     var canControl: Bool { current != nil && current?.snapshot.isAdvertisement == false && pendingCommand == nil }
 
@@ -118,12 +119,17 @@ final class AppModel: ObservableObject {
     }
 
     func lyricIndex() -> Int? {
-        LRCParser.activeIndex(in: currentLines, position: position(), offset: lyricOffset)
+        if usesVideoCaption { return nil }
+        return LRCParser.activeIndex(in: currentLines, position: position(), offset: lyricOffset)
     }
 
     var lyricStatus: String {
         guard let current else { return "Menunggu musik di Chrome" }
         if current.snapshot.isAdvertisement { return "Iklan · lirik dihentikan" }
+        if usesVideoCaption {
+            let caption = current.snapshot.captionText ?? ""
+            return caption.isEmpty ? "♪" : caption
+        }
         if currentLines.isEmpty {
             if let key = trackKey { return lyricMessages[key] ?? (automaticLyrics ? "Mencari lirik…" : "Lirik otomatis nonaktif") }
             return "Lirik belum tersedia"
