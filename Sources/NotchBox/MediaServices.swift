@@ -45,7 +45,7 @@ final class SafeHTTPClient: NSObject, URLSessionTaskDelegate, HTTPFetching, @unc
     func get(_ url: URL, limit: Int) async throws -> HTTPResult {
         guard allows(url) else { throw BridgeError.system("Alamat media tidak diizinkan.") }
         var request = URLRequest(url: url)
-        request.setValue("NotchBox/0.2.1 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
+        request.setValue("NotchBox/0.2.2 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
         let (bytes, response) = try await session.bytes(for: request)
         guard let response = response as? HTTPURLResponse, allows(response.url), response.expectedContentLength <= limit else {
             throw BridgeError.system("Respons media tidak valid atau terlalu besar.")
@@ -81,7 +81,7 @@ actor LyricsService {
     init(client: any HTTPFetching = SafeHTTPClient(hosts: ["lrclib.net"]), cacheDirectory: URL? = nil) {
         self.client = client
         self.cacheDirectory = cacheDirectory ?? FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("local.notchbox.mac/Lyrics-v1", isDirectory: true)
+            .appendingPathComponent("local.notchbox.mac/Lyrics-v2", isDirectory: true)
     }
 
     func resolve(_ query: LyricsQuery, force: Bool = false) async throws -> LyricsRecord? {
@@ -105,13 +105,18 @@ actor LyricsService {
         } else if exact.status != 404 && exact.status != 200 {
             throw BridgeError.system("Layanan lirik belum tersedia (HTTP \(exact.status)).")
         }
-        if candidates.first?.hasValidSyncedLyrics != true && candidates.first?.instrumental != true {
+        if candidates.first?.instrumental != true {
             var searchURL = URLComponents(string: "https://lrclib.net/api/search")!
             searchURL.queryItems = parameters
-            let search = try await request(searchURL.url!)
-            guard search.status == 200 else { throw BridgeError.system("Pencarian lirik gagal (HTTP \(search.status)).") }
-            let results = try JSONDecoder().decode([SearchEntry].self, from: search.data)
-            candidates.append(contentsOf: results.compactMap(\.record))
+            do {
+                let search = try await request(searchURL.url!)
+                guard search.status == 200 else { throw BridgeError.system("Pencarian lirik gagal (HTTP \(search.status)).") }
+                let results = try JSONDecoder().decode([SearchEntry].self, from: search.data)
+                candidates.append(contentsOf: results.compactMap(\.record))
+            } catch {
+                try Task.checkCancellation()
+                if candidates.isEmpty { throw error }
+            }
         }
         try Task.checkCancellation()
         let result = query.bestMatch(in: candidates)
@@ -146,6 +151,18 @@ actor LyricsService {
             throw BridgeError.system("Batas layanan lirik tercapai. Coba lagi dalam \(String(format: "%.0f", ceil(delay))) detik.")
         }
         return response
+    }
+
+    func search(_ text: String, duration: Double) async throws -> [LyricsRecord] {
+        let term = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty, term.count <= 500 else { return [] }
+        var url = URLComponents(string: "https://lrclib.net/api/search")!
+        url.queryItems = [URLQueryItem(name: "q", value: term)]
+        let response = try await request(url.url!)
+        guard response.status == 200 else { throw BridgeError.system("Pencarian lirik gagal (HTTP \(response.status)).") }
+        let records = try JSONDecoder().decode([SearchEntry].self, from: response.data).compactMap(\.record)
+        try Task.checkCancellation()
+        return LyricsQuery(title: term, artist: "", duration: duration).rankedCandidates(in: records)
     }
 
     private func pruneCache() {

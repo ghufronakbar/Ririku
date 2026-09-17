@@ -42,7 +42,32 @@ final class AppModel: ObservableObject {
     @Published var accentName: String { didSet { save() } }
     @Published var animations: Bool { didSet { save() } }
     @Published var showLyrics: Bool { didSet { save(); geometryChanged?() } }
-    @Published var lyricOffset: Double { didSet { save() } }
+    @Published var lyricSource: String {
+        didSet {
+            save()
+            lyricTask?.cancel()
+            lyricRequestID = nil
+            if lyricSource == "caption" { cancelLyricSearch() }
+            refreshMedia()
+        }
+    }
+    @Published private var lyricOffsets: [String: Double]
+    @Published var lyricCandidates: [LyricsRecord] = []
+    @Published var lyricSearchStatus = ""
+    @Published var lyricSearchBusy = false
+    private var searchTask: Task<Void, Never>?
+    private var searchToken = UUID()
+    private var candidateTrackKey: String?
+    private var candidateDuration: Double?
+
+    var lyricOffset: Double {
+        get { trackKey.flatMap { lyricOffsets[$0] } ?? 0 }
+        set {
+            guard let key = trackKey, newValue.isFinite else { return }
+            lyricOffsets[key] = min(60, max(-60, newValue))
+            defaults.set(lyricOffsets, forKey: "lyricOffsetsByTrack")
+        }
+    }
     @Published var demo = false { didSet { configureDemo() } }
     @Published var lyrics: [String: [LyricLine]] = [:]
     @Published var lyricNames: [String: String] = [:]
@@ -59,7 +84,7 @@ final class AppModel: ObservableObject {
     var openSetup: (() -> Void)?
     var sendPacket: ((Data) -> Void)?
     private var timer: Timer?
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private var lastTrackKey: String?
     private var preferredTab: String?
     private let lyricsService: LyricsService
@@ -73,8 +98,9 @@ final class AppModel: ObservableObject {
     private var lyricRetryAfter = Date.distantFuture
     private var artworkRetryAfter = Date.distantFuture
 
-    init(lyricsService: LyricsService = LyricsService()) {
+    init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard) {
         self.lyricsService = lyricsService
+        self.defaults = defaults
         automaticSource = defaults.object(forKey: "automaticSource") as? Bool ?? true
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedWidth = defaults.double(forKey: "panelWidth")
@@ -82,7 +108,9 @@ final class AppModel: ObservableObject {
         accentName = defaults.string(forKey: "accentName") ?? "Peach"
         animations = defaults.object(forKey: "animations") as? Bool ?? true
         showLyrics = defaults.object(forKey: "showLyrics") as? Bool ?? true
-        lyricOffset = min(10, max(-10, defaults.double(forKey: "lyricOffset")))
+        let storedSource = defaults.string(forKey: "lyricSource") ?? "auto"
+        lyricSource = ["auto", "lrclib", "caption"].contains(storedSource) ? storedSource : "auto"
+        lyricOffsets = (defaults.dictionary(forKey: "lyricOffsetsByTrack") as? [String: Double] ?? [:]).filter { $0.value.isFinite && abs($0.value) <= 60 }
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.expireSessions() }
         }
@@ -97,7 +125,7 @@ final class AppModel: ObservableObject {
 
     var trackKey: String? {
         guard let snapshot = current?.snapshot, !snapshot.isAdvertisement else { return nil }
-        return snapshot.sourceLabel + ":" + snapshot.trackId
+        return (snapshot.sourceLabel.hasPrefix("YouTube") ? "YouTube" : snapshot.sourceLabel) + ":" + snapshot.trackId
     }
 
     var accent: Color {
@@ -109,8 +137,12 @@ final class AppModel: ObservableObject {
     }
 
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
-    var usesVideoCaption: Bool { current?.snapshot.captionEnabled == true && current?.snapshot.isAdvertisement == false }
-    var currentLines: [LyricLine] { trackKey.flatMap { lyrics[$0] } ?? [] }
+    var usesVideoCaption: Bool {
+        lyricSource != "lrclib" && (lyricSource == "caption" || currentLines.isEmpty)
+            && current?.snapshot.captionEnabled == true && current?.snapshot.isAdvertisement == false
+    }
+    var currentLines: [LyricLine] { lyricSource == "caption" ? [] : (trackKey.flatMap { lyrics[$0] } ?? []) }
+    var currentPlainLyrics: String? { lyricSource == "caption" ? nil : trackKey.flatMap { plainLyrics[$0] } }
     var canControl: Bool { current != nil && current?.snapshot.isAdvertisement == false && pendingCommand == nil }
 
     func position() -> Double {
@@ -130,6 +162,7 @@ final class AppModel: ObservableObject {
             let caption = current.snapshot.captionText ?? ""
             return caption.isEmpty ? "♪" : caption
         }
+        if lyricSource == "caption" { return "Caption tidak tersedia · aktifkan CC atau pilih LRCLIB" }
         if currentLines.isEmpty {
             if let key = trackKey { return lyricMessages[key] ?? (automaticLyrics ? "Mencari lirik…" : "Lirik otomatis nonaktif") }
             return "Lirik belum tersedia"
@@ -223,7 +256,67 @@ final class AppModel: ObservableObject {
         refreshMedia(force: true)
     }
 
+    func cancelLyricSearch() {
+        searchTask?.cancel()
+        searchToken = UUID()
+        lyricCandidates = []
+        lyricSearchBusy = false
+        lyricSearchStatus = ""
+        candidateTrackKey = nil
+    }
+
+    func searchLyrics(_ text: String) {
+        cancelLyricSearch()
+        guard lyricSource != "caption", let key = trackKey, let duration = current?.snapshot.duration,
+              duration.isFinite, duration > 0 else {
+            lyricSearchStatus = "Tunggu lagu aktif dan durasinya tersedia."
+            return
+        }
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, text.count <= 500 else {
+            lyricSearchStatus = "Isi judul/artis, maksimal 500 karakter."
+            return
+        }
+        let token = searchToken
+        candidateTrackKey = key
+        candidateDuration = duration
+        lyricSearchBusy = true
+        lyricSearchStatus = "Mencari kandidat…"
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let records = try await self.lyricsService.search(text, duration: duration)
+                guard !Task.isCancelled, self.searchToken == token, self.trackKey == key else { return }
+                self.candidateTrackKey = key
+                self.candidateDuration = duration
+                self.lyricCandidates = records
+                self.lyricSearchStatus = records.isEmpty ? "Tidak ada hasil. Coba judul/alias lain." : "\(records.count) kandidat · urutan durasi terdekat, bukan jaminan versi cocok"
+            } catch {
+                guard !Task.isCancelled, self.searchToken == token, self.trackKey == key else { return }
+                self.lyricSearchStatus = error.localizedDescription
+            }
+            self.lyricSearchBusy = false
+        }
+    }
+
+    func selectLyrics(_ record: LyricsRecord) {
+        guard let key = trackKey, candidateTrackKey == key, lyricSource != "caption",
+              let duration = current?.snapshot.duration, let searchedDuration = candidateDuration,
+              abs(duration - searchedDuration) <= 3 else {
+            lyricSearchStatus = "Lagu/durasi berubah. Cari ulang sebelum memilih."
+            return
+        }
+        lyricTask?.cancel()
+        lyricRequestID = nil
+        manualLyrics.insert(key)
+        lyrics[key] = record.hasValidSyncedLyrics ? LRCParser.parse(record.syncedLyrics ?? "") : nil
+        plainLyrics[key] = record.instrumental ? nil : record.plainLyrics
+        lyricNames[key] = "LRCLIB #\(record.id) · \(record.artistName) — \(record.trackName)"
+        lyricMessages[key] = record.instrumental ? "Instrumental" : record.hasValidSyncedLyrics ? "LRCLIB · bertimestamp · dipilih manual" : "LRCLIB · teks saja"
+        lyricSearchStatus = "Dipilih #\(record.id). Cek timing; gunakan offset bila bergeser konstan."
+    }
+
     private func refreshMedia(force: Bool = false) {
+        if let candidateTrackKey, candidateTrackKey != trackKey { cancelLyricSearch() }
         guard let snapshot = current?.snapshot, let key = trackKey else {
             lyricTask?.cancel()
             artworkTask?.cancel()
@@ -257,7 +350,7 @@ final class AppModel: ObservableObject {
                 }
             }
         }
-        guard !demo, automaticLyrics, !manualLyrics.contains(key) else { return }
+        guard !demo, lyricSource != "caption", automaticLyrics, !manualLyrics.contains(key) else { return }
         let query = LyricsQuery(title: snapshot.title, artist: snapshot.artist, duration: snapshot.duration ?? 0)
         let signature = key + ":" + query.title + ":" + query.artist + ":" + String(query.duration)
         guard lyricRequestID != signature || Date() >= lyricRetryAfter else { return }
@@ -283,7 +376,7 @@ final class AppModel: ObservableObject {
                 if record.instrumental { self.lyricMessages[key] = "Instrumental · tidak ada lirik" }
                 else if record.hasValidSyncedLyrics, let synced = record.syncedLyrics {
                     self.lyrics[key] = LRCParser.parse(synced)
-                    self.lyricMessages[key] = "Lirik sinkron · LRCLIB"
+                    self.lyricMessages[key] = "LRCLIB · bertimestamp (timing perlu dicek)"
                 } else if let plain = record.plainLyrics, !plain.isEmpty {
                     self.plainLyrics[key] = plain
                     self.lyricMessages[key] = "Lirik teks · belum tersinkron"
@@ -354,7 +447,7 @@ final class AppModel: ObservableObject {
         defaults.set(accentName, forKey: "accentName")
         defaults.set(animations, forKey: "animations")
         defaults.set(showLyrics, forKey: "showLyrics")
-        defaults.set(lyricOffset, forKey: "lyricOffset")
+        defaults.set(lyricSource, forKey: "lyricSource")
         defaults.set(automaticSource, forKey: "automaticSource")
         defaults.set(automaticLyrics, forKey: "automaticLyrics")
     }

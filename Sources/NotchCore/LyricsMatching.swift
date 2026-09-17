@@ -63,7 +63,7 @@ public struct LyricsQuery: Equatable, Codable, Sendable {
         guard let recordDuration = record.duration else { return false }
         return recordDuration.isFinite && abs(recordDuration - duration) <= 3
             && Self.normalized(record.trackName) == Self.normalized(title)
-            && Self.normalized(record.artistName) == Self.normalized(artist)
+            && Self.normalized(LyricsQuery(title: "", artist: record.artistName, duration: duration).artist) == Self.normalized(artist)
     }
 
     public func bestMatch(in records: [LyricsRecord]) -> LyricsRecord? {
@@ -76,19 +76,30 @@ public struct LyricsQuery: Equatable, Codable, Sendable {
             return firstDistance == secondDistance ? first.id < second.id : firstDistance < secondDistance
         }.first
     }
+
+    public func rankedCandidates(in records: [LyricsRecord]) -> [LyricsRecord] {
+        records.sorted { first, second in
+            let firstDistance = first.duration.flatMap { $0.isFinite && $0 > 0 ? abs($0 - duration) : nil } ?? .infinity
+            let secondDistance = second.duration.flatMap { $0.isFinite && $0 > 0 ? abs($0 - duration) : nil } ?? .infinity
+            if firstDistance != secondDistance { return firstDistance < secondDistance }
+            if first.hasValidSyncedLyrics != second.hasValidSyncedLyrics { return first.hasValidSyncedLyrics }
+            return first.id < second.id
+        }
+    }
 }
 
 public struct LyricsRecord: Codable, Sendable {
     public let id: Int
     public let trackName: String
     public let artistName: String
+    public let albumName: String?
     public let duration: Double?
     public let instrumental: Bool
     public let plainLyrics: String?
     public let syncedLyrics: String?
 
     public var hasValidSyncedLyrics: Bool {
-        guard let syncedLyrics, let duration, syncedLyrics.utf8.count <= 500_000 else { return false }
+        guard let syncedLyrics, let duration, duration.isFinite, duration > 0, syncedLyrics.utf8.count <= 500_000 else { return false }
         let lines = LRCParser.parse(syncedLyrics)
         return lines.count >= 2 && (lines.last?.time ?? .infinity) <= duration + 5
     }

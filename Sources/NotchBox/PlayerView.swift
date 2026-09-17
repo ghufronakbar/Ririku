@@ -91,7 +91,7 @@ struct PlayerView: View {
                 Text(index > 0 ? model.currentLines[index - 1].text : " ").foregroundStyle(.white.opacity(0.45))
                 Text(model.lyricStatus).foregroundStyle(model.accent).fontWeight(.medium)
                 Text(index + 1 < model.currentLines.count ? model.currentLines[index + 1].text : " ").foregroundStyle(.white.opacity(0.45))
-            } else if let key = model.trackKey, let plain = model.plainLyrics[key] {
+            } else if let plain = model.currentPlainLyrics {
                 Text("Lirik teks · tanpa timing").font(.caption2).foregroundStyle(model.accent)
                 ScrollView { Text(plain).lineLimit(nil).foregroundStyle(.white.opacity(0.85)).frame(maxWidth: .infinity) }
             } else { Text(model.lyricStatus).foregroundStyle(.white.opacity(0.65)) }

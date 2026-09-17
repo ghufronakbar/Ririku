@@ -19,7 +19,7 @@ metadata = {
     "CFBundleName": "Notch Box",
     "CFBundleDisplayName": "Notch Box",
     "CFBundlePackageType": "APPL",
-    "CFBundleShortVersionString": "0.2.1",
+    "CFBundleShortVersionString": "0.2.2",
     "CFBundleVersion": "2",
     "LSMinimumSystemVersion": "14.0",
     "LSUIElement": True,

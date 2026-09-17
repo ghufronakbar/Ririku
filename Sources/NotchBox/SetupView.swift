@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SetupView: View {
     @ObservedObject var model: AppModel
+    @State private var lyricSearchText = ""
 
     var body: some View {
         Form {
@@ -34,30 +35,86 @@ struct SetupView: View {
                 Toggle("Baris lirik saat ringkas", isOn: $model.showLyrics)
             }
             Section("Lirik") {
-                Toggle("Cari lirik otomatis", isOn: $model.automaticLyrics)
-                Text(model.usesVideoCaption ? "Caption video aktif · mengikuti CC pemutar" : (model.trackKey.flatMap { model.lyricMessages[$0] } ?? "Lirik dicari saat lagu mulai diputar.")).font(.caption).foregroundStyle(.secondary)
-                HStack {
-                    Button("Cari ulang") { model.retryMedia() }.disabled(model.trackKey == nil || !model.automaticLyrics)
-                    Button("Impor LRC cadangan…") { model.importLyrics() }.disabled(model.trackKey == nil)
-                    Text(model.trackKey.flatMap { model.lyricNames[$0] } ?? "Belum ada berkas").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                Picker("Sumber lirik", selection: $model.lyricSource) {
+                    Text("Otomatis · LRCLIB lalu caption").tag("auto")
+                    Text("LRCLIB / LRC saja").tag("lrclib")
+                    Text("Subtitle YouTube saja").tag("caption")
                 }
+                Toggle("Cari LRCLIB otomatis saat lagu berganti", isOn: $model.automaticLyrics).disabled(model.lyricSource == "caption")
+                Text(model.usesVideoCaption ? "Caption video aktif · mengikuti CC pemutar" : model.lyricSource == "caption" ? model.lyricStatus : (model.trackKey.flatMap { model.lyricMessages[$0] } ?? "Lirik dicari saat lagu mulai diputar.")).font(.caption).foregroundStyle(.secondary)
                 HStack {
-                    Text("Koreksi timing")
-                    Slider(value: $model.lyricOffset, in: -10...10, step: 0.1)
+                    Button("Kembali ke hasil otomatis") { model.retryMedia() }.disabled(model.trackKey == nil || !model.automaticLyrics || model.lyricSource == "caption")
+                    Button("Impor LRC…") { model.importLyrics() }.disabled(model.trackKey == nil || model.lyricSource == "caption")
+                }
+                Text(model.trackKey.flatMap { model.lyricNames[$0] } ?? "Belum ada lirik terpilih").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                HStack {
+                    Text("Offset lagu ini")
+                    Slider(value: Binding(get: { model.lyricOffset }, set: { model.lyricOffset = $0 }), in: -60...60, step: 0.1)
                     Text(String(format: "%+.1f s", model.lyricOffset)).monospacedDigit().frame(width: 60)
-                }
-                Text("CC aktif diutamakan, termasuk caption otomatis jika ditampilkan pemutar. Teks yang menyatu dalam gambar video tidak terbaca. Tanpa CC, gunakan LRCLIB/LRC; timing penyedia belum tentu cocok. Offset hanya berlaku untuk LRC, bukan CC.")
+                    Button("Reset") { model.lyricOffset = 0 }
+                }.disabled(model.trackKey == nil || model.lyricSource == "caption" || model.usesVideoCaption)
+                HStack {
+                    Button("Majukan 0,1 dtk") { model.lyricOffset -= 0.1 }
+                    Button("Tunda 0,1 dtk") { model.lyricOffset += 0.1 }
+                }.disabled(model.trackKey == nil || model.lyricSource == "caption" || model.usesVideoCaption)
+                Text("Offset disimpan per video/lagu; positif menunda lirik, negatif memajukan. Tidak diterapkan pada CC. Durasi dipakai untuk memilih kandidat, bukan meregangkan timestamp secara otomatis.")
                     .font(.caption).foregroundStyle(.secondary)
+                DisclosureGroup("Cari dan pilih versi lirik") {
+                    HStack {
+                        TextField("Judul, artis, atau alias lagu", text: $lyricSearchText)
+                            .onSubmit { model.searchLyrics(lyricSearchText) }
+                        Button(model.lyricSearchBusy ? "Mencari…" : "Cari") { model.searchLyrics(lyricSearchText) }
+                            .disabled(model.lyricSearchBusy)
+                    }
+                    Text("Durasi pemutar: \(durationLabel(model.current?.snapshot.duration)) · hasil diurutkan menurut selisih durasi terkecil.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Text(model.lyricSearchStatus).font(.caption).foregroundStyle(.secondary)
+                    ForEach(model.lyricCandidates, id: \.id) { record in
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("\(record.trackName) — \(record.artistName)").font(.callout).lineLimit(2)
+                                Text("\(record.albumName ?? "Album tidak diketahui") · #\(record.id)").font(.caption).foregroundStyle(.secondary)
+                                Text("\(durationLabel(record.duration)) · \(differenceLabel(record.duration)) · \(record.instrumental ? "Instrumental" : record.hasValidSyncedLyrics ? "Bertimestamp" : "Teks saja")")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button("Pakai") { model.selectLyrics(record) }
+                                .disabled(!record.instrumental && !record.hasValidSyncedLyrics && (record.plainLyrics?.isEmpty ?? true))
+                        }.padding(.vertical, 4)
+                    }
+                    Text("Periksa artis dan versi rekaman. Selisih besar dapat berarti intro, live, cover, atau lagu berbeda. Pilihan manual berlaku selama aplikasi terbuka.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }.disabled(model.lyricSource == "caption" || model.trackKey == nil)
                 if let error = model.commandError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
             Section("Prototipe") {
-                Text("Notch Box 0.2.1 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                Text("Notch Box 0.2.2 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle("Demo lokal (tanpa audio)", isOn: $model.demo)
-                Text("Tanpa telemetry/cookies. Saat lirik otomatis aktif, metadata lagu dikirim ke LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.")
+                Text("Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
         .frame(width: 580, height: 700)
+        .onAppear { resetSearch() }
+        .onChange(of: model.trackKey) { _, _ in resetSearch() }
+    }
+
+    private func resetSearch() {
+        model.cancelLyricSearch()
+        guard let snapshot = model.current?.snapshot else { lyricSearchText = ""; return }
+        lyricSearchText = snapshot.title
+    }
+
+    private func durationLabel(_ duration: Double?) -> String {
+        guard let duration, duration.isFinite, duration > 0, duration < 86400 else { return "tidak diketahui" }
+        let seconds = Int(duration.rounded())
+        return String(format: "%d:%02d", seconds / 60, seconds % 60)
+    }
+
+    private func differenceLabel(_ duration: Double?) -> String {
+        guard let duration, duration.isFinite, duration > 0, let playback = model.current?.snapshot.duration else { return "selisih tidak diketahui" }
+        let difference = duration - playback
+        return String(format: "selisih %+.1f dtk%@", difference, abs(difference) > 3 ? " · cek versi" : "")
     }
 }
