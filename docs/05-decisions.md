@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.2.1 — 17 September 2026
+
+Laporan pengguna menunjukkan timestamp LRCLIB tidak selalu cocok dengan video dan judul bilingual menghalangi matching. Implementasi kini mengutamakan caption DOM aktif, termasuk caption otomatis jika ditampilkan pemutar. Normalisasi judul diperbaiki tanpa menebak semua alias Inggris/Jepang. LRCLIB tetap fallback, bukan jaminan alignment audio. Tidak menambahkan OCR/transkripsi. Integrasi Chrome nyata masih perlu validasi setelah upgrade extension.
+
 [Kembali ke indeks](../README.md)
 
 Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari rekomendasi teknis.

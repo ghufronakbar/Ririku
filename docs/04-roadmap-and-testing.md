@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi v0.2.1 — 17 September 2026
+
+Fixture JavaScript sementara lulus untuk perubahan caption, teks rolling, jeda, seek, pause, iklan, CC off, dan navigasi. Fixture Swift memeriksa judul bilingual, kredit artis sesudah judul, dan qualifier Live. Build native lulus. Ini bukan bukti sinkronisasi terhadap audio/video nyata.
+
+Setelah reload extension dan refresh tab, masih perlu uji pengguna: Akuma no Ko pada kedua situs; Crying for Rain/Kawaki wo Ameku; CC otomatis; perubahan bahasa; seek saat pause; CC off; pergantian video; mode Song/Video YouTube Music. Periksa label Caption video dan kesamaan teks dengan CC. Subtitle baked-in tidak didukung. Timestamp LRCLIB tidak diperbaiki lewat tebakan offset global.
+
 [Kembali ke indeks](../README.md)
 
 ## 1. Tahapan

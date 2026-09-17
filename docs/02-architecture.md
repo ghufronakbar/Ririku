@@ -1,5 +1,9 @@
 # Arsitektur awal
 
+## Caption v0.2.1
+
+Snapshot memiliki `captionEnabled` dan `captionText` opsional (batas 4 KB). Extension membaca caption DOM terlihat, mengirim perubahan dengan coalescing 40 ms dan heartbeat cadangan. Seek/navigation menahan teks lama sampai perubahan caption berikutnya; iklan mengosongkan teks. Native mengutamakan caption aktif, termasuk jeda jika status CC terbaca aktif. Offset LRC tidak diterapkan pada caption. Jika kontrol CC tidak mengekspos status yang dikenali, deteksi memakai segmen terlihat; jeda dapat kembali ke LRCLIB dan perlu validasi situs nyata. Tidak memakai transcript privat, cookies, OCR, atau speech-to-text.
+
 [Kembali ke indeks](../README.md)
 
 Dokumen ini memuat rancangan target dan status prototipe. Per 17 September 2026, shell native, adapter browser, IPC, parser/clock LRC, pemilihan sumber otomatis, artwork, serta pencarian/cache LRCLIB telah diimplementasikan. Dukungan pemutar desktop tetap belum ada; v0.2 masih perlu verifikasi end-to-end pada extension yang di-reload.

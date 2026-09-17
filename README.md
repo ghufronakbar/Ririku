@@ -37,6 +37,8 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
+**Update v0.2.1:** caption video aktif diprioritaskan di atas LRCLIB, termasuk caption otomatis yang terlihat. Normalisasi judul bilingual/kredit artis ditingkatkan. Reload extension dan refresh tab lama. Build dan fixture lokal diuji; sinkronisasi Chrome nyata masih perlu validasi.
+
 ```sh
 bash scripts/build-app.sh
 open "build/Notch Box.app"

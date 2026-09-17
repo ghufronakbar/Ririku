@@ -1,5 +1,9 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.2.1
+
+Reload extension unpacked di `chrome://extensions`, lalu refresh tab YouTube/YouTube Music yang sudah terbuka. Aktifkan CC; app mengutamakan caption yang terbaca dengan label **Caption video**. Caption otomatis memakai jalur yang sama; app tidak membuat caption sendiri. Teks yang menyatu dalam gambar video tidak dapat dibaca. Tanpa CC, LRCLIB/LRC menjadi fallback dan timing penyedia belum tentu cocok. Impor LRC tidak wajib. Normalisasi baru menghasilkan query baru sehingga cache miss judul lama tidak menghalangi pencarian baru.
+
 [Kembali ke indeks](../README.md)
 
 ## 1. Prasyarat dan status
