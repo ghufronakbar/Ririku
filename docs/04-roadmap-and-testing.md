@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi v0.2.3 — 17 September 2026
+
+Fixture lokal lulus: 1/2/3 baris dan batas awal/akhir; hide/show mengubah geometri; lebar dibatasi layar; preferensi tersimpan; playing→playing dengan track baru mengikuti sumber, heartbeat lama tidak merebutnya, manual pin tetap berlaku. Render native mode ringkas 1/2/3 dan terbuka dengan/tanpa lirik berhasil; gambar ringkas 2 baris dan terbuka 3 baris diperiksa visual.
+
+Fixture JavaScript gabungan MAIN/isolated lulus untuk identitas getter mengalahkan URL lama, play dari halaman search tanpa `v`, video/bar diganti, caption awal dan setelah transisi, seek/CC off, command untuk track lama ditolak, serta validasi asal/payload. Uji ini bukan verifikasi DOM/live player Chrome. Pengguna perlu reload extension v0.2.3 lalu refresh tab sekali, kemudian mencoba search→play berulang, autoplay, mode Music/Video, background tab, dan pergantian playlist tanpa refresh. Kelancaran hover/pop-up serta Reduce Motion perlu diuji di layar nyata; tidak ada hasil benchmark CPU/baterai spectrum.
+
 ## Validasi v0.2.2 — 17 September 2026
 
 Build Swift dan fixture sementara lulus: urutan kandidat durasi terdekat, durasi null terakhir, penolakan klip 4 detik untuk pemutar 241 detik, normalisasi artis `- Topic`, lookup otomatis, ketiga mode sumber, tidak ada request pencarian pada mode caption, offset per lagu/persistensi/batas finite, identitas lintas YouTube/Music, serta pembatalan pencarian saat lagu berubah. Setup native berhasil dirender dan diperiksa; Form dapat di-scroll untuk kontrol di bawah layar. Fixture tidak membuktikan timing terhadap audio nyata.

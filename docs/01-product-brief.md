@@ -1,5 +1,9 @@
 # Product brief
 
+## Pembaruan kebutuhan UI — 17 September 2026
+
+Pengguna meminta transisi popup lebih halus, hide/show lirik, 1 baris aktif / 2 aktif+berikutnya / 3 sebelum+aktif+berikutnya, serta ukuran island adjustable. v0.2.3 mengimplementasikan pengaturan tersebut pada mode ringkas dan terbuka. Animasi spectrum (termasuk transisi datar saat pause) dan perbaikan preferensi Jepang untuk アイドル ditunda sesuai permintaan penjelasan terlebih dahulu.
+
 ## Pembaruan kebutuhan — 17 September 2026
 
 Pengguna menyetujui pemilih sumber lirik eksplisit di Setup, offset per lagu, dan penggunaan durasi untuk memilih kandidat terdekat. v0.2.2 menyediakan pencarian/pemilihan hasil manual. Durasi dekat bukan jaminan rekaman sama; peregangan timestamp otomatis tidak diterapkan.

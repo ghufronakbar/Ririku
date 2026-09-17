@@ -1,5 +1,14 @@
 # Spesifikasi UI dan motion
 
+## UI v0.2.3
+
+- **Tampilkan lirik di island** berlaku pada ringkas dan terbuka, tidak mematikan pencarian provider.
+- Jumlah baris LRC: 1 = aktif; 2 = aktif+berikutnya; 3 = sebelumnya+aktif+berikutnya. Baris yang tidak tersedia di awal/akhir kosong. Urutan parser/timestamp/bahasa tidak diubah.
+- Caption hanya memiliki teks saat ini, sehingga jumlah baris membatasi pembungkusan teks, bukan mengarang cue sebelum/berikutnya. Plain text tetap tidak memiliki baris aktif tersinkron.
+- Lebar ringkas 280–620 pt, terbuka 360–720 pt; ukuran efektif dibatasi notch fisik dan lebar layar. Tinggi otomatis mengikuti isi. Tombol reset mengembalikan 360/442 pt.
+- Frame ease-in/ease-out 0,32 detik dan opacity SwiftUI menggantikan perpindahan konten mendadak; frame target sama tidak dianimasikan ulang. Reduce Motion/toggle nonaktif meniadakan transisi.
+- Ikon waveform/pause tetap statis; animasi spectrum sengaja belum dibuat.
+
 ## Setup lirik v0.2.2
 
 Pemilih tiga mode, toggle pencarian otomatis LRCLIB, offset per lagu ±60 detik dengan tombol presisi 0,1 detik/reset, serta disclosure **Cari dan pilih versi lirik** berada di Form Setup yang dapat di-scroll. Hasil menampilkan judul, artis, album/ID, durasi, selisih bertanda, dan status bertimestamp/teks/instrumental. Kandidat dengan selisih >3 detik diberi peringatan cek versi dan hanya dapat dipilih eksplisit. Mode caption menonaktifkan kontrol pencarian/impor/offset. Mode Music tanpa CC dapat memakai LRCLIB. Tidak ada pemilih tambahan di panel notch.

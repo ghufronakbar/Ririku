@@ -2,7 +2,7 @@
 
 Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
 
-**Status:** prototipe native lokal v0.2.2, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, serta pencarian LRCLIB telah diimplementasikan. Pemilih sumber lirik, pemilihan kandidat berdasarkan selisih durasi, dan offset per lagu diuji dengan fixture lokal; akurasi timing situs nyata tetap perlu uji pengguna. Nama proyek masih sementara.
+**Status:** prototipe native lokal v0.2.3, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, serta pencarian LRCLIB telah diimplementasikan. Pengaturan 1/2/3 baris, hide/show lirik, ukuran ringkas/terbuka, transisi ease-in/ease-out, dan jalur metadata pemutar diuji dengan fixture/render lokal. Integrasi Chrome nyata dan kelancaran motion tetap perlu uji pengguna. Animasi spectrum serta pemilihan bahasa lirik belum diimplementasikan.
 
 ## Arah proyek
 
@@ -37,7 +37,7 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
-**Update v0.2.2:** Setup menyediakan mode Otomatis (LRCLIB lalu caption), LRCLIB/LRC saja, dan Subtitle saja. Cari/pilih versi lirik dengan durasi serta selisihnya; offset ±60 detik disimpan per video/lagu. Tidak meregangkan timestamp otomatis. Extension tetap v0.2.1; tidak perlu reload lagi jika versi caption tersebut sudah terpasang.
+**Update v0.2.3:** Setup → Tampilan mengatur hide/show lirik di kedua mode, 1/2/3 baris, serta lebar island ringkas/terbuka. Reload extension v0.2.3 dan refresh tab satu kali untuk jalur identitas pemutar yang tidak bergantung pada URL. Penjelasan spectrum dan kasus lirik Jepang/romaji ada di [catatan investigasi](docs/07-spectrum-and-lyrics-investigation.md); keduanya belum diubah.
 
 ```sh
 bash scripts/build-app.sh

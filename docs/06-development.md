@@ -1,5 +1,11 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.2.3
+
+Reload extension di `chrome://extensions` dan refresh tab lama sekali. Versi ini menambahkan helper metadata MAIN world tanpa izin baru; tanpa reload helper belum aktif. Setelah itu, uji play lagu dari hasil pencarian YouTube Music tanpa refresh lagi. Getter internal masih perlu validasi di situs nyata.
+
+Di **Setup → Tampilan**, atur lebar ringkas/terbuka, hide/show lirik, dan 1/2/3 baris. Setting visibility berlaku pada dua mode island. Ukuran minimum mengikuti notch fisik; tinggi mengikuti isi. Transisi panel ease-in/ease-out dapat dimatikan dan mengikuti Reduce Motion. Spectrum belum dianimasikan; pemilihan bahasa Jepang/romaji juga belum diubah.
+
 ## Update v0.2.2
 
 Buka **Setup → Lirik → Sumber lirik**. Pilih Otomatis, LRCLIB/LRC saja, atau Subtitle saja. Scroll ke **Cari dan pilih versi lirik**, masukkan judul/artis atau alias, lalu Cari. Bandingkan durasi pemutar dengan kandidat dan klik Pakai; selisih >3 detik perlu pemeriksaan versi. Pilihan manual berlaku sampai app ditutup atau kembali ke hasil otomatis. Offset ±60 detik tersimpan per video, dengan tombol presisi 0,1 detik dan Reset; positif menunda, negatif memajukan. Tidak ada scaling timestamp otomatis.

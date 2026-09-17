@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.2.3 — 17 September 2026
+
+Pengaturan baris/visibility/ukuran dan transisi popup diterapkan sesuai permintaan. Larangan sementara animasi ditafsirkan untuk spectrum yang sedang dibahas; ikon spectrum tidak diubah. Metadata pemutar ditambahkan untuk mengatasi ketergantungan identitas lagu pada URL SPA. Preferensi bahasa アイドル tidak diubah: inspeksi cache membuktikan record Jepang+romaji bertimestamp sama; penjelasan dan tradeoff dicatat di dokumen 07, menunggu arahan pengguna.
+
 ## Revisi v0.2.2 — 17 September 2026
 
 Pengguna menyetujui pemilih sumber lirik di Setup, offset, dan pemilihan kandidat yang mendekati durasi pemutar. Otomatis kini LRCLIB-first, menggantikan prioritas caption v0.2.1; pengguna dapat mengunci salah satu sumber. Daftar manual mengurutkan kandidat menurut selisih durasi, sedangkan lookup otomatis tetap konservatif (judul/artis/±3 detik). Offset diterapkan per video, bukan global. Durasi digunakan untuk matching, bukan scaling otomatis yang bisa merusak timing ketika ada intro/outro atau versi rekaman berbeda. Kandidat manual berlaku selama sesi app; persistensi pilihan merupakan pekerjaan lanjutan.

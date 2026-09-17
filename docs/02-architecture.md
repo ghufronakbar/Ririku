@@ -1,5 +1,11 @@
 # Arsitektur awal
 
+## Pembaruan UI/identitas v0.2.3
+
+Geometri panel dihitung terpusat oleh model: lebar ringkas/terbuka, tinggi fisik notch, jumlah baris, visibility lirik, serta pesan error. Frame target yang sama tidak memulai ulang animasi. AppKit memakai ease-in/ease-out 0,32 detik; opacity/layout SwiftUI memakai durasi sama. Toggle animasi dan Reduce Motion tetap dihormati. `showLyrics` kini berlaku pada kedua mode; jumlah baris serta lebar ringkas/terbuka tersimpan di UserDefaults.
+
+Extension menambahkan `player-state.js` di MAIN world, hanya membaca video ID/judul/artis dari getter pemutar, tanpa capture audio/cookies/token/request jaringan. Pesan dibatasi, diperiksa origin/window serta tipe/panjang oleh isolated content script. Data halaman tetap tidak tepercaya; MAIN script tidak memiliki akses native messaging. Getter pemutar bukan kontrak publik yang dijamin stabil: bila tidak tersedia, fallback ke link judul player bar lalu URL. Data getter kedaluwarsa setelah 2,5 detik. Event media, heartbeat dan observer metadata menangani player/bar yang diganti atau URL search yang tidak mengikuti lagu. Lagu baru ketika state masih `playing` dianggap aktivitas baru untuk pemilihan sumber; heartbeat lagu sama tidak merebut sumber dan manual pin tetap dihormati.
+
 ## Pemilihan lirik v0.2.2
 
 Preferensi `lyricSource` tersimpan lokal: `auto` mengutamakan LRC bertimestamp lalu caption, `lrclib` tidak menampilkan caption, `caption` menyembunyikan LRC/plain text dan menghentikan pencarian LRCLIB. Impor LRC merupakan override lokal pada mode non-caption. Pencarian manual memakai `/api/search?q=...` melalui klien HTTP, pembatasan ukuran, dan throttle yang sama. Hasil diurutkan menurut selisih durasi absolut; durasi tidak diketahui terakhir. Kandidat otomatis tetap harus cocok judul/artis dan selisih ≤3 detik, mengutamakan kandidat bertimestamp lalu durasi terdekat. Pencarian alternatif kini dijalankan juga setelah exact match untuk membandingkan kandidat. Cache query menggunakan `Lyrics-v2` agar hasil keputusan lama tidak tertahan.
