@@ -17,6 +17,29 @@ struct SetupView: View {
                 Text(model.t("Changes apply immediately. Song titles, lyrics, captions, and messages from macOS or websites keep their original language."))
                     .font(.caption).foregroundStyle(.secondary)
             }
+            Section(model.t("Chrome connection")) {
+                let _ = model.chromeSetupRevision
+                let hostStatus = ChromeSetup.hostStatus()
+                Text(model.t("Ririku follows YouTube and YouTube Music in Google Chrome through a companion extension. Complete these steps once."))
+                    .font(.caption).foregroundStyle(.secondary)
+                if ChromeSetup.isTranslocated {
+                    Text(model.t("Move Ririku to the Applications folder and open it again before connecting Chrome.")).foregroundStyle(.orange)
+                }
+                setupStep(1, model.t("Register the Chrome connection"), detail: hostStatusText(hostStatus), done: hostStatus == .registered) {
+                    Button(hostStatus == .registered ? model.t("Register Again") : model.t("Register")) { model.connectChrome() }
+                        .disabled(hostStatus == .unavailable || hostStatus == .translocated)
+                }
+                setupStep(2, model.t("Copy the extension folder"), detail: extensionCopyText, done: extensionCopyCurrent) {
+                    Button(model.t("Show in Finder")) { model.showChromeExtension() }.disabled(ChromeSetup.bundledExtensionURL == nil)
+                }
+                setupStep(3, model.t("Load the extension in Chrome"), detail: model.t("Open chrome://extensions, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder."), done: model.connectedExtensionVersion != nil) {
+                    Button(model.t("Copy Address")) { model.copyExtensionsPage() }
+                }
+                setupStep(4, model.t("Check the connection"), detail: connectionText, done: connectionCurrent) { EmptyView() }
+                if let message = model.chromeSetupMessage {
+                    Text(model.t(message)).font(.caption).foregroundStyle(.secondary)
+                }
+            }
             Section(model.t("Music source")) {
                 Toggle(model.t("Automatically follow the active player"), isOn: $model.automaticSource).disabled(model.demo)
                 Picker(model.t("Active player"), selection: $model.selectedSource) {
@@ -132,6 +155,57 @@ struct SetupView: View {
         .frame(width: 580, height: 700)
         .onAppear { resetSearch() }
         .onChange(of: model.trackKey) { _, _ in resetSearch() }
+    }
+
+    private func setupStep<Control: View>(_ number: Int, _ title: String, detail: String, done: Bool, @ViewBuilder control: () -> Control) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: done ? "checkmark.circle.fill" : "\(number).circle")
+                .foregroundStyle(done ? Color.green : Color.secondary).font(.title3).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                Text(detail).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 8)
+            control()
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func hostStatusText(_ status: ChromeSetup.HostStatus) -> String {
+        switch status {
+        case .unavailable: return model.t("Available only when Ririku runs from its app bundle.")
+        case .translocated: return model.t("Blocked until Ririku is moved to Applications.")
+        case .notRegistered: return model.t("Not registered yet.")
+        case .needsUpdate: return model.t("Registered for another copy of Ririku. Register again.")
+        case .registered: return model.t("Registered for this copy of Ririku.")
+        }
+    }
+
+    private var extensionCopyCurrent: Bool {
+        guard let installed = ChromeSetup.installedExtensionVersion else { return false }
+        return installed == ChromeSetup.bundledExtensionVersion
+    }
+
+    private var extensionCopyText: String {
+        guard let bundled = ChromeSetup.bundledExtensionVersion else { return model.t("Available only when Ririku runs from its app bundle.") }
+        guard let installed = ChromeSetup.installedExtensionVersion else { return model.t("Not copied yet.") }
+        return installed == bundled ? model.t("Copied version %@. Choose this folder in Chrome.", installed)
+            : model.t("Copied version %@ is outdated. Show it in Finder to update it, then click the extension's reload button in Chrome.", installed)
+    }
+
+    private var connectionCurrent: Bool {
+        guard let connected = model.connectedExtensionVersion else { return false }
+        return ChromeSetup.bundledExtensionVersion.map { $0 == connected } ?? true
+    }
+
+    private var connectionText: String {
+        guard let connected = model.connectedExtensionVersion else {
+            return model.t("Not connected. After loading the extension, refresh an open YouTube or YouTube Music tab.")
+        }
+        if let bundled = ChromeSetup.bundledExtensionVersion, bundled != connected {
+            return model.t("Extension %@ is connected, but Ririku includes %@. Show the folder in Finder to update it, then click the extension's reload button in Chrome.", connected, bundled)
+        }
+        return model.t("Connected · extension %@", connected)
     }
 
     private var lyricSourceStatus: String {

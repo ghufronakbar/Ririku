@@ -11,6 +11,8 @@ cp "$BIN/Ririku" "$APP/Contents/MacOS/Ririku"
 cp "$BIN/RirikuHost" "$APP/Contents/Resources/RirikuHost"
 rm -rf "$APP/Contents/Resources/"*.lproj
 cp -R "$ROOT/Localization/"*.lproj "$APP/Contents/Resources/"
+rm -rf "$APP/Contents/Resources/ChromeExtension"
+cp -R "$ROOT/extension" "$APP/Contents/Resources/ChromeExtension"
 /usr/bin/python3 - "$APP" <<'PY'
 import pathlib
 import plistlib

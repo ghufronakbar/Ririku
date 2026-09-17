@@ -94,6 +94,10 @@ final class AppModel: ObservableObject {
     @Published var artwork: NSImage?
     @Published var commandError: UIText? { didSet { geometryChanged?() } }
     @Published var bridgeError: UIText?
+    @Published var connectedExtensionVersion: String?
+    @Published var chromeSetupMessage: UIText?
+    /// Dinaikkan setelah aksi Setup Chrome agar status berkas dibaca ulang saat render.
+    @Published private(set) var chromeSetupRevision = 0
     @Published var pendingCommand: String?
     @Published var notchWidth: CGFloat = 180
     @Published var topHeight: CGFloat = 34
@@ -247,6 +251,12 @@ final class AppModel: ObservableObject {
         guard let envelope = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               envelope["protocolVersion"] as? Int == 1 else { return }
         if envelope["kind"] as? String == "openSetup" { openSetup?(); return }
+        if envelope["kind"] as? String == "extension" {
+            if let version = envelope["version"] as? String, version.range(of: #"^[0-9]+(\.[0-9]+){0,3}$"#, options: .regularExpression) != nil {
+                connectedExtensionVersion = version
+            }
+            return
+        }
         if envelope["kind"] as? String == "ack" {
             guard let commandId = envelope["commandId"] as? String, commandId == pendingCommand else { return }
             pendingCommand = nil
@@ -282,6 +292,7 @@ final class AppModel: ObservableObject {
     }
 
     func disconnect() {
+        connectedExtensionVersion = nil
         sessions = sessions.filter { $0.key == "demo:demo" }
         pendingCommand = nil
         refreshMedia()
@@ -516,6 +527,29 @@ final class AppModel: ObservableObject {
             self.pendingCommand = nil
             self.commandError = UIText("Player not responding. Check the Chrome connection.")
         }
+    }
+
+    func connectChrome() {
+        do {
+            try ChromeSetup.registerHost()
+            chromeSetupMessage = UIText("Chrome connection registered. Load the extension, then refresh an open YouTube tab.")
+        } catch { chromeSetupMessage = UIText(error: error) }
+        chromeSetupRevision += 1
+    }
+
+    func showChromeExtension() {
+        do {
+            let folder = try ChromeSetup.installExtension()
+            NSWorkspace.shared.activateFileViewerSelecting([folder])
+            chromeSetupMessage = nil
+        } catch { chromeSetupMessage = UIText(error: error) }
+        chromeSetupRevision += 1
+    }
+
+    func copyExtensionsPage() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(ChromeSetup.extensionsPage, forType: .string)
+        chromeSetupMessage = UIText("Copied chrome://extensions. Paste it into the Chrome address bar.")
     }
 
     func importLyrics() {

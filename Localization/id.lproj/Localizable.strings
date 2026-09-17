@@ -1,5 +1,4 @@
 /* Bahasa Indonesia. Key adalah teks sumber English di kode; periksa dengan scripts/check-localization.py. */
-
 "%@ s" = "%@ dtk";
 "1 · current" = "1 · saat ini";
 "2 · current + next" = "2 · saat ini + berikutnya";
@@ -15,16 +14,27 @@
 "Automatic mode follows the tab that starts playing and restores the connection. Turn it off to lock one tab manually." = "Mode otomatis mengikuti tab yang mulai memutar dan memulihkan koneksi. Matikan untuk mengunci satu tab secara manual.";
 "Automatic · LRCLIB, then captions" = "Otomatis · LRCLIB lalu caption";
 "Automatically follow the active player" = "Otomatis ikuti pemutar aktif";
+"Available only when Ririku runs from its app bundle." = "Hanya tersedia saat Ririku dijalankan dari bundle aplikasinya.";
 "Back to automatic result" = "Kembali ke hasil otomatis";
+"Blocked until Ririku is moved to Applications." = "Tertahan sampai Ririku dipindahkan ke Applications.";
 "Bridge directory is unsafe; check %@." = "Direktori bridge tidak aman; periksa %@.";
 "Candidates: %@ · sorted by closest duration, not a version guarantee" = "%@ kandidat · urutan durasi terdekat, bukan jaminan versi cocok";
 "Captions unavailable · turn on CC or choose LRCLIB" = "Caption tidak tersedia · aktifkan CC atau pilih LRCLIB";
 "Changes apply immediately. Song titles, lyrics, captions, and messages from macOS or websites keep their original language." = "Perubahan langsung berlaku. Judul lagu, lirik, caption, serta pesan dari macOS atau situs tetap dalam bahasa aslinya.";
 "Check the artist and recording version. A large difference can mean an intro, live, cover, or different song. Manual choices last while the app is open." = "Periksa artis dan versi rekaman. Selisih besar dapat berarti intro, live, cover, atau lagu berbeda. Pilihan manual berlaku selama aplikasi terbuka.";
+"Check the connection" = "Periksa koneksi";
 "Choose a player tab" = "Pilih tab pemutar";
 "Choose an LRC for the current song. Make sure the recording version matches." = "Pilih LRC untuk lagu aktif. Pastikan versi rekamannya cocok.";
+"Chrome connection" = "Koneksi Chrome";
+"Chrome connection registered. Load the extension, then refresh an open YouTube tab." = "Koneksi Chrome terdaftar. Muat extension, lalu refresh tab YouTube yang terbuka.";
 "Compact island width" = "Lebar island ringkas";
+"Connected · extension %@" = "Terhubung · extension %@";
 "Control failed. Try again from the player tab." = "Kontrol gagal. Coba kembali dari tab pemutar.";
+"Copied chrome://extensions. Paste it into the Chrome address bar." = "chrome://extensions disalin. Tempel di address bar Chrome.";
+"Copied version %@ is outdated. Show it in Finder to update it, then click the extension's reload button in Chrome." = "Versi salinan %@ sudah usang. Tampilkan di Finder untuk memperbaruinya, lalu klik tombol muat ulang extension di Chrome.";
+"Copied version %@. Choose this folder in Chrome." = "Versi %@ sudah disalin. Pilih folder ini di Chrome.";
+"Copy Address" = "Salin alamat";
+"Copy the extension folder" = "Salin folder extension";
 "Decorative spectrum, not audio analysis" = "Spectrum dekoratif, bukan analisis audio";
 "difference %@ s" = "selisih %@ dtk";
 "difference %@ s · check version" = "selisih %@ dtk · cek versi";
@@ -32,6 +42,7 @@
 "Earlier by %@ s" = "Majukan %@ dtk";
 "Enter a title or artist, up to 500 characters." = "Isi judul/artis, maksimal 500 karakter.";
 "Expanded island width" = "Lebar island terbuka";
+"Extension %@ is connected, but Ririku includes %@. Show the folder in Finder to update it, then click the extension's reload button in Chrome." = "Extension %@ terhubung, tetapi Ririku membawa %@. Tampilkan folder di Finder untuk memperbaruinya, lalu klik tombol muat ulang extension di Chrome.";
 "Follow system (%@)" = "Ikuti sistem (%@)";
 "Import LRC…" = "Impor LRC…";
 "Instrumental" = "Instrumental";
@@ -43,6 +54,7 @@
 "Latin lines that share an exact timestamp with Japanese are hidden from display, not deleted. Other-language lines at different times and mixed text stay intact. Turn it off to see every variant, including simultaneous bilingual duets." = "Baris Latin yang berbagi timestamp persis dengan Jepang disembunyikan dari tampilan, bukan dihapus. Baris bahasa lain pada waktu berbeda dan teks campuran tetap utuh. Matikan untuk melihat semua varian, termasuk duet bilingual simultan.";
 "Lavender" = "Lavender";
 "LIVE" = "LIVE";
+"Load the extension in Chrome" = "Muat extension di Chrome";
 "Local demo" = "Demo lokal";
 "Local demo (no audio)" = "Demo lokal (tanpa audio)";
 "LRCLIB #%@ · %@ — %@" = "LRCLIB #%@ · %@ — %@";
@@ -68,6 +80,7 @@
 "Media response exceeds the size limit." = "Respons media melebihi batas ukuran.";
 "Media response is invalid or too large." = "Respons media tidak valid atau terlalu besar.";
 "Minimum size follows the physical notch. Height adapts to content and line count." = "Ukuran minimum mengikuti notch fisik. Tinggi menyesuaikan isi dan jumlah baris.";
+"Move Ririku to the Applications folder and open it again before connecting Chrome." = "Pindahkan Ririku ke folder Applications lalu buka kembali sebelum menghubungkan Chrome.";
 "Music paused or stopped" = "Musik dijeda atau berhenti";
 "Music playing · decorative spectrum" = "Musik diputar · spectrum dekoratif";
 "Music source" = "Sumber musik";
@@ -79,11 +92,15 @@
 "No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers." = "Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.";
 "No valid LRC timestamps found." = "Tidak ada timestamp LRC yang valid.";
 "Not connected" = "Belum terhubung";
-"Ririku — Setup" = "Ririku — Setup";
-"Ririku, music player" = "Ririku, pemutar musik";
+"Not connected. After loading the extension, refresh an open YouTube or YouTube Music tab." = "Belum terhubung. Setelah extension dimuat, refresh tab YouTube atau YouTube Music yang terbuka.";
+"Not copied yet." = "Belum disalin.";
+"Not registered yet." = "Belum terdaftar.";
 "Offset for this song" = "Offset lagu ini";
 "Offset is saved per video or song; positive values delay lyrics, negative values advance them. Not applied to CC. Duration is used to choose candidates, not to stretch timestamps automatically." = "Offset disimpan per video/lagu; positif menunda lirik, negatif memajukan. Tidak diterapkan pada CC. Durasi dipakai untuk memilih kandidat, bukan meregangkan timestamp secara otomatis.";
+"Open chrome://extensions, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder." = "Buka chrome://extensions, aktifkan Developer mode, klik Load unpacked, lalu pilih folder “Chrome Extension”. Nama tombol mengikuti bahasa Chrome.";
 "Open music panel" = "Buka panel musik";
+"Open Ririku from its app bundle to connect Chrome." = "Buka Ririku dari bundle aplikasinya untuk menghubungkan Chrome.";
+"Open Ririku from its app bundle to copy the extension." = "Buka Ririku dari bundle aplikasinya untuk menyalin extension.";
 "Open Setup" = "Buka Setup";
 "Open Setup window" = "Buka jendela Setup";
 "Open the Ririku app first." = "Buka aplikasi Ririku terlebih dahulu.";
@@ -96,8 +113,16 @@
 "Previous track" = "Lagu sebelumnya";
 "Prototype" = "Prototipe";
 "Quit Ririku" = "Keluar Ririku";
+"Register" = "Daftarkan";
+"Register Again" = "Daftarkan ulang";
+"Register the Chrome connection" = "Daftarkan koneksi Chrome";
+"Registered for another copy of Ririku. Register again." = "Terdaftar untuk salinan Ririku lain. Daftarkan ulang.";
+"Registered for this copy of Ririku." = "Terdaftar untuk salinan Ririku ini.";
 "Reset" = "Reset";
 "Reset size" = "Reset ukuran";
+"Ririku follows YouTube and YouTube Music in Google Chrome through a companion extension. Complete these steps once." = "Ririku mengikuti YouTube dan YouTube Music di Google Chrome melalui extension pendamping. Selesaikan langkah berikut sekali saja.";
+"Ririku — Setup" = "Ririku — Setup";
+"Ririku, music player" = "Ririku, pemutar musik";
 "Search" = "Cari";
 "Search and choose a lyrics version" = "Cari dan pilih versi lirik";
 "Search LRCLIB automatically when the song changes" = "Cari LRCLIB otomatis saat lagu berganti";
@@ -107,6 +132,7 @@
 "Searching…" = "Mencari…";
 "Selected #%@. Check timing; use offset for a constant shift." = "Dipilih #%@. Cek timing; gunakan offset bila bergeser konstan.";
 "Setup…" = "Setup…";
+"Show in Finder" = "Tampilkan di Finder";
 "Show lyrics in the island" = "Tampilkan lirik di island";
 "Smooth panel transitions (ease-in/ease-out)" = "Transisi panel halus (ease-in/ease-out)";
 "Song or duration changed. Search again before choosing." = "Lagu/durasi berubah. Cari ulang sebelum memilih.";

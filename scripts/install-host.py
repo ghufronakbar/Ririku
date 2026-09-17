@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daftarkan bridge untuk satu extension Chrome milik pengguna."""
+"""Daftarkan native host Chrome untuk pengembangan. Pengguna biasa cukup memakai Setup → Koneksi Chrome di app."""
 import argparse
 import json
 import os
@@ -7,7 +7,8 @@ from pathlib import Path
 import re
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("extension_id", help="ID extension dari chrome://extensions")
+# ID tetap karena manifest extension memuat field "key"; argumen hanya untuk fork dengan key berbeda.
+parser.add_argument("extension_id", nargs="?", default="bmmbkmngcmjoihlcmehlnfpedhoefofi", help="ID extension (default: ID resmi Ririku)")
 parser.add_argument("--app", type=Path, default=Path(__file__).resolve().parents[1] / "build/Ririku.app")
 arguments = parser.parse_args()
 if not re.fullmatch(r"[a-p]{32}", arguments.extension_id):
