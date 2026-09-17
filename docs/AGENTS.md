@@ -30,6 +30,6 @@ Before changing the project, read `README.md` and the documents relevant to the 
 
 ## Validation
 
-- Run the verification commands in `docs/development/README.md` that apply to the change, and the manual smoke test when behavior with Chrome changes.
+- Run the verification commands in `docs/development/README.md` that apply to the change, and the manual smoke test when behavior with Chrome changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
 - Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. There is no permanent test suite yet; temporary harnesses and fixtures are limited evidence and must be described as such.
 - For documentation changes, check consistency between documents, that claims match the code, and that relative links work.

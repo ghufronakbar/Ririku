@@ -43,6 +43,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Identifiers | `io.github.lanstheprodigy.ririku` and related names, version 0.3.0 | Changed from `local.notchbox.*` without migration. |
 | Chrome setup | Fixed extension ID through the manifest `key`; the app registers the native host and copies the extension only when the user clicks Setup buttons; blocked under App Translocation | Setup copies `chrome://extensions` to the clipboard instead of opening it, because opening Chrome internal pages from an app is unvalidated. `install-host.py` remains for development. |
 | Documentation | English README, user guide, and developer docs; Indonesian and Japanese README and user guide; original Indonesian planning docs archived; community files added | Translations name the English version they follow. |
+| CI and releases | GitHub Actions on macOS runners: checks plus bundle build on every push, and tag-driven draft releases with a zip and checksum | Uses only first-party actions (`actions/checkout`, `actions/upload-artifact`) and `gh`. |
 
 ## Open questions
 
@@ -53,4 +54,5 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
 | Universal (Intel) builds | Open |
 | GitHub repository settings (issues, labels, private vulnerability reporting) and whether a separate code of conduct with a contact address is needed | Open; basic conduct expectations are in CONTRIBUTING.md |
-| Launch at login, other Chromium browsers, automated tests and CI | Planned, not started |
+| Automated Swift tests (a `swift test` target) | Planned; CI and the checker scripts exist, but there is no permanent test suite |
+| Launch at login and other Chromium browsers | Planned, not started |

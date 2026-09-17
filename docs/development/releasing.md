@@ -1,6 +1,6 @@
 # Releasing
 
-Ririku is distributed for free through GitHub Releases. It is signed ad hoc and not notarized, and the Chrome extension is installed with **Load unpacked** from the copy inside the app (see [decision D-013](../decisions.md)). Releases are currently prepared by hand; automating them with GitHub Actions is planned.
+Ririku is distributed for free through GitHub Releases. It is signed ad hoc and not notarized, and the Chrome extension is installed with **Load unpacked** from the copy inside the app (see [decision D-013](../decisions.md)). Releases are built by GitHub Actions from a tag and created as a draft for review.
 
 ## Versioning
 
@@ -21,23 +21,27 @@ Do not change the bundle identifier, native host name, extension `key`, or socke
 
 ## Checklist
 
-1. Make sure `main` is clean and the [verification commands](README.md#verification) pass. Run the manual smoke test on YouTube and YouTube Music.
-2. Update the version and `CHANGELOG.md`, then commit.
-3. Build and package:
+1. Make sure `main` is clean, CI is green, and the [verification commands](README.md#verification) pass locally. Run the manual smoke test on YouTube and YouTube Music.
+2. Update the version everywhere in the table above and add the `CHANGELOG.md` section with today's date, then commit.
+3. Tag and push:
 
    ```sh
-   bash scripts/build-app.sh
-   codesign --verify --deep --strict build/Ririku.app
-   ditto -c -k --keepParent build/Ririku.app build/Ririku.zip
-   shasum -a 256 build/Ririku.zip
+   git tag v0.3.0
+   git push origin v0.3.0
    ```
 
-   `ditto -c -k --keepParent` creates a zip that keeps the `Ririku.app` folder and its bundle contents intact.
+   The release workflow checks that the tag matches the version in `scripts/build-app.sh`, runs the checks, builds and ad-hoc signs the bundle, packages `Ririku-<version>.zip` with `ditto -c -k --keepParent`, writes `SHA256SUMS.txt`, generates notes with `scripts/release-notes.py` (the changelog section plus install instructions), and creates a **draft** release with both files attached.
 
-4. Test the zip as a user would: download or copy it to another folder, unzip, move the app to Applications, open it (confirm the Gatekeeper steps in the user guide still match), and complete **Setup → Chrome connection** with a fresh Chrome profile if possible.
-5. Tag the commit (`git tag v0.3.0 && git push origin v0.3.0`) and create a GitHub release for the tag.
-6. In the release notes, include the changelog section, the SHA-256 checksum, the supported macOS version and architecture, a link to the [install steps](../user-guide.md#install), and a note that the app is not notarized and the extension must be reloaded after updating.
-7. Attach `Ririku.zip`.
+4. Download the zip from the draft and test it as a user would: unzip in another folder, move the app to Applications, open it (confirm the Gatekeeper steps in the user guide still match), and complete **Setup → Chrome connection**, ideally with a fresh Chrome profile.
+5. Edit the notes if needed, then publish the release.
+
+To rebuild an existing tag, run the **Release** workflow manually with the tag name. Packaging locally works too:
+
+```sh
+bash scripts/build-app.sh
+ditto -c -k --keepParent build/Ririku.app build/Ririku.zip
+shasum -a 256 build/Ririku.zip
+```
 
 ## Architecture support
 

@@ -13,6 +13,8 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - **Setup → Chrome connection:** register the native host, copy the extension, and check the connection without using Terminal. Registration is blocked while the app runs from a temporary download location.
 - The extension has a fixed ID, reports its version, and Setup warns when it is older than the one bundled with the app.
 - User guide, developer documentation, contributing guide, security policy, and decision log.
+- GitHub Actions: CI that builds the app and checks translations, versions, documentation, and the extension on every push and pull request; a release workflow that builds a tag into a draft release with a zip and SHA-256 checksum.
+- Issue and pull request templates, and `scripts/check-version.py`, `scripts/check-docs.py`, and `scripts/release-notes.py`.
 
 ## [0.2.5] - 2026-09-17
 

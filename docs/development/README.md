@@ -32,9 +32,11 @@ Sources/Ririku/            macOS app: AppKit panel and menu bar, SwiftUI views, 
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
 extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup
 Localization/              App interface translations (<code>.lproj/Localizable.strings)
-scripts/                   build-app.sh, check-localization.py, install-host.py
+scripts/                   build-app.sh, check-localization.py, check-version.py, check-docs.py,
+                           release-notes.py, install-host.py
 samples/                   Original LRC file used by the local demo
 docs/                      User guide, developer docs, decision log, archive
+.github/                   CI and release workflows, issue and pull request templates
 build/                     Local app bundle output (ignored by Git)
 ```
 
@@ -82,9 +84,13 @@ Run the checks that match your change before opening a pull request:
 swift build
 bash scripts/build-app.sh
 codesign --verify --deep --strict build/Ririku.app
-/usr/bin/python3 scripts/check-localization.py
+/usr/bin/python3 scripts/check-localization.py   # translations complete, placeholders match
+/usr/bin/python3 scripts/check-version.py        # one version in build script, manifest, code, changelog
+/usr/bin/python3 scripts/check-docs.py           # documentation links, anchors, translation headers
 for file in extension/*.js; do node --check "$file"; done
 ```
+
+GitHub Actions runs the same checks on every push and pull request (`.github/workflows/ci.yml`) on a macOS runner, builds the bundle, verifies its signature and contents, and uploads a zip as a build artifact. `.github/workflows/release.yml` builds a tag into a **draft** release; see [releasing.md](releasing.md).
 
 There is no permanent automated test suite yet. Parser, clock, source selection, localization, and Chrome setup changes have so far been validated with temporary harnesses; adding a `swift test` target is welcome (the Command Line Tools include the Swift Testing framework, not yet validated in this repository). Describe in your pull request what you ran and what you could not test.
 

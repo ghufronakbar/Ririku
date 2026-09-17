@@ -34,7 +34,7 @@ Follow the [developer documentation](docs/development/README.md) to build the ap
 2. Keep each pull request focused on one change. Match the style of the surrounding code: naming, comment density, and structure.
 3. For interface text, write English in code and update the translations (see [localization](docs/development/localization.md)).
 4. If behavior, installation, or settings change, update the user guide (and its translations when you can) and `CHANGELOG.md` under the unreleased version. If a product decision changes, add an entry to [docs/decisions.md](docs/decisions.md).
-5. Run the checks in the [developer documentation](docs/development/README.md#verification) that apply to your change.
+5. Run the checks in the [developer documentation](docs/development/README.md#verification) that apply to your change. GitHub Actions runs them again on your pull request.
 6. In the pull request, describe what changed and why, what you tested (commands and manual steps), and what you could not test. Add screenshots for visible UI changes. Do not claim something works if you did not run it.
 
 Commit messages follow the existing style `type (area): short description`, for example `fix (lyrics): ignore results for a previous track` or `docs (guide): clarify Chrome setup`. Common types are `feat`, `fix`, `docs`, `refactor`, and `chore`; areas include `native`, `extension`, `lyrics`, `bridge`, `i18n`, `guide`, and `spec`.
