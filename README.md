@@ -37,7 +37,7 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
-**Update v0.3.0:** nama app menjadi **Ririku** dan bundle menjadi `build/Ririku.app`. Pengguna build lama: keluar dari Notch Box, build ulang, daftarkan ulang native host dengan ID extension yang sama, reload extension (v0.3.0) lalu refresh tab YouTube. Pengaturan dimulai dari default. Langkah lengkap dan pembersihan berkas lama ada di [panduan pengembangan](docs/06-development.md).
+**Update v0.3.0:** nama app menjadi **Ririku** dan bundle menjadi `build/Ririku.app`. Pengguna build lama: keluar dari Notch Box, build ulang, hapus extension lama di Chrome, lalu ikuti **Setup → Koneksi Chrome** (ID extension kini tetap dan native host didaftarkan dari app). Pengaturan dimulai dari default. Langkah lengkap dan pembersihan berkas lama ada di [panduan pengembangan](docs/06-development.md).
 
 **Update v0.2.5:** Setup → **Bahasa** memilih Ikuti sistem / English / Bahasa Indonesia / 日本語 tanpa restart. Bahasa sistem Mac ini saat ini diawali English, sehingga mode Ikuti sistem menampilkan English. Judul lagu, lirik, dan caption tidak diterjemahkan. Extension naik ke v0.2.5 agar popup mengikuti bahasa app; reload extension sekali. Dokumentasi proyek tetap berbahasa Indonesia.
 
@@ -48,7 +48,7 @@ bash scripts/build-app.sh
 open "build/Ririku.app"
 ```
 
-Gunakan **Setup → Demo lokal** untuk mencoba panel tanpa extension. Untuk musik nyata, ikuti [panduan pemasangan Chrome](docs/06-development.md). Default mengikuti pemutar aktif dan mencari lirik otomatis; pemilihan sumber manual tetap hanya di Setup. Lirik otomatis disimpan di cache lokal. Impor LRC adalah cadangan, bukan keharusan setiap lagu.
+Gunakan **Setup → Demo lokal** untuk mencoba panel tanpa extension. Untuk musik nyata, buka **Setup → Koneksi Chrome** dan ikuti empat langkahnya (tanpa Terminal); detail ada di [panduan pemasangan Chrome](docs/06-development.md). Default mengikuti pemutar aktif dan mencari lirik otomatis; pemilihan sumber manual tetap hanya di Setup. Lirik otomatis disimpan di cache lokal. Impor LRC adalah cadangan, bukan keharusan setiap lagu.
 
 **Belum tersedia:** Apple Music/Spotify desktop, launch at login, dan distribusi ter-notarisasi. Ketersediaan/timing lirik bergantung pada kecocokan rekaman dan data penyedia, bukan jaminan setiap lagu. Jangan menganggap tiga sumber sudah didukung penuh hanya karena tercantum sebagai target produk.
 

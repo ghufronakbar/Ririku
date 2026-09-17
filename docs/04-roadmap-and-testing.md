@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi tahap B v0.3.0 — 17 September 2026
+
+ID extension `bmmbkmngcmjoihlcmehlnfpedhoefofi` dihitung dari SHA-256 kunci publik DER dengan pemetaan heksadesimal a–p. `check-localization.py` (158 key × id/ja), `build-app.sh`, codesign strict, `node --check`, dan validasi JSON lulus; bundle berisi `ChromeExtension` dengan `key`. Harness `.app` dengan direktori home sementara (profil Chrome pengguna tidak disentuh) lulus untuk status awal belum terdaftar, isi manifest (nama, stdio, path host bundle, origin ID tetap), izin 0600, pesan hasil, deteksi salinan lain dan perbaikan lewat daftar ulang, penyalinan extension, penggantian folder tanpa berkas lama maupun sisa staging, penerimaan versi extension, penolakan versi tidak valid, dan reset saat disconnect. Salinan harness di path `AppTranslocation` terdeteksi dan pendaftaran ditolak tanpa menulis berkas. Render Setup en/id/ja untuk kondisi terdaftar, tersalin, dan versi extension berbeda diperiksa visual.
+
+Belum diuji: kecocokan ID dengan Chrome sungguhan setelah Load unpacked, pesan `extension` melalui native host nyata, App Translocation dari unduhan GitHub sungguhan, serta alur lengkap pengguna non-teknis.
+
 ## Validasi v0.3.0 — 17 September 2026
 
 Rename ke Ririku: `check-localization.py` (131 key × id/ja), `bash scripts/build-app.sh`, dan `codesign --verify --deep --strict build/Ririku.app` berhasil; Info.plist berisi `io.github.lanstheprodigy.ririku`, executable `Ririku`, dan versi 0.3.0 (build 4). `node --check` semua skrip extension serta validasi JSON manifest lulus. `install-host.py` dengan HOME sementara menulis `io.github.lanstheprodigy.ririku.bridge.json` yang menunjuk `RirikuHost` dan tetap menolak ID tidak valid. Fixture Node extension dan harness Swift dalam bundle `.app` (bahasa, `UIText`, render/demo) diulang terhadap sumber yang sudah di-rename dan lulus. Pencarian teks tidak menemukan identifier lama di kode, skrip, extension, maupun terjemahan.

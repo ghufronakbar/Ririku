@@ -6,9 +6,9 @@ App kini bernama **Ririku** dengan identifier baru dan tanpa migrasi pengaturan.
 
 1. Keluar dari Notch Box melalui menu bar **Keluar Notch Box**.
 2. Jalankan `bash scripts/build-app.sh`, lalu `open "build/Ririku.app"`.
-3. Daftarkan native host baru dengan ID extension yang sama seperti sebelumnya (ID tidak berubah selama folder `extension` tidak dipindah): `/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME`.
-4. Di `chrome://extensions`, klik **Reload** pada **Ririku — Chrome Bridge** (versi **0.3.0**), lalu refresh tab YouTube/YouTube Music yang terbuka. Extension lama tidak cocok dengan app baru.
-5. Atur ulang bahasa, tampilan, dan offset di Setup bila perlu.
+3. Di `chrome://extensions`, **Remove** extension Notch Box/Ririku lama. Extension v0.3.0 memiliki ID tetap `bmmbkmngcmjoihlcmehlnfpedhoefofi` (field `key` di manifest), sehingga ID lama berbasis path tidak lagi berlaku.
+4. Ikuti **Setup → Koneksi Chrome** di app (bagian 3 di bawah); tidak perlu Terminal.
+5. Refresh tab YouTube/YouTube Music yang terbuka, lalu atur ulang bahasa, tampilan, dan offset di Setup bila perlu.
 
 Pembersihan opsional berkas Notch Box lama: `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/local.notchbox.bridge.json`, folder `~/Library/Caches/local.notchbox.mac`, preferensi `defaults delete local.notchbox.mac`, bundle `build/Notch Box.app`, dan direktori `/tmp/notchbox-<uid>`. Hapus hanya berkas tersebut.
 
@@ -84,18 +84,21 @@ Untuk mencoba tanpa Chrome, aktifkan **Setup → Demo lokal (tanpa audio)**. Dem
 
 ## 3. Pasang extension dan native host
 
-1. Buka `chrome://extensions` di Google Chrome.
-2. Aktifkan **Developer mode**.
-3. Pilih **Load unpacked**, lalu folder `extension` di repository ini.
-4. Salin ID extension yang ditampilkan Chrome: 32 karakter a–p.
-5. Daftarkan native host dengan ID tersebut:
+Sejak v0.3.0 pemasangan dilakukan dari app tanpa Terminal. Pindahkan `Ririku.app` ke folder Applications terlebih dahulu; bila app dijalankan langsung dari folder unduhan, macOS memakai lokasi sementara (App Translocation) dan tombol pendaftaran dinonaktifkan.
+
+1. Buka **Setup → Koneksi Chrome**, lalu klik **Daftarkan**. App menulis manifest native host untuk salinan app ini.
+2. Klik **Tampilkan di Finder**. App menyalin extension bawaan ke `~/Library/Application Support/Ririku/Chrome Extension` dan menampilkannya.
+3. Klik **Salin alamat**, tempel `chrome://extensions` di Chrome, aktifkan **Developer mode**, klik **Load unpacked**, lalu pilih folder **Chrome Extension** tersebut.
+4. Refresh tab YouTube/YouTube Music yang terbuka. Langkah **Periksa koneksi** berubah menjadi terhubung beserta versi extension.
+5. Biarkan **Otomatis ikuti pemutar aktif** menyala. Jika ingin mengunci satu tab, matikan toggle tersebut lalu pilih **Pemutar aktif** di Setup.
+
+Developer mode harus tetap aktif karena extension tidak berasal dari Chrome Web Store. Extension unpacked tidak diperbarui otomatis: setelah memperbarui app, Setup menandai versi yang berbeda; klik **Tampilkan di Finder** lagi, lalu tombol reload extension di `chrome://extensions`.
+
+Developer yang ingin memuat langsung folder `extension` di repository dapat melakukannya; ID tetap sama karena field `key`. Jangan memuat folder repository dan folder salinan app bersamaan. Skrip `install-host.py` tetap tersedia untuk build development dan kini memakai ID tetap secara default:
 
 ```sh
-/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME
+/usr/bin/python3 scripts/install-host.py
 ```
-
-6. Pastikan Ririku terbuka. Muat ulang tab YouTube/YouTube Music yang sudah ada, lalu putar video/lagu.
-7. Biarkan **Otomatis ikuti pemutar aktif** menyala. Jika ingin mengunci satu tab, matikan toggle tersebut lalu pilih **Pemutar aktif** di Setup.
 
 ### Update dari v0.1 ke v0.2
 
@@ -103,13 +106,7 @@ Di profil Chrome yang sudah memasang extension, buka `chrome://extensions`, klik
 
 Ini reload sekali untuk memuat kode development baru, bukan langkah yang perlu diulang setiap ganti lagu atau pindah YouTube/YouTube Music. Klik ikon extension sekarang membuka status koneksi dan tombol **Buka Setup aplikasi**; pilihan sumber tetap berada di jendela native.
 
-Host manifest disimpan di `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json`. Skrip hanya mengizinkan extension ID yang diberikan, tidak semua extension. Tidak ada pendaftaran host otomatis sebelum ID pengguna diketahui.
-
-Jika bundle dipindahkan, daftarkan ulang path tujuan:
-
-```sh
-/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME --app "/path/Ririku.app"
-```
+Host manifest disimpan di `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json` dan hanya mengizinkan ID extension Ririku. Pendaftaran terjadi hanya saat pengguna mengklik tombol di Setup atau menjalankan skrip. Jika app dipindahkan, Setup menampilkan status terdaftar untuk salinan lain; klik **Daftarkan ulang**. Untuk skrip: `/usr/bin/python3 scripts/install-host.py --app "/path/Ririku.app"`.
 
 Extension hanya berjalan pada `https://www.youtube.com/*` dan `https://music.youtube.com/*`, top frame. Tidak meminta cookies, history, Accessibility, Screen Recording, atau akses semua situs. Satu profile Chrome/native host aktif didukung dalam prototipe.
 
@@ -195,7 +192,7 @@ build/                 Bundle dan hasil render lokal, tidak masuk Git
 
 ## 8. Uninstall lokal
 
-Keluar melalui menu **Keluar Ririku**, hapus extension dari Chrome, lalu hapus hanya manifest `io.github.lanstheprodigy.ririku.bridge.json` pada direktori native host di atas dan bundle `build/Ririku.app`. Jangan menghapus seluruh folder native host karena dapat dipakai aplikasi lain.
+Keluar melalui menu **Keluar Ririku**, hapus extension dari Chrome, lalu hapus hanya manifest `io.github.lanstheprodigy.ririku.bridge.json` pada direktori native host di atas, folder `~/Library/Application Support/Ririku`, dan bundle `Ririku.app`. Jangan menghapus seluruh folder native host karena dapat dipakai aplikasi lain.
 
 Untuk menghapus preferensi aplikasi secara opsional:
 

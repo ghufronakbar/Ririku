@@ -1,5 +1,9 @@
 # Spesifikasi UI dan motion
 
+## Setup Koneksi Chrome v0.3.0
+
+Section **Koneksi Chrome** berada setelah Bahasa dan berisi empat langkah bernomor dengan ikon centang saat selesai: (1) **Daftarkan koneksi Chrome** dengan tombol Daftarkan/Daftarkan ulang, (2) **Salin folder extension** dengan tombol **Tampilkan di Finder**, (3) **Muat extension di Chrome** berisi instruksi Developer mode/Load unpacked dan tombol **Salin alamat** `chrome://extensions`, serta (4) **Periksa koneksi** yang menampilkan versi extension terhubung atau peringatan versi berbeda. Status setiap langkah ditulis sebagai teks, tidak hanya warna ikon. Peringatan oranye muncul bila app berjalan dari lokasi sementara (belum dipindah ke Applications). Pesan hasil aksi terakhir tampil di bawah langkah. App tidak membuka Chrome atau halaman `chrome://` secara otomatis.
+
 ## UI v0.2.5
 
 Section pertama Setup adalah **Bahasa**: pemilih **Bahasa antarmuka** dengan opsi **Ikuti sistem (nama bahasa efektif)**, English, Bahasa Indonesia, dan 日本語. Nama bahasa selalu ditulis dalam bahasanya sendiri. Perubahan langsung berlaku pada Setup, panel island, label aksesibilitas/tooltip, menu bar, judul jendela, serta popup extension yang terhubung. Keterangan di bawah pemilih menyatakan bahwa judul lagu, lirik, caption, dan pesan dari macOS/situs tetap dalam bahasa aslinya. Preferensi **Utamakan Jepang pada timestamp ganda** terpisah dari bahasa antarmuka. Dialog sistem seperti panel impor file mengikuti bahasa macOS.
