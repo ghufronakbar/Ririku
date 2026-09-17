@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Notch Box — Chrome Bridge",
-  "version": "0.2.5",
+  "name": "Ririku — Chrome Bridge",
+  "version": "0.3.0",
   "default_locale": "en",
   "description": "__MSG_extDescription__",
   "permissions": ["nativeMessaging"],

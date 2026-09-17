@@ -1,6 +1,6 @@
 importScripts("i18n.js");
 
-const hostName = "local.notchbox.bridge";
+const hostName = "io.github.lanstheprodigy.ririku.bridge";
 const sources = new Map();
 let nativePort = null;
 let retryAfter = 0;
@@ -20,7 +20,7 @@ function trustedSender(sender) {
 }
 
 function updateTitle() {
-  chrome.action.setTitle({ title: notchboxText(language, connected ? "titleConnected" : "titleDisconnected") });
+  chrome.action.setTitle({ title: ririkuText(language, connected ? "titleConnected" : "titleDisconnected") });
 }
 
 function postNative(message) {
@@ -94,8 +94,8 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (!sender.tab && sender.id === chrome.runtime.id && sender.url === chrome.runtime.getURL("popup.html")) {
     if (message?.kind === "status") {
       connectHost();
-      const error = lastError?.text ?? (lastError ? notchboxText(language, lastError.key) : "");
-      respond({ connected, error, language: notchboxLanguage(language), sources: [...sources.values()].filter(source => Date.now() - source.updatedAt < 5000).length });
+      const error = lastError?.text ?? (lastError ? ririkuText(language, lastError.key) : "");
+      respond({ connected, error, language: ririkuLanguage(language), sources: [...sources.values()].filter(source => Date.now() - source.updatedAt < 5000).length });
     } else if (message?.kind === "reconnect" || message?.kind === "openSetup") {
       if (message.kind === "openSetup") {
         if (connected) postNative({ protocolVersion: 1, kind: "openSetup" });

@@ -13,10 +13,10 @@
         };
       }
     } catch {}
-    window.postMessage({ type: "notchbox-player-metadata-v1", metadata }, location.origin);
+    window.postMessage({ type: "ririku-player-metadata-v1", metadata }, location.origin);
   };
   window.addEventListener("message", event => {
-    if (event.source === window && event.origin === location.origin && event.data?.type === "notchbox-request-metadata-v1") publish();
+    if (event.source === window && event.origin === location.origin && event.data?.type === "ririku-request-metadata-v1") publish();
   });
   for (const event of ["loadedmetadata", "playing", "durationchange", "emptied", "yt-navigate-finish", "ytmusic-navigate-finish", "yt-player-updated"]) {
     document.addEventListener(event, publish, true);

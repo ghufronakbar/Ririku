@@ -14,12 +14,12 @@
     if (metadataUpdate !== null) return;
     metadataUpdate = setTimeout(() => {
       metadataUpdate = null;
-      window.postMessage({ type: "notchbox-request-metadata-v1" }, location.origin);
+      window.postMessage({ type: "ririku-request-metadata-v1" }, location.origin);
       sendSnapshot(true);
     }, 80);
   });
   window.addEventListener("message", event => {
-    if (event.source !== window || event.origin !== location.origin || event.data?.type !== "notchbox-player-metadata-v1") return;
+    if (event.source !== window || event.origin !== location.origin || event.data?.type !== "ririku-player-metadata-v1") return;
     const value = event.data.metadata;
     if (value !== null && (!value || typeof value.videoId !== "string" || !/^[A-Za-z0-9_-]{11}$/.test(value.videoId)
       || typeof value.title !== "string" || value.title.length > 500 || typeof value.artist !== "string" || value.artist.length > 500)) return;
@@ -183,6 +183,6 @@
   document.addEventListener("ytmusic-navigate-finish", () => sendSnapshot(true));
   document.addEventListener("visibilitychange", () => sendSnapshot(true));
   const heartbeat = setInterval(() => sendSnapshot(), 1000);
-  window.postMessage({ type: "notchbox-request-metadata-v1" }, location.origin);
+  window.postMessage({ type: "ririku-request-metadata-v1" }, location.origin);
   sendSnapshot(true);
 })();
