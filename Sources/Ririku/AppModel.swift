@@ -96,7 +96,7 @@ final class AppModel: ObservableObject {
     @Published var bridgeError: UIText?
     @Published var connectedExtensionVersion: String?
     @Published var chromeSetupMessage: UIText?
-    /// Dinaikkan setelah aksi Setup Chrome agar status berkas dibaca ulang saat render.
+    /// Incremented after a Chrome setup action so the file-based status is read again on the next render.
     @Published private(set) var chromeSetupRevision = 0
     @Published var pendingCommand: String?
     @Published var notchWidth: CGFloat = 180
@@ -162,7 +162,7 @@ final class AppModel: ObservableObject {
     func t(_ key: String, _ arguments: String...) -> String { localizer.string(key, arguments) }
     func t(_ text: UIText) -> String { localizer.string(text.key, text.arguments) }
 
-    /// Label demo diterjemahkan; label dari extension adalah nama layanan dan tidak diterjemahkan.
+    /// The demo label is translated; labels from the extension are service names and stay as they are.
     func sourceLabel(for snapshot: PlaybackSnapshot) -> String {
         snapshot.sessionId == "demo" && snapshot.sourceId == "demo" ? t("Local demo") : snapshot.sourceLabel
     }

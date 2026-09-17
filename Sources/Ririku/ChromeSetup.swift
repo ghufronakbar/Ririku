@@ -1,8 +1,8 @@
 import Foundation
 import RirikuCore
 
-/// Pemasangan koneksi Chrome tanpa Terminal. ID extension tetap karena manifest memuat field `key`,
-/// sehingga app dapat menulis manifest native host sendiri dan menyalin extension untuk Load unpacked.
+/// Chrome setup without Terminal. The extension ID is fixed because its manifest carries a `key`,
+/// so the app can write the native host manifest itself and copy the extension for Load unpacked.
 enum ChromeSetup {
     static let extensionID = "bmmbkmngcmjoihlcmehlnfpedhoefofi"
     static let hostName = "io.github.lanstheprodigy.ririku.bridge"
@@ -12,7 +12,7 @@ enum ChromeSetup {
         case unavailable, translocated, notRegistered, needsUpdate, registered
     }
 
-    /// Dapat diarahkan ke folder sementara oleh harness uji agar tidak menyentuh profil Chrome pengguna.
+    /// Test harnesses point this at a temporary folder so they never touch the user's Chrome profile.
     static var home = FileManager.default.homeDirectoryForCurrentUser
     private static var origin: String { "chrome-extension://\(extensionID)/" }
 
@@ -24,7 +24,7 @@ enum ChromeSetup {
         home.appendingPathComponent("Library/Application Support/Ririku/Chrome Extension", isDirectory: true)
     }
 
-    /// Hanya tersedia saat app berjalan dari bundle `.app` hasil `build-app.sh`.
+    /// Available only when the app runs from the `.app` bundle produced by `build-app.sh`.
     static var hostExecutableURL: URL? {
         let url = Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/RirikuHost")
         return Bundle.main.bundleURL.pathExtension == "app" && FileManager.default.isExecutableFile(atPath: url.path) ? url : nil
@@ -35,7 +35,7 @@ enum ChromeSetup {
         return extensionVersion(at: url) == nil ? nil : url
     }
 
-    /// App dari unduhan yang belum dipindahkan dijalankan macOS dari lokasi sementara; path host akan hilang setelah keluar.
+    /// macOS runs a downloaded app that was never moved from a temporary path, which disappears after it quits.
     static var isTranslocated: Bool { Bundle.main.bundlePath.contains("/AppTranslocation/") }
 
     static var bundledExtensionVersion: String? { bundledExtensionURL.flatMap(extensionVersion(at:)) }
@@ -64,7 +64,7 @@ enum ChromeSetup {
         try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: manifestURL.path)
     }
 
-    /// Menyalin ulang extension bawaan ke Application Support agar dapat dipilih dari dialog Load unpacked.
+    /// Copies the bundled extension into Application Support so it can be picked in the Load unpacked dialog.
     static func installExtension() throws -> URL {
         guard let source = bundledExtensionURL else { throw BridgeError.system("Open Ririku from its app bundle to copy the extension.") }
         let files = FileManager.default

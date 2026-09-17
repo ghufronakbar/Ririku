@@ -7,13 +7,13 @@ enum InterfaceLanguage: String, CaseIterable, Identifiable {
     static let supportedCodes = ["en", "id", "ja"]
     var id: String { rawValue }
 
-    /// Mode sistem memilih bahasa pertama yang didukung dari preferensi macOS, lalu English.
+    /// System mode picks the first supported language from the macOS preferences, otherwise English.
     var resolvedCode: String {
         guard self == .system else { return rawValue }
         return Bundle.preferredLocalizations(from: Self.supportedCodes, forPreferences: Locale.preferredLanguages).first ?? "en"
     }
 
-    /// Nama bahasa selalu ditulis dalam bahasanya sendiri.
+    /// A language name is always written in that language.
     static func nativeName(of code: String) -> String {
         switch code {
         case "id": return "Bahasa Indonesia"
@@ -23,8 +23,8 @@ enum InterfaceLanguage: String, CaseIterable, Identifiable {
     }
 }
 
-/// Teks UI yang disimpan sebagai key English + argumen, lalu diterjemahkan saat ditampilkan
-/// agar status lama ikut berganti ketika bahasa diubah.
+/// Interface text stored as an English key plus arguments and translated when displayed,
+/// so statuses kept in the model follow a language change.
 struct UIText: Equatable {
     let key: String
     let arguments: [String]
@@ -44,8 +44,8 @@ struct UIText: Equatable {
     }
 }
 
-/// Mencari terjemahan langsung di `<kode>.lproj` bundle aplikasi sehingga bahasa dapat diganti tanpa restart.
-/// Key adalah teks English; tanpa berkas terjemahan (mis. binary di luar bundle) teks English yang tampil.
+/// Looks translations up in the app bundle's `<code>.lproj` directly, so the language can change without a restart.
+/// Keys are the English text; without a translation file (for example a binary outside the bundle) English is shown.
 struct Localizer {
     let code: String
     let locale: Locale

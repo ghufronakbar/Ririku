@@ -3,7 +3,7 @@ import Darwin
 
 public enum BridgeError: Error, LocalizedError {
     case invalidFrame
-    /// Teks sumber English; argumen mengisi `%@` agar aplikasi dapat menerjemahkannya.
+    /// English source text; `arguments` fill its `%@` placeholders so the app can localize it.
     case system(String, [String] = [])
 
     public var message: (key: String, arguments: [String]) {

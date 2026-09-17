@@ -67,7 +67,7 @@ final class BridgeServer {
         try? handle.close()
     }
 
-    /// Bahasa UI terkini ikut dikirim agar popup extension memakai bahasa yang sama.
+    /// The current interface language is sent along so the extension popup uses the same one.
     func setLanguage(_ code: String) {
         lock.lock()
         language = code

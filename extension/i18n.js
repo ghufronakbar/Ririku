@@ -1,4 +1,4 @@
-// Teks popup/status extension. Bahasa mengikuti aplikasi native bila terhubung, lalu bahasa UI Chrome, lalu English.
+// Popup and status text. The language follows the native app when connected, then Chrome's UI language, then English.
 const RIRIKU_MESSAGES = {
   en: {
     checking: "Checking connection…",
