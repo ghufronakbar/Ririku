@@ -50,30 +50,30 @@ open build/Ririku.app
 
 `build-app.sh` runs the localization check, builds a release configuration with SwiftPM, assembles `build/Ririku.app` (app executable, `RirikuHost`, `.lproj` folders, and a copy of `extension/` as `ChromeExtension`), writes `Info.plist`, and signs the bundle ad hoc. Quit a running Ririku before rebuilding.
 
-`swift build` alone is enough to check that the code compiles, but a bare executable has no bundle resources: it shows English text and cannot register the Chrome connection.
+`swift build` alone is enough to check that the code compiles, but a bare executable has no bundle resources: it shows English text and cannot register the browser connection.
 
-### Connecting Chrome during development
+### Connecting a browser during development
 
-Use **Setup → Chrome connection** in the built app, exactly like a user (see the [user guide](../user-guide.md#3-connect-chrome)). Alternatively:
+Use **Setup → Browser connection** in the built app, exactly like a user (see the [user guide](../user-guide.md#3-connect-your-browser)). Alternatively:
 
-1. In `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the repository's `extension/` folder. The `key` field in `manifest.json` gives it the fixed ID `bmmbkmngcmjoihlcmehlnfpedhoefofi`.
+1. On the browser's extensions page, enable **Developer mode**, click **Load unpacked**, and select the repository's `extension/` folder. The `key` field in `manifest.json` gives it the fixed ID `bmmbkmngcmjoihlcmehlnfpedhoefofi` in every Chromium browser.
 2. Register the native host for `build/Ririku.app`:
 
    ```sh
    /usr/bin/python3 scripts/install-host.py
    ```
 
-   Pass `--app "/path/Ririku.app"` for another bundle, or an extension ID for a fork with a different key.
+   Pass `--browser brave` (or `edge`, `vivaldi`, `opera`, `chromium`, `arc`) for another browser, `--app "/path/Ririku.app"` for another bundle, or an extension ID for a fork with a different key.
 
-Load only one copy of the extension (repository folder **or** the copy made by Setup). After changing extension files, click the extension's reload button and refresh YouTube tabs.
+Load only one copy of the extension (repository folder **or** the copy made by Setup) in one browser at a time: the app accepts a single host connection, so a second browser stays disconnected. After changing extension files, click the extension's reload button and refresh YouTube tabs.
 
 ### Debugging
 
 - **App logs:** run `build/Ririku.app/Contents/MacOS/Ririku` from Terminal to see output.
-- **Extension:** in `chrome://extensions`, open **Inspect views: service worker** for `background.js`; content scripts log in the YouTube tab's DevTools console.
-- **Native host:** its errors go to Chrome's stderr. Launch Chrome from Terminal (`/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome`) to see them.
+- **Extension:** on the browser's extensions page, open **Inspect views: service worker** for `background.js`; content scripts log in the YouTube tab's DevTools console.
+- **Native host:** its errors go to the browser's stderr. Launch the browser from Terminal (`/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome`) to see them.
 - **Preferences:** `defaults read io.github.lanstheprodigy.ririku`. **Lyrics cache:** `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`.
-- **Without Chrome:** turn on **Setup → Prototype → Local demo**.
+- **Without a browser:** turn on **Setup → Prototype → Local demo**.
 
 Do not paste cookies, tokens, or personal browsing data into logs or issues.
 
@@ -100,9 +100,9 @@ GitHub Actions runs the same checks on every push and pull request (`.github/wor
 | Target | Covers |
 | --- | --- |
 | `RirikuCoreTests` | LRC parsing, active line and offset, the Japanese display filter, snapshot validation, the position estimate, title normalization and candidate matching, bridge framing, and island motion |
-| `RirikuTests` | Interface language resolution, `UIText`/`Localizer`, `ChromeSetup` outside an app bundle, the launch-at-login state, source selection, commands and acks, preferences, panel geometry, and lyric rows |
+| `RirikuTests` | Interface language resolution, `UIText`/`Localizer`, the browser catalogue and `BrowserSetup` outside an app bundle, the launch-at-login state, source selection, commands and acks, preferences, panel geometry, and lyric rows |
 
-The tests use fixtures only: no network requests, no Chrome, and no access to your Chrome profile (`ChromeSetup.home` can be redirected, and model tests use an in-memory `UserDefaults` and a temporary cache folder). The test binary is not an app bundle, so `LoginItem` reports `unavailable` and the tests never read or change your real login items. UI rendering, real Chrome integration, registering a login item, and audio timing are still verified by hand. Describe in your pull request what you ran and what you could not test.
+The tests use fixtures only: no network requests, no browser, and no access to a real browser profile (`BrowserSetup.home` can be redirected, and model tests use an in-memory `UserDefaults` and a temporary cache folder). The test binary is not an app bundle, so `LoginItem` reports `unavailable` and the tests never read or change your real login items. UI rendering, real browser integration, registering a login item, and audio timing are still verified by hand. Describe in your pull request what you ran and what you could not test.
 
 ### Manual smoke test
 
@@ -114,3 +114,4 @@ On both YouTube and YouTube Music:
 4. Check that the highlighted lyric line matches the audio, not just that text moves. Try a song without lyrics, captions (CC), an ad, and a live stream.
 5. Switch the interface language and check Setup, the panel, the menu bar, and the extension popup.
 6. Turn **Open Ririku at login** on in Setup, check that macOS lists Ririku under **System Settings → General → Login Items**, log out and back in, then turn it off again.
+7. With a second Chromium browser installed, click **Register** again, load the extension there, and check that step 4 names that browser. Only one browser connects at a time.

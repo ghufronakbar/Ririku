@@ -1,15 +1,15 @@
-// Popup and status text. The language follows the native app when connected, then Chrome's UI language, then English.
+// Popup and status text. The language follows the native app when connected, then the browser's UI language, then English.
 const RIRIKU_MESSAGES = {
   en: {
     checking: "Checking connection…",
-    waitingPlayer: "Waiting for a Chrome player.",
+    waitingPlayer: "Waiting for a player in this browser.",
     openSetup: "Open app Setup",
     reconnect: "Try connecting now",
     note: "Music source, automatic lyrics, and appearance are configured in the native Setup window.",
     connected: "Connected to Ririku",
     connecting: "Connecting automatically…",
     sources: "Player tabs detected: {count}.",
-    noSources: "Play YouTube or YouTube Music in this Chrome profile.",
+    noSources: "Play YouTube or YouTube Music in this browser profile.",
     extensionChanged: "The extension changed. Close and reopen this panel.",
     openingSetup: "Opening Setup…",
     tryingConnect: "Trying to connect…",
@@ -17,18 +17,18 @@ const RIRIKU_MESSAGES = {
     waitingNative: "Waiting to connect to the native app.",
     disconnected: "Connection lost. Reconnecting automatically.",
     titleConnected: "Ririku: local bridge connected",
-    titleDisconnected: "Bridge disconnected. Open Ririku and finish Setup → Chrome connection."
+    titleDisconnected: "Bridge disconnected. Open Ririku and finish Setup → Browser connection."
   },
   id: {
     checking: "Memeriksa koneksi…",
-    waitingPlayer: "Menunggu pemutar Chrome.",
+    waitingPlayer: "Menunggu pemutar di browser ini.",
     openSetup: "Buka Setup aplikasi",
     reconnect: "Coba sambungkan sekarang",
     note: "Sumber musik, lirik otomatis, dan tampilan diatur di jendela Setup native.",
     connected: "Terhubung ke Ririku",
     connecting: "Menyambungkan otomatis…",
     sources: "{count} tab pemutar terdeteksi.",
-    noSources: "Putar YouTube atau YouTube Music pada profil Chrome ini.",
+    noSources: "Putar YouTube atau YouTube Music pada profil browser ini.",
     extensionChanged: "Extension berubah. Tutup lalu buka kembali panel ini.",
     openingSetup: "Membuka Setup…",
     tryingConnect: "Mencoba menyambungkan…",
@@ -36,18 +36,18 @@ const RIRIKU_MESSAGES = {
     waitingNative: "Menunggu koneksi ke aplikasi native.",
     disconnected: "Koneksi terputus. Mencoba menyambung ulang otomatis.",
     titleConnected: "Ririku: bridge lokal terhubung",
-    titleDisconnected: "Bridge terputus. Buka Ririku dan selesaikan Setup → Koneksi Chrome."
+    titleDisconnected: "Bridge terputus. Buka Ririku dan selesaikan Setup → Koneksi browser."
   },
   ja: {
     checking: "接続を確認中…",
-    waitingPlayer: "Chrome のプレーヤーを待っています。",
+    waitingPlayer: "このブラウザのプレーヤーを待っています。",
     openSetup: "アプリのセットアップを開く",
     reconnect: "今すぐ接続を試す",
     note: "音楽ソース、歌詞の自動検索、外観はネイティブのセットアップウインドウで設定します。",
     connected: "Ririku に接続しました",
     connecting: "自動で接続中…",
     sources: "プレーヤーのタブを {count} 個検出しました。",
-    noSources: "この Chrome プロファイルで YouTube または YouTube Music を再生してください。",
+    noSources: "このブラウザのプロファイルで YouTube または YouTube Music を再生してください。",
     extensionChanged: "拡張機能が更新されました。このパネルを閉じて開き直してください。",
     openingSetup: "セットアップを開いています…",
     tryingConnect: "接続を試しています…",
@@ -55,7 +55,7 @@ const RIRIKU_MESSAGES = {
     waitingNative: "ネイティブアプリへの接続を待っています。",
     disconnected: "接続が切れました。自動で再接続しています。",
     titleConnected: "Ririku: ローカルブリッジに接続済み",
-    titleDisconnected: "ブリッジが切断されました。Ririku を開き、セットアップの「Chrome との接続」を完了してください。"
+    titleDisconnected: "ブリッジが切断されました。Ririku を開き、セットアップの「ブラウザとの接続」を完了してください。"
   }
 };
 

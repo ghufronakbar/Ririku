@@ -12,6 +12,11 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 ### Added
 - Synced lyric rows slide upward on adjacent lines; seeks snap and Reduce Motion disables the animation.
 - Offline regression tests for browser clock/seek transitions and lyrics service recovery. Real Chrome playback and animation rendering still need manual verification.
+- **Setup → Startup:** **Open Ririku at login**, off by default. It registers the app bundle with `SMAppService`, so no helper tool or Terminal command is needed, and it stays unavailable while the app runs from a temporary location.
+- **Other Chromium browsers:** Setup registers the native host for every installed browser it knows (Chrome, Brave, Edge, Vivaldi, Opera, Chromium, Arc) in one click, names them under step 1, and offers each browser's own extensions address. The native host reports which browser launched it, so the panel and step 4 name it. One browser profile is connected at a time, and only Chrome is verified so far.
+
+### Changed
+- **Setup → Chrome connection** is now **Setup → Browser connection**, and interface text that named Chrome now names the browser. The extension is listed as **Ririku — Browser Bridge**; reload it once from `chrome://extensions` after updating.
 
 ## [0.3.0] - Unreleased
 

@@ -1,23 +1,30 @@
+import AppKit
 import Foundation
 import RirikuCore
 
-/// Chrome setup without Terminal. The extension ID is fixed because its manifest carries a `key`,
-/// so the app can write the native host manifest itself and copy the extension for Load unpacked.
-enum ChromeSetup {
+/// Browser setup without Terminal. The extension ID is fixed because its manifest carries a `key`,
+/// and every Chromium browser derives the same ID from it, so the app can write the native host
+/// manifest for each installed browser itself and copy the extension for Load unpacked.
+enum BrowserSetup {
     static let extensionID = "bmmbkmngcmjoihlcmehlnfpedhoefofi"
     static let hostName = "io.github.lanstheprodigy.ririku.bridge"
-    static let extensionsPage = "chrome://extensions"
 
     enum HostStatus: Equatable {
         case unavailable, translocated, notRegistered, needsUpdate, registered
     }
 
-    /// Test harnesses point this at a temporary folder so they never touch the user's Chrome profile.
+    /// Test harnesses point this at a temporary folder so they never touch a real browser profile.
     static var home = FileManager.default.homeDirectoryForCurrentUser
     private static var origin: String { "chrome-extension://\(extensionID)/" }
 
-    static var manifestURL: URL {
-        home.appendingPathComponent("Library/Application Support/Google/Chrome/NativeMessagingHosts/\(hostName).json")
+    /// Only browsers that are actually installed are offered, because a folder alone can be left
+    /// behind by another application.
+    static func installedBrowsers() -> [Browser] {
+        Browser.all.filter { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0.bundleID) != nil }
+    }
+
+    static func manifestURL(for browser: Browser) -> URL {
+        home.appendingPathComponent("Library/Application Support/\(browser.supportFolder)/NativeMessagingHosts/\(hostName).json")
     }
 
     static var installedExtensionURL: URL {
@@ -41,27 +48,39 @@ enum ChromeSetup {
     static var bundledExtensionVersion: String? { bundledExtensionURL.flatMap(extensionVersion(at:)) }
     static var installedExtensionVersion: String? { extensionVersion(at: installedExtensionURL) }
 
-    static func hostStatus() -> HostStatus {
+    static func hostStatus(for browser: Browser) -> HostStatus {
         guard let host = hostExecutableURL else { return .unavailable }
         if isTranslocated { return .translocated }
-        guard let data = try? Data(contentsOf: manifestURL) else { return .notRegistered }
+        guard let data = try? Data(contentsOf: manifestURL(for: browser)) else { return .notRegistered }
         guard let manifest = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               manifest["name"] as? String == hostName, manifest["path"] as? String == host.path,
               (manifest["allowed_origins"] as? [String])?.contains(origin) == true else { return .needsUpdate }
         return .registered
     }
 
-    static func registerHost() throws {
-        guard let host = hostExecutableURL else { throw BridgeError.system("Open Ririku from its app bundle to connect Chrome.") }
-        guard !isTranslocated else { throw BridgeError.system("Move Ririku to the Applications folder and open it again before connecting Chrome.") }
+    /// Registers every installed browser, so the user clicks once no matter how many they use.
+    /// The first failure is reported, and the browsers registered before it keep their manifest.
+    static func registerHosts() throws -> [Browser] {
+        let browsers = installedBrowsers()
+        guard !browsers.isEmpty else {
+            throw BridgeError.system("No supported browser found. Ririku works with Chrome, Brave, Edge, Vivaldi, Opera, Chromium, and Arc.")
+        }
+        for browser in browsers { try registerHost(for: browser) }
+        return browsers
+    }
+
+    static func registerHost(for browser: Browser) throws {
+        guard let host = hostExecutableURL else { throw BridgeError.system("Open Ririku from its app bundle to connect a browser.") }
+        guard !isTranslocated else { throw BridgeError.system("Move Ririku to the Applications folder and open it again before connecting a browser.") }
         let manifest: [String: Any] = [
             "name": hostName, "description": "Ririku local music bridge", "path": host.path,
             "type": "stdio", "allowed_origins": [origin]
         ]
         let data = try JSONSerialization.data(withJSONObject: manifest, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
-        try FileManager.default.createDirectory(at: manifestURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try data.write(to: manifestURL, options: .atomic)
-        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: manifestURL.path)
+        let url = manifestURL(for: browser)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try data.write(to: url, options: .atomic)
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
     }
 
     /// Copies the bundled extension into Application Support so it can be picked in the Load unpacked dialog.

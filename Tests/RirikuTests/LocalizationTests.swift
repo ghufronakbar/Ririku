@@ -59,15 +59,16 @@ struct UITextTests {
     }
 }
 
-@Suite("Chrome setup outside an app bundle")
-struct ChromeSetupTests {
+@Suite("Browser setup outside an app bundle")
+struct BrowserSetupTests {
     @Test("Reports that registration needs the app bundle")
     func requiresAppBundle() {
-        #expect(ChromeSetup.hostExecutableURL == nil)
-        #expect(ChromeSetup.bundledExtensionURL == nil)
-        #expect(ChromeSetup.hostStatus() == .unavailable)
-        #expect(throws: BridgeError.self) { try ChromeSetup.registerHost() }
-        #expect(throws: BridgeError.self) { _ = try ChromeSetup.installExtension() }
+        let chrome = Browser.named("Chrome")!
+        #expect(BrowserSetup.hostExecutableURL == nil)
+        #expect(BrowserSetup.bundledExtensionURL == nil)
+        #expect(BrowserSetup.hostStatus(for: chrome) == .unavailable)
+        #expect(throws: BridgeError.self) { try BrowserSetup.registerHost(for: chrome) }
+        #expect(throws: BridgeError.self) { _ = try BrowserSetup.installExtension() }
     }
 
     @Test("Reads an extension version from a manifest")
@@ -75,17 +76,85 @@ struct ChromeSetupTests {
         let folder = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-ext-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: folder) }
-        #expect(ChromeSetup.extensionVersion(at: folder) == nil)
+        #expect(BrowserSetup.extensionVersion(at: folder) == nil)
         try #"{"version":"9.9.9"}"#.write(to: folder.appendingPathComponent("manifest.json"), atomically: true, encoding: .utf8)
-        #expect(ChromeSetup.extensionVersion(at: folder) == "9.9.9")
+        #expect(BrowserSetup.extensionVersion(at: folder) == "9.9.9")
         try "not json".write(to: folder.appendingPathComponent("manifest.json"), atomically: true, encoding: .utf8)
-        #expect(ChromeSetup.extensionVersion(at: folder) == nil)
+        #expect(BrowserSetup.extensionVersion(at: folder) == nil)
     }
 
     @Test("Uses the fixed extension id and host name")
     func usesFixedIdentifiers() {
-        #expect(ChromeSetup.extensionID == "bmmbkmngcmjoihlcmehlnfpedhoefofi")
-        #expect(ChromeSetup.hostName == "io.github.lanstheprodigy.ririku.bridge")
-        #expect(ChromeSetup.manifestURL.lastPathComponent == "io.github.lanstheprodigy.ririku.bridge.json")
+        #expect(BrowserSetup.extensionID == "bmmbkmngcmjoihlcmehlnfpedhoefofi")
+        #expect(BrowserSetup.hostName == "io.github.lanstheprodigy.ririku.bridge")
+        #expect(BrowserSetup.manifestURL(for: Browser.named("Chrome")!).lastPathComponent == "io.github.lanstheprodigy.ririku.bridge.json")
+    }
+
+    @Test("Writes the host manifest into each browser's own folder")
+    func usesBrowserFolders() {
+        func folder(_ name: String) -> String {
+            BrowserSetup.manifestURL(for: Browser.named(name)!).deletingLastPathComponent().path
+        }
+        #expect(folder("Chrome").hasSuffix("Application Support/Google/Chrome/NativeMessagingHosts"))
+        #expect(folder("Brave").hasSuffix("Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts"))
+        #expect(folder("Edge").hasSuffix("Application Support/Microsoft Edge/NativeMessagingHosts"))
+        #expect(Set(Browser.all.map(\.supportFolder)).count == Browser.all.count, "each browser needs its own folder")
+    }
+}
+
+@Suite("Browser catalogue")
+struct BrowserTests {
+    @Test("Chrome comes first and every entry is unique")
+    func listsBrowsers() {
+        #expect(Browser.all.first?.name == "Chrome")
+        #expect(Set(Browser.all.map(\.bundleID)).count == Browser.all.count)
+        #expect(Set(Browser.all.map(\.name)).count == Browser.all.count)
+        #expect(Browser.all.allSatisfy { $0.extensionsPage.hasSuffix("://extensions") })
+        #expect(Browser.named("Brave")?.bundleID == "com.brave.Browser")
+        #expect(Browser.named("Safari") == nil, "only Chromium browsers are listed")
+        #expect(Browser.with(bundleID: "com.microsoft.edgemac")?.name == "Edge")
+    }
+
+    @MainActor
+    @Test("Labels the playing source with the browser that connected")
+    func labelsTheConnectedBrowser() throws {
+        let cache = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-lyrics-\(UUID().uuidString)")
+        let model = AppModel(lyricsService: LyricsService(cacheDirectory: cache), defaults: MemoryDefaults())
+        model.interfaceLanguage = .en
+        let packet: [String: Any] = [
+            "protocolVersion": 1, "kind": "snapshot", "sessionId": "s", "sourceId": "tab:1",
+            "sourceLabel": "YouTube Music · Chrome", "sequence": 1, "trackId": "abc", "title": "Song",
+            "artist": "Artist", "position": 1, "duration": 100, "playbackRate": 1, "state": "playing",
+            "isAdvertisement": false, "capabilities": ["playPause": true, "previous": false, "next": false, "seek": true]
+        ]
+        let snapshot = try JSONDecoder().decode(PlaybackSnapshot.self, from: JSONSerialization.data(withJSONObject: packet))
+        #expect(model.sourceLabel(for: snapshot) == "YouTube Music · Chrome", "without a host the extension label is kept")
+
+        func hostPacket(_ browser: String) -> Data {
+            try! JSONSerialization.data(withJSONObject: ["protocolVersion": 1, "kind": "host", "browser": browser])
+        }
+        model.receive(hostPacket("Brave"))
+        #expect(model.connectedBrowser == "Brave")
+        #expect(model.sourceLabel(for: snapshot) == "YouTube Music · Brave")
+
+        model.receive(hostPacket("Safari"))
+        #expect(model.connectedBrowser == nil, "only known browser names are accepted")
+        model.receive(hostPacket("Edge"))
+        model.disconnect()
+        #expect(model.connectedBrowser == nil)
+    }
+
+    @Test("Names the browser that launched a process from its bundle")
+    func readsBundleIdentifier() throws {
+        let root = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-app-\(UUID().uuidString)")
+        let app = root.appendingPathComponent("Brave Browser.app/Contents/MacOS", isDirectory: true)
+        try FileManager.default.createDirectory(at: app, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let executable = app.appendingPathComponent("Brave Browser").path
+        #expect(Browser.containing(executablePath: executable) == nil, "a bundle without an Info.plist names nothing")
+        let plist = try PropertyListSerialization.data(fromPropertyList: ["CFBundleIdentifier": "com.brave.Browser"], format: .xml, options: 0)
+        try plist.write(to: app.deletingLastPathComponent().appendingPathComponent("Info.plist"))
+        #expect(Browser.containing(executablePath: executable)?.name == "Brave")
+        #expect(Browser.containing(executablePath: "/bin/zsh") == nil)
     }
 }

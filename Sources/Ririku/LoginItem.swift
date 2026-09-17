@@ -34,8 +34,8 @@ enum LoginItem {
     }
 
     static func state() -> State {
-        guard isAvailable, !ChromeSetup.isTranslocated else {
-            return state(available: isAvailable, translocated: ChromeSetup.isTranslocated, status: .notRegistered)
+        guard isAvailable, !BrowserSetup.isTranslocated else {
+            return state(available: isAvailable, translocated: BrowserSetup.isTranslocated, status: .notRegistered)
         }
         return state(available: true, translocated: false, status: SMAppService.mainApp.status)
     }
@@ -45,7 +45,7 @@ enum LoginItem {
         guard isAvailable else {
             throw BridgeError.system("Open Ririku from its app bundle to open it at login.")
         }
-        guard !enabled || !ChromeSetup.isTranslocated else {
+        guard !enabled || !BrowserSetup.isTranslocated else {
             throw BridgeError.system("Move Ririku to the Applications folder and open it again before opening it at login.")
         }
         if enabled {

@@ -5,16 +5,16 @@ This document describes how Ririku v0.3.0 works. The reasoning behind major choi
 ## Overview
 
 ```text
-YouTube / YouTube Music page (Chrome)
+YouTube / YouTube Music page (Chromium browser)
   player-state.js   MAIN world: reads the YouTube player's video ID, title, author
   content.js        isolated world: <video> state, captions, ads, buttons → snapshots; runs commands
       ↕ chrome.runtime messages
 background.js       service worker: tracks tabs, forwards snapshots, validates commands, reconnects
-      ↕ Chrome native messaging (stdio)
+      ↕ Chromium native messaging (stdio)
 RirikuHost          native messaging host inside Ririku.app
       ↕ Unix domain socket /tmp/ririku-<uid>/bridge.sock
 Ririku.app          BridgeServer → AppModel → SwiftUI views in an AppKit panel
-                    LyricsService (LRCLIB), ArtworkService, ChromeSetup, Localizer
+                    LyricsService (LRCLIB), ArtworkService, BrowserSetup, Localizer
 ```
 
 Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and the Setup window share one `AppModel`, which owns playback sessions, source selection, lyrics state, preferences, and localization. Views read the model; they never talk to the browser directly.
@@ -23,15 +23,15 @@ Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and th
 
 | Target | Responsibility |
 | --- | --- |
-| `RirikuCore` | Code without UI: `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation. |
-| `Ririku` | `main.swift` (app delegate, `NSPanel`, menu bar, hover, resize animation), `AppModel`, `PlayerView`, `SetupView`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `ChromeSetup`, `LoginItem`, `Localization`. |
-| `RirikuHost` | Relays framed messages between Chrome (stdin/stdout) and the app socket. If the app is not running and the first message is `openSetup`, it launches the enclosing `Ririku.app` with `open -g` and retries for up to 4 seconds. |
+| `RirikuCore` | Code without UI: the `Browser` catalogue, `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation. |
+| `Ririku` | `main.swift` (app delegate, `NSPanel`, menu bar, hover, resize animation), `AppModel`, `PlayerView`, `SetupView`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `BrowserSetup`, `LoginItem`, `Localization`. |
+| `RirikuHost` | Relays framed messages between the browser (stdin/stdout) and the app socket. It names its own browser from its parent process and sends that as the first message. If the app is not running and the first message is `openSetup`, it launches the enclosing `Ririku.app` with `open -g` and retries for up to 4 seconds. |
 
 ## Bridge protocol
 
-All messages are JSON objects with `"protocolVersion": 1` and a `kind`. Between `RirikuHost` and the app, each message is framed as a little-endian `UInt32` length followed by the JSON body, limited to 256 KiB (`Frames` in `RirikuCore`). The same framing is used on the host's stdio, as required by Chrome native messaging.
+All messages are JSON objects with `"protocolVersion": 1` and a `kind`. Between `RirikuHost` and the app, each message is framed as a little-endian `UInt32` length followed by the JSON body, limited to 256 KiB (`Frames` in `RirikuCore`). The same framing is used on the host's stdio, as required by Chromium native messaging.
 
-The socket lives in `/tmp/ririku-<uid>` (directory mode 0700, socket 0600). Both sides check the peer's user ID. A lock file (`bridge.sock.lock`) prevents a second app instance from taking over, and the app accepts one host connection at a time, so one Chrome profile can be connected.
+The socket lives in `/tmp/ririku-<uid>` (directory mode 0700, socket 0600). Both sides check the peer's user ID. A lock file (`bridge.sock.lock`) prevents a second app instance from taking over, and the app accepts one host connection at a time, so one browser profile can be connected.
 
 ### Extension → app
 
@@ -42,6 +42,7 @@ The socket lives in `/tmp/ririku-<uid>` (directory mode 0700, socket 0600). Both
 | `ack` | `commandId`, `ok` | Result of a command. The app shows an error if no ack arrives within 3 seconds. |
 | `openSetup` | | From the popup's **Open app Setup** button. |
 | `extension` | `version` | Sent after connecting (after any pending `openSetup`). The app accepts only numeric versions and compares it with the bundled extension. |
+| `host` | `browser` | Sent by `RirikuHost` itself, before anything from the extension, naming the browser that launched it. The app accepts only the names in `Browser.all`. |
 
 ### App → extension
 
@@ -108,14 +109,19 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 
 Interface text is written in English in code and translated through `Localization/<code>.lproj/Localizable.strings`. `Localizer` loads the chosen `.lproj` sub-bundle directly so the language can change without restarting. Stored statuses are `UIText` (key plus arguments) and are translated at render time. See [localization.md](localization.md).
 
-## Chrome setup
+## Browser setup
 
-The extension manifest contains a public `key`, so the unpacked extension always has the ID `bmmbkmngcmjoihlcmehlnfpedhoefofi`; this was confirmed in Chrome on 2026-09-18, with the app reporting the connected extension version. `ChromeSetup`, triggered only by Setup buttons:
+The extension manifest contains a public `key`, so the unpacked extension always has the ID `bmmbkmngcmjoihlcmehlnfpedhoefofi`, and every Chromium browser derives that same ID from the key. This was confirmed in Chrome on 2026-09-18, with the app reporting the connected extension version; the other browsers are untested.
 
-- writes `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json` (mode 0600) pointing to `RirikuHost` inside the running bundle and allowing only that extension ID;
-- reports whether the manifest is missing, points to another copy of the app, or is current;
+`Browser.all` in `RirikuCore` lists the supported browsers with their bundle identifier, the folder for their host manifest under `~/Library/Application Support`, and the address of their extensions page. `BrowserSetup`, triggered only by Setup buttons:
+
+- offers only browsers that are installed, found by bundle identifier through `NSWorkspace`, because a `NativeMessagingHosts` folder is often left behind by another application;
+- writes `<browser folder>/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json` (mode 0600) for every installed browser in one click, pointing to `RirikuHost` inside the running bundle and allowing only that extension ID;
+- reports per browser whether the manifest is missing, points to another copy of the app, or is current; step 1 in Setup shows the worst status of the installed browsers;
 - refuses to register while the app runs from App Translocation (a temporary path used for quarantined apps that were not moved), because that path disappears;
-- copies the bundled extension to `~/Library/Application Support/Ririku/Chrome Extension` through a staging folder and `replaceItemAt`.
+- copies the bundled extension to `~/Library/Application Support/Ririku/Chrome Extension` through a staging folder and `replaceItemAt`. The folder keeps that name in every browser because it is the same extension.
+
+The bridge accepts one host connection at a time, so one browser profile is connected even when the extension is loaded in several browsers; the first to connect wins. The extension cannot tell the browsers apart (Brave and Vivaldi report themselves as Chrome), so `RirikuHost` reads its parent process with `proc_pidpath`, walks up to the enclosing `.app`, matches its bundle identifier against `Browser.all`, and sends `{"kind":"host","browser":"<name>"}` as its first message. The app accepts only names it knows and replaces the browser part of the label the extension sent, so the panel shows, for example, `YouTube Music · Brave`.
 
 ## Launch at login
 

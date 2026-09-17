@@ -7,7 +7,7 @@ This guide applies to the whole repository through the `AGENTS.md` symlink at th
 Before changing the project, read `README.md` and the documents relevant to the change (paths relative to the repository root):
 
 - `docs/user-guide.md`: user-facing behavior, settings, installation, and privacy.
-- `docs/development/README.md`: layout, build, Chrome setup for development, and verification.
+- `docs/development/README.md`: layout, build, browser setup for development, and verification.
 - `docs/development/architecture.md`: components, bridge protocol, clock, lyrics pipeline, UI, and security boundaries.
 - `docs/development/localization.md`: interface text and translations.
 - `docs/development/releasing.md`: versioning and releases.
@@ -20,7 +20,7 @@ Before changing the project, read `README.md` and the documents relevant to the 
 
 - Distinguish agreed decisions, technical choices, proposals, and things that still need validation. Do not treat a design, mockup, or proposal as implemented, or an implementation as an agreed decision.
 - Keep the app native (Swift, SwiftUI, AppKit); do not replace the main UI with Electron or a WebView.
-- Prioritize YouTube and YouTube Music in Chrome before Apple Music and Spotify desktop adapters.
+- Prioritize YouTube and YouTube Music in Chromium browsers (Chrome first) before Apple Music and Spotify desktop adapters.
 - Keep the notch panel focused on music and lyrics. Source selection and visual settings belong in the separate Setup window.
 - Avoid out-of-scope features, new dependencies, paid distribution requirements, and unnecessary permissions or data access (see `CONTRIBUTING.md`).
 - Do not change the bundle identifier, native host name, extension `key`, or socket and cache paths without an explicit decision and migration notes.
@@ -30,6 +30,6 @@ Before changing the project, read `README.md` and the documents relevant to the 
 
 ## Validation
 
-- Run the verification commands in `docs/development/README.md` that apply to the change, including `swift test`, and the manual smoke test when behavior with Chrome changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
-- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. `swift test` covers core logic, the app model, localization, and Chrome setup and launch-at-login helpers with fixtures only; UI rendering, real Chrome behavior, registering a login item, and audio timing still need manual checks.
+- Run the verification commands in `docs/development/README.md` that apply to the change, including `swift test`, and the manual smoke test when behavior with the browser changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
+- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. `swift test` covers core logic, the app model, localization, and the browser setup and launch-at-login helpers with fixtures only; UI rendering, real browser behavior, registering a login item, and audio timing still need manual checks.
 - For documentation changes, check consistency between documents, that claims match the code, and that relative links work.

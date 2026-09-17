@@ -96,9 +96,11 @@ final class AppModel: ObservableObject {
     @Published var commandError: UIText? { didSet { geometryChanged?() } }
     @Published var bridgeError: UIText?
     @Published var connectedExtensionVersion: String?
-    @Published var chromeSetupMessage: UIText?
-    /// Incremented after a Chrome setup action so the file-based status is read again on the next render.
-    @Published private(set) var chromeSetupRevision = 0
+    /// The browser whose native host is connected, reported by `RirikuHost` from its parent process.
+    @Published var connectedBrowser: String?
+    @Published var browserSetupMessage: UIText?
+    /// Incremented after a browser setup action so the file-based status is read again on the next render.
+    @Published private(set) var browserSetupRevision = 0
     @Published var loginItemMessage: UIText?
     /// Incremented after a launch-at-login change or a Setup visit, because macOS owns that state.
     @Published private(set) var loginItemRevision = 0
@@ -179,7 +181,11 @@ final class AppModel: ObservableObject {
 
     /// The demo label is translated; labels from the extension are service names and stay as they are.
     func sourceLabel(for snapshot: PlaybackSnapshot) -> String {
-        snapshot.sessionId == "demo" && snapshot.sourceId == "demo" ? t("Local demo") : snapshot.sourceLabel
+        if snapshot.sessionId == "demo" && snapshot.sourceId == "demo" { return t("Local demo") }
+        guard let browser = connectedBrowser else { return snapshot.sourceLabel }
+        // The extension labels the website; the browser part is replaced with the one that connected.
+        let service = snapshot.sourceLabel.components(separatedBy: " · ").first ?? snapshot.sourceLabel
+        return service + " · " + browser
     }
 
     var accent: Color {
@@ -244,7 +250,7 @@ final class AppModel: ObservableObject {
     }
 
     var lyricStatus: String {
-        guard let current else { return t("Waiting for music in Chrome") }
+        guard let current else { return t("Waiting for music in your browser") }
         if current.snapshot.isAdvertisement { return t("Ad · lyrics paused") }
         if usesVideoCaption {
             let caption = current.snapshot.captionText ?? ""
@@ -266,6 +272,11 @@ final class AppModel: ObservableObject {
         guard let envelope = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               envelope["protocolVersion"] as? Int == 1 else { return }
         if envelope["kind"] as? String == "openSetup" { openSetup?(); return }
+        if envelope["kind"] as? String == "host" {
+            // Only the names Ririku knows are accepted, so the label can never come from page data.
+            connectedBrowser = (envelope["browser"] as? String).flatMap { Browser.named($0)?.name }
+            return
+        }
         if envelope["kind"] as? String == "extension" {
             if let version = envelope["version"] as? String, version.range(of: #"^[0-9]+(\.[0-9]+){0,3}$"#, options: .regularExpression) != nil {
                 connectedExtensionVersion = version
@@ -308,6 +319,7 @@ final class AppModel: ObservableObject {
 
     func disconnect() {
         connectedExtensionVersion = nil
+        connectedBrowser = nil
         sessions = sessions.filter { $0.key == "demo:demo" }
         pendingCommand = nil
         refreshMedia()
@@ -542,25 +554,26 @@ final class AppModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self, self.pendingCommand == identifier else { return }
             self.pendingCommand = nil
-            self.commandError = UIText("Player not responding. Check the Chrome connection.")
+            self.commandError = UIText("Player not responding. Check the browser connection.")
         }
     }
 
-    func connectChrome() {
+    func connectBrowsers() {
         do {
-            try ChromeSetup.registerHost()
-            chromeSetupMessage = UIText("Chrome connection registered. Load the extension, then refresh an open YouTube tab.")
-        } catch { chromeSetupMessage = UIText(error: error) }
-        chromeSetupRevision += 1
+            let browsers = try BrowserSetup.registerHosts()
+            browserSetupMessage = UIText("Connection registered for %@. Load the extension, then refresh an open YouTube tab.",
+                                         browsers.map(\.name).joined(separator: ", "))
+        } catch { browserSetupMessage = UIText(error: error) }
+        browserSetupRevision += 1
     }
 
-    func showChromeExtension() {
+    func showExtensionFolder() {
         do {
-            let folder = try ChromeSetup.installExtension()
+            let folder = try BrowserSetup.installExtension()
             NSWorkspace.shared.activateFileViewerSelecting([folder])
-            chromeSetupMessage = nil
-        } catch { chromeSetupMessage = UIText(error: error) }
-        chromeSetupRevision += 1
+            browserSetupMessage = nil
+        } catch { browserSetupMessage = UIText(error: error) }
+        browserSetupRevision += 1
     }
 
     var launchAtLogin: Bool { LoginItem.state() == .on }
@@ -579,10 +592,10 @@ final class AppModel: ObservableObject {
 
     func openLoginItemsSettings() { NSWorkspace.shared.open(LoginItem.settingsURL) }
 
-    func copyExtensionsPage() {
+    func copyExtensionsPage(for browser: Browser) {
         NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(ChromeSetup.extensionsPage, forType: .string)
-        chromeSetupMessage = UIText("Copied chrome://extensions. Paste it into the Chrome address bar.")
+        NSPasteboard.general.setString(browser.extensionsPage, forType: .string)
+        browserSetupMessage = UIText("Copied %@. Paste it into the address bar of %@.", browser.extensionsPage, browser.name)
     }
 
     func importLyrics() {

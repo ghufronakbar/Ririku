@@ -4,7 +4,7 @@
 
 > Terjemahan dari panduan English untuk Ririku v0.3.1. Bila ada perbedaan, versi English yang berlaku.
 
-Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan Chrome ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau Chrome.
+Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan browser ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau browser.
 
 - [Sebelum mulai](#sebelum-mulai)
 - [Instalasi](#instalasi)
@@ -23,7 +23,7 @@ Yang dibutuhkan:
 
 - Mac dengan **macOS 14 Sonoma atau lebih baru**. Ririku dikembangkan di Apple silicon; Mac Intel belum diuji.
 - Idealnya MacBook dengan **notch**. Di layar lain panel muncul di bagian atas layar utama, dan ini belum diuji penuh.
-- **Google Chrome** yang memutar musik di **YouTube** atau **YouTube Music**. Browser dan aplikasi lain (Safari, Brave, Apple Music, Spotify) belum didukung.
+- **Browser Chromium** — Chrome, Brave, Edge, Vivaldi, Opera, Chromium, atau Arc — yang memutar musik di **YouTube** atau **YouTube Music**. Baru Chrome yang diuji; yang lain memakai extension yang sama tetapi belum terverifikasi. Safari, Firefox, Apple Music, dan Spotify tidak didukung.
 
 ## Instalasi
 
@@ -31,7 +31,7 @@ Yang dibutuhkan:
 
 Unduh `Ririku.zip` dari [halaman Releases](https://github.com/ghufronakbar/Ririku/releases), lalu klik dua kali untuk mengekstraknya. Rilis pertama belum diterbitkan; sampai saat itu, Ririku hanya bisa [di-build dari source](development/README.md).
 
-Pindahkan **Ririku.app** ke folder **Applications** **sebelum membukanya**. Jika dibuka langsung dari Downloads, macOS menjalankannya dari lokasi sementara dan Ririku tidak dapat terhubung ke Chrome.
+Pindahkan **Ririku.app** ke folder **Applications** **sebelum membukanya**. Jika dibuka langsung dari Downloads, macOS menjalankannya dari lokasi sementara dan Ririku tidak dapat terhubung ke browser.
 
 ### 2. Membuka Ririku pertama kali
 
@@ -54,20 +54,20 @@ Langkah ini cukup sekali untuk setiap versi yang diunduh.
 
 Ririku tidak memiliki ikon Dock. App berada di menu bar sebagai ikon **gelombang suara**, dan jendela **Setup** terbuka saat pertama kali dijalankan.
 
-### 3. Menghubungkan Chrome
+### 3. Menghubungkan browser
 
-Ririku membaca pemutar YouTube di Chrome melalui extension pendamping kecil. Di **Setup → Koneksi Chrome**, ikuti empat langkah berikut sekali saja. Setiap langkah menampilkan tanda centang hijau setelah selesai.
+Ririku membaca pemutar YouTube di browser melalui extension pendamping kecil. Di **Setup → Koneksi browser**, ikuti empat langkah berikut sekali saja. Setiap langkah menampilkan tanda centang hijau setelah selesai.
 
-1. **Daftarkan koneksi Chrome** → klik **Daftarkan**. Ririku mengizinkan Chrome berkomunikasi dengan salinan app ini.
+1. **Daftarkan koneksi browser** → klik **Daftarkan**. Ririku mengizinkan setiap browser Chromium yang ditemukan di Mac Anda berkomunikasi dengan salinan app ini, dan menyebut namanya di bawah langkah tersebut.
 2. **Salin folder extension** → klik **Tampilkan di Finder**. Ririku menyalin extension ke `~/Library/Application Support/Ririku/Chrome Extension` dan menampilkannya di Finder.
-3. **Muat extension di Chrome** → klik **Salin alamat**, tempel `chrome://extensions` di address bar Chrome, lalu tekan Return. Kemudian:
+3. **Muat extension di browser** → klik **Salin alamat** (bila ada beberapa browser, pilih satu dari menu), tempel alamat itu di address bar browser tersebut, lalu tekan Return. Kemudian:
    - Aktifkan **Developer mode** (pojok kanan atas).
    - Klik **Load unpacked** dan pilih folder **Chrome Extension** dari langkah 2.
-4. **Periksa koneksi** → refresh tab YouTube atau YouTube Music yang sudah terbuka. Langkah ini menjadi hijau dan menampilkan versi extension.
+4. **Periksa koneksi** → refresh tab YouTube atau YouTube Music yang sudah terbuka. Langkah ini menjadi hijau dan menampilkan nama browser serta versi extension.
 
-Putar sesuatu di Chrome, lalu arahkan pointer ke notch.
+Putar sesuatu di browser tersebut, lalu arahkan pointer ke notch.
 
-Biarkan **Developer mode** tetap aktif; Chrome memerlukannya untuk extension yang tidak berasal dari Chrome Web Store.
+Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension yang tidak berasal dari toko resminya. Nama folder extension tetap “Chrome Extension” di semua browser, karena extension-nya sama.
 
 ## Memakai panel
 
@@ -88,7 +88,7 @@ Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar.
 
 **Bahasa antarmuka:** **Ikuti sistem** (default), English, Bahasa Indonesia, atau 日本語. Ikuti sistem memakai bahasa pertama yang didukung dari **System Settings → General → Language & Region**, atau English bila tidak ada. Judul lagu, lirik, caption, serta pesan dari macOS atau situs tetap dalam bahasa aslinya.
 
-### Koneksi Chrome
+### Koneksi browser
 
 Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau memindahkannya ke folder lain.
 
@@ -98,7 +98,7 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 
 ### Sumber musik
 
-- **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab Chrome yang mulai memutar.
+- **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab browser yang mulai memutar.
 - **Pemutar aktif:** matikan mode otomatis untuk mengunci satu tab. Ririku tersambung kembali ke tab yang sama setelah halaman di-refresh.
 
 ### Tampilan
@@ -123,7 +123,7 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 
 ### Prototipe
 
-**Demo lokal (tanpa audio)** menampilkan lagu contoh agar panel bisa dicoba tanpa Chrome. Matikan sebelum memakai musik sungguhan.
+**Demo lokal (tanpa audio)** menampilkan lagu contoh agar panel bisa dicoba tanpa browser. Matikan sebelum memakai musik sungguhan.
 
 ## Mendapatkan lirik yang lebih baik
 
@@ -151,7 +151,7 @@ Sebagian berkas LRCLIB berisi baris Jepang yang diikuti baris romaji dengan time
 
 1. Keluar dari Ririku melalui ikon menu bar.
 2. Ganti **Ririku.app** di Applications dengan versi baru, lalu buka. Mungkin perlu **Open Anyway** lagi.
-3. Di **Setup → Koneksi Chrome**, bila ada langkah yang tidak lagi hijau, klik **Tampilkan di Finder** untuk menyalin extension baru, lalu klik tombol **reload** extension di `chrome://extensions` dan refresh tab YouTube.
+3. Di **Setup → Koneksi browser**, bila ada langkah yang tidak lagi hijau, klik **Tampilkan di Finder** untuk menyalin extension baru, lalu klik tombol **reload** extension di halaman extension browser dan refresh tab YouTube.
 
 Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 
@@ -160,14 +160,14 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 **Tombol Daftarkan nonaktif atau muncul peringatan oranye.** Ririku berjalan dari lokasi sementara. Keluar, pindahkan **Ririku.app** ke Applications, lalu buka lagi.
 
 **Langkah 4 menampilkan "Belum terhubung".**
-- Pastikan Ririku berjalan (ikon di menu bar) dan Chrome terbuka.
-- Di `chrome://extensions`, pastikan **Developer mode** aktif dan **Ririku — Chrome Bridge** menyala.
+- Pastikan Ririku berjalan (ikon di menu bar) dan browser terbuka.
+- Di halaman extension browser, pastikan **Developer mode** aktif dan **Ririku — Browser Bridge** menyala.
 - Refresh tab YouTube atau YouTube Music, lalu putar lagu.
-- Klik ikon extension di Chrome untuk melihat statusnya; **Coba sambungkan sekarang** mencoba ulang, dan **Buka Setup aplikasi** membuka Ririku.
+- Klik ikon extension di browser untuk melihat statusnya; **Coba sambungkan sekarang** mencoba ulang, dan **Buka Setup aplikasi** membuka Ririku.
 - Muat hanya satu salinan extension. Hapus duplikat di `chrome://extensions`.
-- Hanya satu profil Chrome yang dapat terhubung pada satu waktu.
+- Hanya satu profil browser yang dapat terhubung pada satu waktu. Bila extension dimuat di dua browser, yang terhubung lebih dulu yang dipakai; tutup browser lainnya untuk berpindah.
 
-**Ikon extension menampilkan "!".** Extension tidak dapat menjangkau Ririku. Buka Ririku dan selesaikan **Setup → Koneksi Chrome**.
+**Ikon extension menampilkan "!".** Extension tidak dapat menjangkau Ririku. Buka Ririku dan selesaikan **Setup → Koneksi browser**.
 
 **"Terdaftar untuk salinan Ririku lain".** App dipindahkan atau salinan lain yang didaftarkan. Klik **Daftarkan ulang**.
 
@@ -186,11 +186,11 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 ## Uninstall
 
 1. Keluar dari Ririku melalui ikon menu bar.
-2. Di `chrome://extensions`, hapus **Ririku — Chrome Bridge**.
+2. Di halaman extension browser, hapus **Ririku — Browser Bridge**.
 3. Pindahkan **Ririku.app** ke Trash.
 4. Opsional, hapus datanya. Di Finder pilih **Go → Go to Folder…** lalu hapus hanya item berikut:
    - `~/Library/Application Support/Ririku`
-   - `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json`
+   - `io.github.lanstheprodigy.ririku.bridge.json` di folder `NativeMessagingHosts` setiap browser yang didaftarkan, misalnya `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (atau jalankan `defaults delete io.github.lanstheprodigy.ririku` di Terminal)
 
@@ -199,12 +199,13 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - **Tanpa akun dan tanpa analitik.** Ririku tidak mengumpulkan data penggunaan.
 - **LRCLIB:** saat pencarian otomatis aktif, judul, artis, dan durasi lagu dikirim ke `lrclib.net`. **Cari** mengirim teks yang Anda ketik. Mode **Subtitle YouTube saja** tidak menghubungi LRCLIB.
 - **Artwork:** thumbnail diunduh dari server gambar YouTube/Google.
-- **Extension Chrome:** hanya berjalan di `www.youtube.com` dan `music.youtube.com` dan hanya memakai izin `nativeMessaging`. Extension membaca status pemutar, judul, artis, alamat artwork, dan caption yang terlihat di halaman, lalu mengirimkannya hanya ke app Ririku di Mac Anda. Extension tidak membaca cookies, kata sandi, atau riwayat browsing.
+- **Extension browser:** hanya berjalan di `www.youtube.com` dan `music.youtube.com` dan hanya memakai izin `nativeMessaging`. Extension membaca status pemutar, judul, artis, alamat artwork, dan caption yang terlihat di halaman, lalu mengirimkannya hanya ke app Ririku di Mac Anda. Extension tidak membaca cookies, kata sandi, atau riwayat browsing.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
 
 ## Keterbatasan
 
-- Hanya YouTube dan YouTube Music di Google Chrome; Apple Music, Spotify, Safari, dan browser lain belum didukung.
+- Hanya YouTube dan YouTube Music di browser Chromium, satu browser pada satu waktu; Apple Music, Spotify, Safari, dan Firefox belum didukung.
+- Baru Chrome yang terverifikasi. Brave, Edge, Vivaldi, Opera, Chromium, dan Arc memakai extension dan host yang sama, tetapi belum diuji; khususnya folder Arc masih perlu dipastikan.
 - Extension dipasang dengan **Load unpacked** dan tidak memperbarui dirinya sendiri.
 - Tidak di-notarize Apple, sehingga peluncuran pertama perlu konfirmasi.
 - Ketersediaan dan timing lirik bergantung pada LRCLIB.

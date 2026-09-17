@@ -4,6 +4,12 @@ import RirikuCore
 
 signal(SIGPIPE, SIG_IGN)
 
+func parentBrowser() -> Browser? {
+    var buffer = [CChar](repeating: 0, count: 4096)
+    guard proc_pidpath(getppid(), &buffer, UInt32(buffer.count)) > 0 else { return nil }
+    return Browser.containing(executablePath: String(cString: buffer))
+}
+
 do {
     var connection = try? LocalSocket.connect()
     var initialPacket: Data?
@@ -32,6 +38,12 @@ do {
     }
     guard let descriptor = connection else { throw BridgeError.system("Unable to connect to the Ririku app.") }
     let socketHandle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+    // The browser launches this host, so its parent process names the browser. Reading it here is
+    // more reliable than guessing in the extension, because Brave and Vivaldi report themselves as Chrome.
+    if let browser = parentBrowser(),
+       let packet = try? JSONSerialization.data(withJSONObject: ["protocolVersion": 1, "kind": "host", "browser": browser.name]) {
+        try Frames.write(packet, to: socketHandle)
+    }
     if let initialPacket { try Frames.write(initialPacket, to: socketHandle) }
     DispatchQueue.global().async {
         do {

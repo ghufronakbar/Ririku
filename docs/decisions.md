@@ -27,6 +27,7 @@ When a decision changes, add a dated entry here, update the affected documents, 
 | D-013 | Free distribution: ad-hoc signed GitHub releases without notarization, extension installed with Load unpacked and a tutorial, no migration of Notch Box settings. | 2026-09-17. The owner does not want paid programs (Apple Developer Program, Chrome Web Store). |
 | D-014 | English is the primary documentation language; user-facing documentation is also available in other languages. | 2026-09-17. Open-source audience. |
 | D-015 | Ririku can open itself at login, as an option that is off by default. | 2026-09-18. Owner request after the open-source preparation. Implemented with `SMAppService`; macOS keeps the state and can ask the user for approval. |
+| D-016 | Support the other Chromium browsers (Brave, Edge, Vivaldi, Opera, Chromium, Arc) with the same extension, one connected browser at a time. | 2026-09-18. Owner request. Only the host manifest folder and the extensions address differ per browser, so the cost is small; simultaneous browsers would need per-connection routing in the bridge and was deliberately left out. |
 
 Earlier approved requirements recorded in the archive include: selectable lyrics source with per-song offset and duration-based version picking (v0.2.2); lyric visibility, 1/2/3 lines, adjustable width, and smoother transitions (v0.2.3); top-anchored resizing, no auto-expand on track change, short "not found" notice, decorative spectrum, and Japanese line preference (v0.2.4).
 
@@ -35,18 +36,18 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Area | Choice | Notes |
 | --- | --- | --- |
 | Stack | Swift Package Manager, SwiftUI + AppKit, macOS 14+ | Builds with the Command Line Tools only. |
-| Browser bridge | Chrome native messaging host + Unix domain socket with peer UID checks | No network listener. One Chrome profile at a time. |
+| Browser bridge | Chromium native messaging host + Unix domain socket with peer UID checks | No network listener. One browser profile at a time. |
 | Lyrics provider | LRCLIB with conservative automatic matching (title, artist, ±3 s) and a local cache | Duration is used for matching, never to stretch timestamps. Content licensing for lyrics needs review before any bundled distribution. |
 | Playback clock | Latest snapshot plus monotonic interpolation, capped at 5 s | Heartbeat every second; sessions stale after 5 s. |
 | Spectrum | Decorative animation, no audio capture | Real audio analysis would need Screen Recording or tab capture permissions. |
 | Japanese lines | Display-only filter for Latin lines sharing a timestamp with Japanese | Raw lyrics and cache unchanged; can be turned off. |
 | Localization | `.strings` with English keys, `.lproj` copied by the build script, live lookup through `.lproj` sub-bundles | String Catalogs need Xcode; SwiftPM `Bundle.module` breaks inside the signed app. |
 | Identifiers | `io.github.lanstheprodigy.ririku` and related names, version 0.3.0 | Changed from `local.notchbox.*` without migration. Kept unchanged when the repository moved to the `ghufronakbar` account (2026-09-18), so installations do not need to re-register Chrome again; only links were updated. |
-| Chrome setup | Fixed extension ID through the manifest `key`; the app registers the native host and copies the extension only when the user clicks Setup buttons; blocked under App Translocation. Confirmed working in Chrome on 2026-09-18: all four Setup steps completed and the app reported extension 0.3.0 | Setup copies `chrome://extensions` to the clipboard instead of opening it, because opening Chrome internal pages from an app is unvalidated. `install-host.py` remains for development. |
+| Browser setup | Fixed extension ID through the manifest `key`, which every Chromium browser derives the same way; Setup registers the host for each installed browser (found by bundle identifier) and `RirikuHost` names its browser from its parent process; the app registers the native host and copies the extension only when the user clicks Setup buttons; blocked under App Translocation. Confirmed working in Chrome on 2026-09-18: all four Setup steps completed and the app reported extension 0.3.0 | Setup copies the extensions address to the clipboard instead of opening it, because opening a browser's internal pages from an app is unvalidated. `install-host.py --browser` remains for development. |
 | Documentation | English README, user guide, and developer docs; Indonesian and Japanese README and user guide; original Indonesian planning docs archived; community files added | Translations name the English version they follow. |
 | CI and releases | GitHub Actions on macOS runners: checks, `swift test`, and a bundle build on every push, plus tag-driven draft releases with a zip and checksum | Uses only first-party actions (`actions/checkout`, `actions/upload-artifact`) and `gh`. |
 | Launch at login | `SMAppService.mainApp` registers the app bundle itself; the state is read from macOS instead of being stored in the preferences; unavailable outside the `.app` and while translocated | No helper tool or launch agent. Registration by an ad-hoc signed build still needs validation on a downloaded release. |
-| Tests | Swift Testing suites in `Tests/RirikuCoreTests` and `Tests/RirikuTests`, fixtures only | Executable targets can be tested with SwiftPM, so the app model and Chrome setup are covered without a UI. |
+| Tests | Swift Testing suites in `Tests/RirikuCoreTests` and `Tests/RirikuTests`, fixtures only | Executable targets can be tested with SwiftPM, so the app model and the browser setup are covered without a UI. |
 
 ## Open questions
 
@@ -57,6 +58,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
 | Universal (Intel) builds | Open |
 | GitHub repository settings (issues, labels, private vulnerability reporting) and whether a separate code of conduct with a contact address is needed | Open; basic conduct expectations are in CONTRIBUTING.md |
-| Test coverage for SwiftUI views, the Chrome extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and Chrome setup helpers |
-| Other Chromium browsers (Brave, Edge, Arc) | Planned, not started |
+| Test coverage for SwiftUI views, the browser extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and the browser setup helpers |
+| Whether Brave, Edge, Vivaldi, Opera, Chromium, and Arc really accept the shared extension ID and native host | Needs validation on a real install; Arc's `NativeMessagingHosts` folder is unconfirmed |
+| Two browsers connected at the same time | Open; the bridge accepts one host connection, which would need per-connection command routing and `sourceId` prefixes |
 | Launch at login registered by an ad-hoc signed, non-notarized build | Needs validation, including the approval prompt in System Settings |

@@ -4,7 +4,7 @@
 
 English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
-Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in Google Chrome right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion Chrome extension, no account, and no telemetry.
+Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in a Chromium browser right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion browser extension, no account, and no telemetry.
 
 > **Status:** early prototype (v0.3.1). No release has been published yet, so for now Ririku must be [built from source](docs/development/README.md). Apple Music and Spotify are planned but not supported.
 
@@ -13,15 +13,16 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Notch panel:** artwork, a decorative spectrum, and up to three lyric lines in a compact island; hover or click to expand for track info, a seek bar, and controls.
 - **Synced lyrics:** found automatically from [LRCLIB](https://lrclib.net) by title, artist, and duration, and cached on your Mac. You can also use the video's captions, pick another lyrics version, adjust timing per song, or import your own `.lrc` file.
 - **Japanese-friendly lyrics:** when a lyrics file has Japanese and romaji on the same timestamp, Ririku can show only the Japanese line.
-- **Follows the active player:** switches to the Chrome tab that starts playing, or lock one tab manually.
+- **Follows the active player:** switches to the browser tab that starts playing, or lock one tab manually.
 - **Customizable:** island width, number of lyric lines, accent color, animations, and Reduce Motion support.
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
+- **Opens at login (optional):** a single toggle in Setup, off by default.
 
 ## Requirements
 
 - macOS 14 Sonoma or later. Developed on Apple silicon; Intel Macs are untested.
 - A MacBook with a notch is recommended. Other displays use the main screen, which is not fully tested.
-- Google Chrome with YouTube (`www.youtube.com`) or YouTube Music (`music.youtube.com`). Other Chromium browsers are not supported yet.
+- A Chromium browser (Chrome, Brave, Edge, Vivaldi, Opera, Chromium, or Arc) with YouTube (`www.youtube.com`) or YouTube Music (`music.youtube.com`). Only Chrome is tested; Safari and Firefox are not supported.
 
 ## Install
 
@@ -29,16 +30,16 @@ Ririku is free and is not notarized by Apple (notarization requires a paid devel
 
 1. **Get the app.** Download `Ririku.zip` from [Releases](https://github.com/ghufronakbar/Ririku/releases) once available, unzip it, and move **Ririku.app** to your **Applications** folder. Until the first release, [build it from source](docs/development/README.md).
 2. **Allow it to open.** Open Ririku. If macOS blocks it, go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
-3. **Connect Chrome.** Ririku opens **Setup**. In **Chrome connection**, follow the four steps: **Register**, **Show in Finder**, load that folder from `chrome://extensions` with **Developer mode** and **Load unpacked**, then refresh your YouTube tab.
+3. **Connect your browser.** Ririku opens **Setup**. In **Browser connection**, follow the four steps: **Register**, **Show in Finder**, load that folder from your browser's extensions page with **Developer mode** and **Load unpacked**, then refresh your YouTube tab.
 
-Play a song in Chrome and hover over the notch.
+Play a song in that browser and hover over the notch.
 
 ## Using Ririku
 
 - **Open the panel:** hover over the notch, click the island, or choose **Open music panel** from the waveform icon in the menu bar. Press Esc to close it.
 - **Setup:** click the gear in the expanded panel or choose **Setup…** from the menu bar icon.
 - **Lyrics out of sync?** In **Setup → Lyrics**, adjust the offset for this song, or use **Search and choose a lyrics version** to pick a version whose duration matches the player.
-- **No music handy?** Turn on **Setup → Prototype → Local demo** to try the panel without Chrome.
+- **No music handy?** Turn on **Setup → Prototype → Local demo** to try the panel without a browser.
 
 See the [user guide](docs/user-guide.md) for all settings, troubleshooting, updating, and uninstalling.
 
