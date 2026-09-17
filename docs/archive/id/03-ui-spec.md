@@ -31,7 +31,7 @@ Pemilih tiga mode, toggle pencarian otomatis LRCLIB, offset per lagu ±60 detik 
 
 Panel expanded memberi label **Caption video** dan hingga dua baris teks saat ini, tanpa prediksi baris sebelumnya/berikutnya. Setup menampilkan status caption aktif. Koreksi timing hanya berlaku untuk LRCLIB/LRC. Caption otomatis tidak dianggap hasil kurasi. Pemilih sumber tetap di Setup.
 
-[Kembali ke indeks](../README.md)
+[Kembali ke indeks](../../../README.md)
 
 **Status:** usulan untuk review mockup. Angka ukuran dan durasi di bawah adalah titik awal desain, bukan spesifikasi hardware atau hasil pengukuran.
 

@@ -44,7 +44,7 @@ Fixture JavaScript sementara lulus untuk perubahan caption, teks rolling, jeda, 
 
 Setelah reload extension dan refresh tab, masih perlu uji pengguna: Akuma no Ko pada kedua situs; Crying for Rain/Kawaki wo Ameku; CC otomatis; perubahan bahasa; seek saat pause; CC off; pergantian video; mode Song/Video YouTube Music. Periksa label Caption video dan kesamaan teks dengan CC. Subtitle baked-in tidak didukung. Timestamp LRCLIB tidak diperbaiki lewat tebakan offset global.
 
-[Kembali ke indeks](../README.md)
+[Kembali ke indeks](../../../README.md)
 
 ## 1. Tahapan
 

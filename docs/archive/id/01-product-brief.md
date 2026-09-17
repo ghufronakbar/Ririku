@@ -20,7 +20,7 @@ Pengguna meminta transisi popup lebih halus, hide/show lirik, 1 baris aktif / 2 
 
 Pengguna menyetujui pemilih sumber lirik eksplisit di Setup, offset per lagu, dan penggunaan durasi untuk memilih kandidat terdekat. v0.2.2 menyediakan pencarian/pemilihan hasil manual. Durasi dekat bukan jaminan rekaman sama; peregangan timestamp otomatis tidak diterapkan.
 
-[Kembali ke indeks](../README.md)
+[Kembali ke indeks](../../../README.md)
 
 ## 1. Masalah dan tujuan
 

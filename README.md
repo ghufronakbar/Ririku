@@ -1,57 +1,59 @@
 # Ririku
 
-Aplikasi musik macOS open source (lisensi MIT): kontrol pemutar dan lirik tersinkron dalam panel native di area notch. Nama Ririku (リリク) terinspirasi dari kata "lyric". Sebelumnya bernama sementara Notch Box.
+**Synced lyrics and music controls in your Mac's notch.**
 
-**Status:** prototipe native v0.3.0, 17 September 2026. Proyek disiapkan menjadi open source di `github.com/lanstheprodigy/ririku`; identifier app, native host, socket, dan cache berganti ke nama Ririku tanpa migrasi pengaturan lama. Antarmuka tersedia dalam English, Bahasa Indonesia, dan 日本語: default mengikuti bahasa sistem yang didukung (fallback English) dan dapat diganti langsung di Setup. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
+English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
-## Arah proyek
+Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in Google Chrome right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion Chrome extension, no account, and no telemetry.
 
-- Native: Swift, SwiftUI, dan AppKit; tanpa Electron atau WebView sebagai UI utama.
-- Prioritas pertama: YouTube dan YouTube Music di Google Chrome.
-- Target berikutnya: Apple Music dan Spotify desktop, bukan versi web keduanya.
-- Extension Chrome pendamping telah disetujui untuk menjembatani pemutar browser.
-- Tombol Setup membuka jendela pengaturan terpisah untuk sumber musik dan penyesuaian visual; pemilih sumber tidak berada di pop-up notch.
-- Fokus pada kontrol musik, lirik per baris, dan animasi yang halus; bukan kumpulan utilitas desktop.
-- Referensi pengalaman: Dynamic Lyrics.app dan NotchBox.app. Tidak menyalin aset atau implementasi aplikasi tersebut.
+> **Status:** early prototype (v0.3.0). No release has been published yet, so for now Ririku must be [built from source](docs/development/README.md). Apple Music and Spotify are planned but not supported.
 
-## Peta dokumentasi
+## Features
 
-| Dokumen | Isi |
-| --- | --- |
-| [Product brief](docs/01-product-brief.md) | Tujuan, cakupan, kebutuhan, dan batasan |
-| [Arsitektur](docs/02-architecture.md) | Komponen, kontrak data, sinkronisasi, dan keamanan |
-| [Spesifikasi UI](docs/03-ui-spec.md) | State panel, layout, animasi, dan aksesibilitas |
-| [Roadmap dan pengujian](docs/04-roadmap-and-testing.md) | Tahapan, kriteria penerimaan, dan skenario uji |
-| [Catatan keputusan](docs/05-decisions.md) | Keputusan disepakati, usulan, dan pertanyaan terbuka |
-| [Pengembangan dan pemasangan](docs/06-development.md) | Build aplikasi, pemasangan Chrome, pemakaian, batasan, dan uninstall |
+- **Notch panel:** artwork, a decorative spectrum, and up to three lyric lines in a compact island; hover or click to expand for track info, a seek bar, and controls.
+- **Synced lyrics:** found automatically from [LRCLIB](https://lrclib.net) by title, artist, and duration, and cached on your Mac. You can also use the video's captions, pick another lyrics version, adjust timing per song, or import your own `.lrc` file.
+- **Japanese-friendly lyrics:** when a lyrics file has Japanese and romaji on the same timestamp, Ririku can show only the Japanese line.
+- **Follows the active player:** switches to the Chrome tab that starts playing, or lock one tab manually.
+- **Customizable:** island width, number of lyric lines, accent color, animations, and Reduce Motion support.
+- **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
 
-## Cara membaca status
+## Requirements
 
-**Disepakati** berarti sudah dinyatakan atau disetujui pengguna. **Usulan** berarti desain awal yang masih bisa direvisi. **Perlu validasi** berarti kelayakan teknis belum terbukti. Target dukungan bukan klaim fitur sudah berjalan.
+- macOS 14 Sonoma or later. Developed on Apple silicon; Intel Macs are untested.
+- A MacBook with a notch is recommended. Other displays use the main screen, which is not fully tested.
+- Google Chrome with YouTube (`www.youtube.com`) or YouTube Music (`music.youtube.com`). Other Chromium browsers are not supported yet.
 
-## Tahap sekarang
+## Install
 
-Dokumentasi → review mockup → persetujuan arah UI → prototipe integrasi Chrome → UI native → adapter pemutar desktop → pengujian harian.
+Ririku is free and is not notarized by Apple (notarization requires a paid developer account), so macOS asks you to confirm the first launch. The [user guide](docs/user-guide.md#install) covers every step in detail.
 
-Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi aplikasi sekarang menggunakan SwiftUI/AppKit, bukan tampilan web. Mode demo native juga tidak memutar audio.
+1. **Get the app.** Download `Ririku.zip` from [Releases](https://github.com/lanstheprodigy/ririku/releases) once available, unzip it, and move **Ririku.app** to your **Applications** folder. Until the first release, [build it from source](docs/development/README.md).
+2. **Allow it to open.** Open Ririku. If macOS blocks it, go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
+3. **Connect Chrome.** Ririku opens **Setup**. In **Chrome connection**, follow the four steps: **Register**, **Show in Finder**, load that folder from `chrome://extensions` with **Developer mode** and **Load unpacked**, then refresh your YouTube tab.
 
-## Mulai lokal
+Play a song in Chrome and hover over the notch.
 
-**Update v0.3.0:** nama app menjadi **Ririku** dan bundle menjadi `build/Ririku.app`. Pengguna build lama: keluar dari Notch Box, build ulang, hapus extension lama di Chrome, lalu ikuti **Setup → Koneksi Chrome** (ID extension kini tetap dan native host didaftarkan dari app). Pengaturan dimulai dari default. Langkah lengkap dan pembersihan berkas lama ada di [panduan pengembangan](docs/06-development.md).
+## Using Ririku
 
-**Update v0.2.5:** Setup → **Bahasa** memilih Ikuti sistem / English / Bahasa Indonesia / 日本語 tanpa restart. Bahasa sistem Mac ini saat ini diawali English, sehingga mode Ikuti sistem menampilkan English. Judul lagu, lirik, dan caption tidak diterjemahkan. Extension naik ke v0.2.5 agar popup mengikuti bahasa app; reload extension sekali. Dokumentasi proyek tetap berbahasa Indonesia.
+- **Open the panel:** hover over the notch, click the island, or choose **Open music panel** from the waveform icon in the menu bar. Press Esc to close it.
+- **Setup:** click the gear in the expanded panel or choose **Setup…** from the menu bar icon.
+- **Lyrics out of sync?** In **Setup → Lyrics**, adjust the offset for this song, or use **Search and choose a lyrics version** to pick a version whose duration matches the player.
+- **No music handy?** Turn on **Setup → Prototype → Local demo** to try the panel without Chrome.
 
-**Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Saat rilis v0.2.4, extension tetap v0.2.3; versi terbaru kini v0.2.5 dan perlu reload sekali seperti catatan di atas.
+See the [user guide](docs/user-guide.md) for all settings, troubleshooting, updating, and uninstalling.
 
-```sh
-bash scripts/build-app.sh
-open "build/Ririku.app"
-```
+## Privacy
 
-Gunakan **Setup → Demo lokal** untuk mencoba panel tanpa extension. Untuk musik nyata, buka **Setup → Koneksi Chrome** dan ikuti empat langkahnya (tanpa Terminal); detail ada di [panduan pemasangan Chrome](docs/06-development.md). Default mengikuti pemutar aktif dan mencari lirik otomatis; pemilihan sumber manual tetap hanya di Setup. Lirik otomatis disimpan di cache lokal. Impor LRC adalah cadangan, bukan keharusan setiap lagu.
+Ririku has no account and sends no analytics. When automatic lyrics search is on, the song title, artist, and duration are sent to LRCLIB. Thumbnails are loaded from YouTube/Google image servers. The extension only runs on YouTube and YouTube Music and reads the player on the page; it does not read cookies or browsing history. See [Privacy](docs/user-guide.md#privacy) in the user guide.
 
-**Belum tersedia:** Apple Music/Spotify desktop, launch at login, dan distribusi ter-notarisasi. Ketersediaan/timing lirik bergantung pada kecocokan rekaman dan data penyedia, bukan jaminan setiap lagu. Jangan menganggap tiga sumber sudah didukung penuh hanya karena tercantum sebagai target produk.
+Lyrics come from LRCLIB; their availability and timing are not guaranteed. Ririku keeps lyrics only in a local cache and does not download audio or video.
 
-## Lisensi
+## Contributing
 
-[MIT](LICENSE) © 2026 lanstheprodigy. Ririku tidak berafiliasi dengan Apple, Google, atau YouTube; nama produk pihak lain adalah merek pemiliknya.
+Bug reports, translations, and code are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [developer documentation](docs/development/README.md). Please report security issues privately as described in [SECURITY.md](SECURITY.md). Release notes are in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+[MIT](LICENSE) © 2026 lanstheprodigy.
+
+Ririku is not affiliated with or endorsed by Apple, Google, YouTube, or LRCLIB. Product names are trademarks of their respective owners.

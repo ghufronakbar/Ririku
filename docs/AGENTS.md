@@ -1,33 +1,35 @@
-# Panduan agen
+# Agent guide
 
-Panduan ini berlaku untuk seluruh repository melalui symlink `AGENTS.md` di root. Edit sumber panduan di `docs/AGENTS.md`; pertahankan symlink relatif agar tetap bekerja setelah repository dipindahkan atau di-clone.
+This guide applies to the whole repository through the `AGENTS.md` symlink at the root. Edit the source in `docs/AGENTS.md` and keep the symlink relative.
 
-## Konteks wajib
+## Required context
 
-Sebelum mengubah proyek, baca `README.md` dan dokumentasi berikut (path relatif terhadap root repository):
+Before changing the project, read `README.md` and the documents relevant to the change (paths relative to the repository root):
 
-- `docs/01-product-brief.md`: tujuan, cakupan, dan batasan produk.
-- `docs/02-architecture.md`: rancangan komponen dan integrasi pemutar.
-- `docs/03-ui-spec.md`: perilaku panel, Setup, dan aksesibilitas.
-- `docs/04-roadmap-and-testing.md`: tahapan implementasi dan validasi.
-- `docs/05-decisions.md`: keputusan disepakati, usulan, dan pertanyaan terbuka.
-- `docs/06-development.md`: build, pemasangan, perintah verifikasi, dan batasan prototipe.
-- `docs/07-spectrum-and-lyrics-investigation.md`: analisis spectrum dan bahasa lirik.
+- `docs/user-guide.md`: user-facing behavior, settings, installation, and privacy.
+- `docs/development/README.md`: layout, build, Chrome setup for development, and verification.
+- `docs/development/architecture.md`: components, bridge protocol, clock, lyrics pipeline, UI, and security boundaries.
+- `docs/development/localization.md`: interface text and translations.
+- `docs/development/releasing.md`: versioning and releases.
+- `docs/decisions.md`: agreed decisions, technical choices, and open questions.
+- `CONTRIBUTING.md`: scope, pull request, and commit conventions.
 
-## Aturan pengerjaan
+`docs/archive/id/` holds the original Indonesian planning documents. Use them only for history; do not update them.
 
-- Bedakan keputusan disepakati, usulan, dan hal yang perlu validasi. Jangan menganggap rancangan atau mockup sebagai fitur yang sudah diimplementasikan.
-- Pertahankan arah aplikasi macOS native; jangan mengganti UI utama dengan Electron atau WebView.
-- Prioritaskan YouTube dan YouTube Music di Chrome sebelum adapter Apple Music dan Spotify desktop.
-- Jaga pop-up notch tetap fokus pada musik dan lirik. Pemilih sumber serta penyesuaian visual berada di jendela Setup terpisah.
-- Ikuti urutan roadmap dan persetujuan arah UI sebelum implementasi terkait.
-- Hindari fitur di luar cakupan serta akses data atau izin yang tidak diperlukan.
-- Saat keputusan berubah, perbarui dokumen terdampak dan catat tanggal serta alasan di `docs/05-decisions.md`.
-- Gunakan bahasa Indonesia untuk dokumentasi, mengikuti gaya dokumen yang sudah ada.
+## Working rules
 
-## Validasi
+- Distinguish agreed decisions, technical choices, proposals, and things that still need validation. Do not treat a design, mockup, or proposal as implemented, or an implementation as an agreed decision.
+- Keep the app native (Swift, SwiftUI, AppKit); do not replace the main UI with Electron or a WebView.
+- Prioritize YouTube and YouTube Music in Chrome before Apple Music and Spotify desktop adapters.
+- Keep the notch panel focused on music and lyrics. Source selection and visual settings belong in the separate Setup window.
+- Avoid out-of-scope features, new dependencies, paid distribution requirements, and unnecessary permissions or data access (see `CONTRIBUTING.md`).
+- Do not change the bundle identifier, native host name, extension `key`, or socket and cache paths without an explicit decision and migration notes.
+- Write interface text in English in code and keep `Localization/id.lproj` and `Localization/ja.lproj` complete (`scripts/check-localization.py`).
+- Documentation is written in English. When user-facing behavior changes, update `docs/user-guide.md`, and update `docs/user-guide.id.md`, `docs/user-guide.ja.md`, and the translated READMEs, or state clearly that they still need updating. Record changes in `CHANGELOG.md` instead of adding per-version notes to other documents.
+- When a decision changes, update the affected documents and add a dated entry with the reason to `docs/decisions.md`.
 
-- Gunakan kriteria dan skenario di `docs/04-roadmap-and-testing.md` sesuai perubahan.
-- Jangan mengklaim build, pengujian, integrasi, atau efisiensi berhasil tanpa bukti. Laporkan apa yang dijalankan dan keterbatasannya.
-- Untuk perubahan kode, jalankan perintah verifikasi rutin yang relevan di `docs/06-development.md` bagian 6, termasuk `scripts/check-localization.py` bila teks UI berubah. Belum ada suite test permanen; harness/fixture sementara harus dilaporkan sebagai bukti terbatas.
-- Untuk perubahan dokumentasi, periksa konsistensi antar-dokumen, kesesuaian klaim dengan kode, dan tautan relatif. Saat menambah catatan versi, revisi juga bagian isi yang menjadi usang.
+## Validation
+
+- Run the verification commands in `docs/development/README.md` that apply to the change, and the manual smoke test when behavior with Chrome changes.
+- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. There is no permanent test suite yet; temporary harnesses and fixtures are limited evidence and must be described as such.
+- For documentation changes, check consistency between documents, that claims match the code, and that relative links work.
