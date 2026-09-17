@@ -33,7 +33,7 @@ Panel expanded memberi label **Caption video** dan hingga dua baris teks saat in
 
 **Keputusan 17 September 2026:** visual dapat disesuaikan melalui jendela Setup terpisah. Pemilihan sumber hanya berada di jendela tersebut, bukan pop-up notch.
 
-**Prototipe native:** panel nonactivating, hover expand/collapse, pop-up track, gear/menu bar menuju satu Setup, ukuran/aksen/animasi, lirik, offset, dan demo lokal telah dibuat. V0.2 menambahkan thumbnail nyata, sumber otomatis, status pencarian lirik, serta popup status extension. Fullscreen, VoiceOver, fokus lintas aplikasi, dan multi-monitor belum lulus pengujian harian. Animasi awal memakai transisi frame AppKit 240 ms, belum motion spring final.
+**Prototipe native:** panel nonactivating, hover expand/collapse, gear/menu bar menuju satu Setup, ukuran/aksen/animasi, lirik, offset, dan demo lokal telah dibuat. V0.2 menambahkan thumbnail nyata, sumber otomatis, status pencarian lirik, serta popup status extension. Fullscreen, VoiceOver, fokus lintas aplikasi, dan multi-monitor belum lulus pengujian harian. Pop-up otomatis saat ganti lagu dihapus pada v0.2.4; transisi frame kini 0,32 detik smoothstep dengan tepi atas tetap, bukan spring. Tabel dan angka di bawah mencatat usulan awal beserta implementasi sekarang; bagian versi di atas lebih rinci.
 
 ## 1. Arah visual
 
@@ -46,20 +46,20 @@ Hardware notch adalah area terhalang: tidak boleh memuat teks/kontrol penting. P
 | State | Isi | Interaksi |
 | --- | --- | --- |
 | Idle | Menyatu dengan notch, tidak ada data lagu lama | Buka menu/panel dengan klik |
-| Compact | Artwork kiri, area notch kosong, indikator kanan | Hover/klik membuka panel |
-| Lyrics | Compact + satu baris lirik di bawah notch | Hover/klik membuka panel |
-| Expanded | Metadata, indikator sumber read-only, kontrol, progress, tiga baris lirik | Kontrol musik, seek, tombol Setup |
-| Track change | Pop-up metadata singkat | Kembali ke state sebelumnya |
-| Unavailable | Metadata + status lirik tidak tersedia | Kontrol tetap tersedia jika sumber terhubung |
+| Compact | Artwork kiri, area notch kosong, spectrum dekoratif kanan | Hover/klik membuka panel |
+| Lyrics | Compact + 1/2/3 baris lirik di bawah notch sesuai Setup; dapat disembunyikan | Hover/klik membuka panel |
+| Expanded | Metadata, indikator sumber read-only, lirik 1/2/3 baris bila ada, progress, kontrol | Kontrol musik, seek, tombol Setup |
+| Track change | Sejak v0.2.4 tidak ada pop-up/auto-expand; island ringkas langsung memperbarui artwork dan lirik | Hover/klik/menu tetap membuka panel |
+| Unavailable | Island hanya header; notifikasi **Lirik belum ditemukan** 3 detik, sekali per lagu per sesi dan tidak untuk kegagalan jaringan. Status rinci ada di Setup | Kontrol tetap tersedia jika sumber terhubung |
 | Disconnected | Status koneksi, tanpa playback palsu | Petunjuk reconnect yang relevan |
 
 Playback state dan panel state terpisah: pause tidak otomatis menutup panel. Lirik panjang di mode ringkas memakai truncation, bukan marquee terus-menerus; teks lengkap tersedia saat expanded.
 
 ## 3. Layout usulan
 
-- Compact: sekitar 300–340 pt lebar, menyesuaikan notch nyata.
-- Lyrics: sekitar 360–420 pt lebar; baris berada di bawah batas notch.
-- Expanded: sekitar 420–460 pt lebar, tinggi mengikuti isi; metadata dan kontrol seluruhnya di bawah notch.
+- Compact/Lyrics: usulan awal 300–420 pt. Implementasi v0.2.3: slider 280–620 pt (default 360), minimal lebar notch + 100 pt; baris lirik berada di bawah batas notch.
+- Expanded: usulan awal 420–460 pt. Implementasi v0.2.3: slider 360–720 pt (default 442), minimal lebar notch + 120 pt; tinggi mengikuti isi, metadata dan kontrol seluruhnya di bawah notch.
+- Lebar efektif dibatasi lebar layar dikurangi 24 pt.
 - Baris lirik aktif paling kontras; baris sebelum/sesudah lebih redup tetapi tetap terbaca.
 - Sumber hanya ditampilkan sebagai indikator read-only di panel expanded. Pemilihnya berada di jendela Setup; jangan mengganti sumber tanpa indikasi.
 - Tombol gear/Setup membuka jendela pengaturan terpisah, bukan memperpanjang pop-up musik.
@@ -68,15 +68,15 @@ Playback state dan panel state terpisah: pause tidak otomatis menutup panel. Lir
 
 ## 4. Motion usulan
 
-| Transisi | Nilai awal | Perilaku |
+| Transisi | Usulan awal | Implementasi sekarang |
 | --- | --- | --- |
-| Hover masuk | Delay 150 ms | Mengurangi pembukaan tidak sengaja |
-| Expand/collapse | 250–350 ms | Spring ringan, overshoot minimal |
-| Hover keluar | Delay 350 ms | Tidak menutup saat pindah menuju kontrol |
-| Pergantian baris | 160–220 ms | Gerak pendek, tanpa loncatan layout |
-| Pergantian lagu | Sekitar 2 detik | Satu pop-up, tidak berulang karena metadata diperbarui |
+| Hover masuk | Delay 150 ms | Sama |
+| Expand/collapse | 250–350 ms, spring ringan | 320 ms smoothstep ease-in-out, tepi atas tetap, tanpa spring/overshoot |
+| Hover keluar | Delay 350 ms | Sama; tidak menutup bila panel sedang menerima fokus |
+| Pergantian baris | 160–220 ms, gerak pendek | Belum dianimasikan; baris dipilih ulang setiap 0,25 detik tanpa loncatan tinggi |
+| Pergantian lagu | Pop-up sekitar 2 detik | Dihapus pada v0.2.4 sesuai permintaan pengguna; tidak ada auto-expand |
 
-Pop-up tidak mengambil fokus keyboard. Panel dipertahankan terbuka saat fokus ada di kontrol atau sedang drag seek. Escape menutup panel. Reduce Motion meniadakan spring/pergeseran besar dan memakai transisi sederhana. Tidak menggunakan equalizer dekoratif sebagai bukti audio benar-benar sedang keluar.
+Panel tidak mengambil fokus keyboard saat terbuka lewat hover. Panel dipertahankan terbuka saat fokus ada di panel. Escape menutup panel. Reduce Motion atau toggle animasi nonaktif langsung memakai frame akhir dan spectrum statis. Tidak menggunakan equalizer dekoratif sebagai bukti audio benar-benar sedang keluar.
 
 ## 5. Pengaturan minimum
 
@@ -89,9 +89,9 @@ Usulan isi jendela:
 - Lirik: tampilkan/sembunyikan baris ringkas dan koreksi offset.
 - Umum: launch at login; preferensi layar/fullscreen ditentukan setelah pengujian.
 
-Usulan perilaku: perubahan visual langsung terlihat, preferensi disimpan lokal di aplikasi native, dan satu jendela Setup digunakan kembali. Jendela boleh menerima fokus ketika sengaja dibuka, berbeda dari pop-up pergantian lagu yang tidak boleh mengambil fokus. Menutup Setup tidak menghentikan musik atau menutup aplikasi. Reduce Motion sistem tetap mengungguli pilihan animasi aplikasi.
+Usulan perilaku: perubahan visual langsung terlihat, preferensi disimpan lokal di aplikasi native, dan satu jendela Setup digunakan kembali. Jendela boleh menerima fokus ketika sengaja dibuka, berbeda dari panel musik yang dibuka lewat hover dan tidak boleh mengambil fokus. Menutup Setup tidak menghentikan musik atau menutup aplikasi. Reduce Motion sistem tetap mengungguli pilihan animasi aplikasi.
 
-Perilaku v0.2: toggle **Otomatis ikuti pemutar aktif** aktif secara default; picker manual dinonaktifkan saat mode otomatis aktif. Toggle **Cari lirik otomatis** aktif secara default, disertai status/provenance, **Cari ulang**, dan **Impor LRC cadangan…**. Jika hanya plain text tersedia, panel memberi label tanpa timing dan scroll manual. Popup extension menyediakan status koneksi, jumlah tab, **Buka Setup aplikasi**, dan retry koneksi tanpa menaruh pemilih sumber di popup.
+Perilaku v0.2: toggle **Otomatis ikuti pemutar aktif** aktif secara default; picker manual dinonaktifkan saat mode otomatis aktif. Toggle **Cari LRCLIB otomatis saat lagu berganti** aktif secara default, disertai status/provenance, **Kembali ke hasil otomatis** (melepas pilihan manual dan meminta ulang LRCLIB tanpa cache), dan **Impor LRC…**. Jika hanya plain text tersedia, panel memberi label tanpa timing dan scroll manual. Popup extension menyediakan status koneksi, jumlah tab, **Buka Setup aplikasi**, dan retry koneksi tanpa menaruh pemilih sumber di popup.
 
 ## 6. Aksesibilitas
 

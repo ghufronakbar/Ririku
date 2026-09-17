@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Koreksi dokumentasi — 17 September 2026
+
+Bukan keputusan produk baru. Pemeriksaan dokumen terhadap kode menemukan bagian isi yang tertinggal dari catatan versi: path cache `Lyrics-v1` (kode memakai `Lyrics-v2` sejak v0.2.2), offset disebut global (kode per lagu sejak v0.2.2), nama tombol **Cari ulang**/**Impor LRC cadangan…**, alur pencarian LRCLIB, pop-up ganti lagu dan motion spring pada spesifikasi UI, aturan validasi agen yang masih menganggap proyek hanya dokumentasi, serta status usulan/pertanyaan terbuka yang sudah terjawab. Pengguna menyetujui koreksi. Nama tombol **Kembali ke hasil otomatis** dipertahankan; perilakunya (meminta ulang LRCLIB tanpa cache) dijelaskan di dokumen. Tidak ada perubahan kode; folder `Lyrics-v1` dan key `lyricOffset` lama hanya didokumentasikan, tidak dihapus otomatis. Dokumen terdampak: README, 02, 03, 05, 06, AGENTS.
+
 ## Revisi v0.2.5 — 17 September 2026
 
 Pengguna meminta UI multi-bahasa (English, Bahasa Indonesia, 日本語) dengan default English atau bahasa sistem bila didukung. Setelah riset kelayakan tanpa perubahan kode, pengguna memilih opsi 2: ikuti sistem + pemilih bahasa di Setup yang langsung berlaku. Alternatif hanya-ikuti-sistem ditolak karena tidak dapat diganti dari app; pemilih dengan restart ditolak karena kurang nyaman. Pilihan teknis agen: `.strings` dengan key English (String Catalog butuh Xcode), `.lproj` disalin skrip build alih-alih `Bundle.module`, lookup sub-bundle untuk penggantian tanpa restart, status model sebagai key + argumen, serta bahasa app diteruskan ke popup extension lewat bridge. Dokumentasi proyek tetap berbahasa Indonesia sesuai panduan agen. Dokumen terdampak: README, 01, 02, 03, 04, 06.
@@ -42,27 +46,31 @@ Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari reko
 
 ## 2. Usulan, belum persetujuan final
 
-- SwiftUI + AppKit sebagai stack native.
-- Native Messaging dan IPC lokal sebagai jalur penghubung browser.
-- Automation lokal untuk pemutar desktop bila kemampuan aplikasi memadai.
-- LRCLIB sebagai kandidat provider lirik.
-- Compact + satu baris lirik + expanded saat hover/klik.
-- Kontrol seek, cache, dan offset sebagai detail versi awal; lokasi source picker sudah diputuskan di Setup.
-- Detail penyesuaian visual: ukuran panel, aksen, dan animasi; penerapan langsung dan penyimpanan preferensi lokal.
-- Distribusi lokal dahulu; nama Notch Box Mac sementara.
+Status diperbarui 17 September 2026. **Diimplementasikan** berarti sudah ada di prototipe sebagai pilihan teknis, bukan otomatis disepakati pengguna.
+
+| Usulan | Status sekarang |
+| --- | --- |
+| SwiftUI + AppKit sebagai stack native | Diimplementasikan; tetap pilihan teknis, belum persetujuan final |
+| Native Messaging dan IPC lokal sebagai jalur penghubung browser | Diimplementasikan (native host + Unix socket); uji Chrome nyata end-to-end masih perlu |
+| Automation lokal untuk pemutar desktop bila kemampuan aplikasi memadai | Belum dikerjakan |
+| LRCLIB sebagai kandidat provider lirik | Diimplementasikan sejak v0.2; pemilih sumber lirik di Setup disetujui pengguna (v0.2.2). Review lisensi konten untuk distribusi publik belum |
+| Compact + satu baris lirik + expanded saat hover/klik | Diganti permintaan pengguna v0.2.3: tampil/sembunyi lirik dan 1/2/3 baris pada kedua mode; expanded tetap lewat hover/klik/menu |
+| Kontrol seek, cache, dan offset | Seek dan cache diimplementasikan; offset per lagu disetujui pengguna (v0.2.2) |
+| Detail penyesuaian visual: ukuran panel, aksen, dan animasi | Lebar adjustable diminta pengguna (v0.2.3); aksen dan toggle animasi diimplementasikan sebagai pilihan teknis |
+| Distribusi lokal dahulu; nama Notch Box Mac sementara | Masih berlaku |
 
 ## 3. Pertanyaan terbuka
 
-| Pertanyaan | Kapan dituntaskan |
-| --- | --- |
-| Layout, warna, ukuran, dan motion cocok? | Review mockup |
-| Baris lirik selalu terlihat atau opsional/default tersembunyi? | Review mockup |
-| Versi macOS, jenis chip, geometri notch, monitor eksternal? | Sebelum shell native |
-| Kemampuan scripting Apple Music dan Spotify lokal? | Spike adapter |
-| Provider lirik, ketentuan penggunaan, dan caching? | Sebelum integrasi provider |
-| IPC, host registration, dan pemasangan extension lokal? | Spike Chrome |
-| Fullscreen, Spaces, dan layar tanpa notch? | Pengujian panel native |
-| Signing/distribusi untuk perangkat lain? | Setelah penggunaan lokal stabil |
+| Pertanyaan | Kapan dituntaskan | Status per 17 September 2026 |
+| --- | --- | --- |
+| Layout, warna, ukuran, dan motion cocok? | Review mockup | Sebagian: revisi pengguna v0.2.3–v0.2.4 (ukuran adjustable, top-sticky, tanpa auto-expand). Penilaian harian di layar nyata masih terbuka |
+| Baris lirik selalu terlihat atau opsional/default tersembunyi? | Review mockup | Terjawab v0.2.3: dapat disembunyikan, default tampil 3 baris |
+| Versi macOS, jenis chip, geometri notch, monitor eksternal? | Sebelum shell native | Sebagian: macOS 15.7.2 arm64 dicatat, geometri notch dibaca runtime. Model layar dan monitor eksternal belum |
+| Kemampuan scripting Apple Music dan Spotify lokal? | Spike adapter | Terbuka |
+| Provider lirik, ketentuan penggunaan, dan caching? | Sebelum integrasi provider | Sebagian: LRCLIB diintegrasikan setelah dokumentasi API diperiksa, cache lokal diterapkan. Lisensi konten untuk distribusi publik terbuka |
+| IPC, host registration, dan pemasangan extension lokal? | Spike Chrome | Diimplementasikan dan diuji dengan fixture/native host lokal; uji popup dan situs nyata setelah reload tetap perlu |
+| Fullscreen, Spaces, dan layar tanpa notch? | Pengujian panel native | Terbuka; fallback main screen belum diverifikasi |
+| Signing/distribusi untuk perangkat lain? | Setelah penggunaan lokal stabil | Terbuka |
 
 ## 4. Aturan pembaruan
 

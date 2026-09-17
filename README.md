@@ -39,7 +39,7 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 **Update v0.2.5:** Setup → **Bahasa** memilih Ikuti sistem / English / Bahasa Indonesia / 日本語 tanpa restart. Bahasa sistem Mac ini saat ini diawali English, sehingga mode Ikuti sistem menampilkan English. Judul lagu, lirik, dan caption tidak diterjemahkan. Extension naik ke v0.2.5 agar popup mengikuti bahasa app; reload extension sekali. Dokumentasi proyek tetap berbahasa Indonesia.
 
-**Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Extension tetap v0.2.3, sehingga tidak perlu reload jika sudah diperbarui sebelumnya.
+**Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Saat rilis v0.2.4, extension tetap v0.2.3; versi terbaru kini v0.2.5 dan perlu reload sekali seperti catatan di atas.
 
 ```sh
 bash scripts/build-app.sh

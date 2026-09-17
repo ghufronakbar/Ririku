@@ -47,9 +47,9 @@ Komponen yang ada:
 | Komponen | Status |
 | --- | --- |
 | Panel native, Setup terpisah, preferensi visual | Diimplementasikan; render view diperiksa |
-| Extension YouTube/YouTube Music | V0.2: popup status, akses Setup, reconnect, dan metadata gambar; perlu reload untuk uji situs |
+| Extension YouTube/YouTube Music | v0.2.5: popup status dalam bahasa app, akses Setup, reconnect, metadata player MAIN world, caption, dan artwork; perlu reload untuk uji situs |
 | Native host dan Unix socket | Diimplementasikan; gunakan hasil verifikasi di bagian 6 |
-| Lirik | Otomatis LRCLIB, matching/cancellation, cache disk, clock/offset; LRC manual cadangan |
+| Lirik | Otomatis LRCLIB, matching/cancellation, cache disk `Lyrics-v2`, clock, offset per lagu, pencarian/pemilihan kandidat manual, caption video; LRC manual cadangan |
 | Artwork dan sumber | Thumbnail nyata, sumber otomatis atau manual pin, pemulihan sesi tab |
 | Apple Music/Spotify | Belum diimplementasikan |
 | Launch at login dan distribusi publik | Belum diimplementasikan |
@@ -106,11 +106,11 @@ Extension hanya berjalan pada `https://www.youtube.com/*` dan `https://music.you
 - Hover notch untuk membuka panel; klik dapat mempertahankan panel. Escape menutup panel yang menerima fokus.
 - Tombol gear membuka Setup; pemilih sumber tidak ada di pop-up.
 - Pause/play, skip, serta seek mengikuti kemampuan yang dilaporkan tab. Tombol tidak didukung dinonaktifkan.
-- Default **Cari lirik otomatis** mengambil lirik LRCLIB berdasarkan judul, artis, dan durasi. Status membedakan mencari, sinkron, teks tanpa timing, instrumental, tidak ditemukan, dan koneksi gagal.
-- **Cari ulang** meminta pencarian baru dan melepaskan override LRC manual untuk lagu aktif. Tetap menghormati cooldown penyedia.
-- **Impor LRC cadangan…** tersedia bila lirik belum ada atau pengguna memiliki versi lebih tepat. Gunakan UTF-8 bertimestamp untuk rekaman yang benar. Berkas `samples/senja-demo.lrc` hanya untuk demo.
-- Offset positif menunda lirik, negatif mempercepat. Offset manual saat ini global, bukan per lagu.
-- Lirik otomatis disimpan sampai 30 hari, maksimum 300 berkas di `~/Library/Caches/local.notchbox.mac/Lyrics-v1`; hasil tidak ditemukan disimpan 30 menit. LRC manual tetap dalam memori sesi. Preferensi visual, mode sumber, mode pencarian, dan offset disimpan melalui UserDefaults.
+- Toggle **Cari LRCLIB otomatis saat lagu berganti** (default aktif) mengambil lirik LRCLIB berdasarkan judul, artis, dan durasi. Status rinci (mencari, bertimestamp, teks tanpa timing, instrumental, tidak ditemukan, koneksi gagal) ada di Setup → Lirik; island hanya memberi notifikasi singkat saat lirik tidak ditemukan.
+- **Kembali ke hasil otomatis** melepaskan LRC impor atau kandidat yang dipilih manual untuk lagu aktif, lalu meminta ulang ke LRCLIB tanpa memakai cache lokal (hasil baru menimpa cache). Tetap menghormati jeda/cooldown penyedia. Tombol nonaktif bila pencarian otomatis mati atau mode Subtitle saja.
+- **Impor LRC…** tersedia bila lirik belum ada atau pengguna memiliki versi lebih tepat. Gunakan UTF-8 bertimestamp untuk rekaman yang benar, maksimal 1 MB. Berkas `samples/senja-demo.lrc` hanya untuk demo.
+- Offset disimpan per video/lagu (±60 detik, langkah 0,1 detik): positif menunda lirik, negatif mempercepat. Video ID yang sama di YouTube dan YouTube Music berbagi offset; offset tidak diterapkan pada caption. Key lama `lyricOffset` (offset global sebelum v0.2.2) dapat tersisa di UserDefaults tetapi tidak dibaca lagi.
+- Lirik otomatis disimpan sampai 30 hari, maksimum 300 berkas di `~/Library/Caches/local.notchbox.mac/Lyrics-v2`; hasil tidak ditemukan disimpan 30 menit. LRC manual dan kandidat pilihan manual hanya bertahan selama app terbuka. Preferensi bahasa, visual, sumber, mode pencarian, serta offset per lagu disimpan melalui UserDefaults; offset menyimpan ID video lagu yang pernah diberi offset.
 - Metadata judul/artis/durasi dikirim ke LRCLIB saat pencarian aktif. Thumbnail diambil dari server gambar YouTube/Google yang diizinkan. Klien tidak mengirim cookies, kredensial, atau riwayat browsing.
 
 Urutan smoke test nyata: play → pause → seek maju/mundur → next → buka tab kedua → pilih sumber di Setup → tutup tab → reload → reconnect. Ulangi pada YouTube dan YouTube Music. Cocokkan baris lirik dengan audio, jangan hanya melihat bahwa teks bergerak.
@@ -191,6 +191,6 @@ Untuk menghapus preferensi aplikasi secara opsional:
 defaults delete local.notchbox.mac
 ```
 
-Cache lirik dapat dihapus terpisah dari `~/Library/Caches/local.notchbox.mac/Lyrics-v1`; jangan menghapus folder cache aplikasi lain.
+Cache lirik dapat dihapus terpisah dari `~/Library/Caches/local.notchbox.mac/Lyrics-v2`. Folder `Lyrics-v1` adalah sisa versi v0.2.1 atau sebelumnya, tidak dibaca lagi, dan aman dihapus. Jangan menghapus folder cache aplikasi lain.
 
 Socket dibersihkan saat app keluar normal. Direktori `/tmp/notchbox-<uid>` dapat tersisa; aplikasi memakai ulang direktori miliknya dan tidak menghapus data aplikasi lain.

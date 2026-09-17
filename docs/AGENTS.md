@@ -11,6 +11,8 @@ Sebelum mengubah proyek, baca `README.md` dan dokumentasi berikut (path relatif 
 - `docs/03-ui-spec.md`: perilaku panel, Setup, dan aksesibilitas.
 - `docs/04-roadmap-and-testing.md`: tahapan implementasi dan validasi.
 - `docs/05-decisions.md`: keputusan disepakati, usulan, dan pertanyaan terbuka.
+- `docs/06-development.md`: build, pemasangan, perintah verifikasi, dan batasan prototipe.
+- `docs/07-spectrum-and-lyrics-investigation.md`: analisis spectrum dan bahasa lirik.
 
 ## Aturan pengerjaan
 
@@ -27,4 +29,5 @@ Sebelum mengubah proyek, baca `README.md` dan dokumentasi berikut (path relatif 
 
 - Gunakan kriteria dan skenario di `docs/04-roadmap-and-testing.md` sesuai perubahan.
 - Jangan mengklaim build, pengujian, integrasi, atau efisiensi berhasil tanpa bukti. Laporkan apa yang dijalankan dan keterbatasannya.
-- Selama proyek masih berupa dokumentasi, periksa konsistensi antar-dokumen dan tautan relatif; belum ada perintah build atau test aplikasi.
+- Untuk perubahan kode, jalankan perintah verifikasi rutin yang relevan di `docs/06-development.md` bagian 6, termasuk `scripts/check-localization.py` bila teks UI berubah. Belum ada suite test permanen; harness/fixture sementara harus dilaporkan sebagai bukti terbatas.
+- Untuk perubahan dokumentasi, periksa konsistensi antar-dokumen, kesesuaian klaim dengan kode, dan tautan relatif. Saat menambah catatan versi, revisi juga bagian isi yang menjadi usang.

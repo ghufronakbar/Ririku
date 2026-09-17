@@ -110,11 +110,11 @@ Default v0.2 mengikuti sumber yang baru mulai memutar. Heartbeat pemutar yang te
 
 LRCLIB dipakai sebagai provider v0.2. Dokumentasi API resmi diperiksa pada 17 September 2026: klien menyertakan User-Agent berisi nama/versi/link proyek, menjalankan request berurutan, jeda 350 ms, dan menghormati `Retry-After` pada HTTP 429. Tidak ada API key atau unggahan lirik. Attribution LRCLIB ditampilkan di Setup. Integrasi ini tidak menganggap lisensi kode server sebagai lisensi seluruh konten lirik; distribusi publik tetap memerlukan review tersendiri.
 
-Pipeline saat ini: debounce metadata 650 ms → normalisasi judul dekoratif tanpa menghapus live/remix → exact lookup judul/artis/durasi → pencarian terstruktur bila belum mendapat lirik sinkron → pemilihan hasil dengan judul/artis sama setelah normalisasi dan selisih durasi maksimal 3 detik → parse dan cache. Hasil tanpa durasi tidak dianggap cocok. Pencarian lanjutan diperlukan karena exact lookup kadang hanya mengembalikan plain text walaupun hasil sinkron tersedia pada record lain.
+Pipeline saat ini: debounce metadata 650 ms → normalisasi judul dekoratif tanpa menghapus live/remix → exact lookup judul/artis/durasi → pencarian terstruktur judul/artis (selalu dijalankan kecuali exact lookup mengembalikan record instrumental; kegagalannya diabaikan bila sudah ada kandidat) → pemilihan hasil dengan judul/artis sama setelah normalisasi dan selisih durasi maksimal 3 detik, mengutamakan bertimestamp lalu durasi terdekat → parse dan cache. Hasil tanpa durasi tidak dianggap cocok. Pencarian lanjutan diperlukan karena exact lookup kadang hanya mengembalikan plain text walaupun hasil sinkron tersedia pada record lain.
 
-Cache memakai hash SHA-256 dari query terurut di `~/Library/Caches/local.notchbox.mac/Lyrics-v1`, maksimum 300 berkas; hasil ditemukan berlaku 30 hari, hasil kosong 30 menit. Plain text ditandai tidak sinkron dan tidak digulir mengikuti timer. Hasil instrumental ditampilkan sebagai status. Kesalahan jaringan dicoba kembali setelah 30 detik saat track masih aktif, tetap tunduk pada cooldown provider. Pergantian track/metadata membatalkan task; hasil lama tidak boleh menimpa track baru.
+Cache memakai hash SHA-256 dari query terurut di `~/Library/Caches/local.notchbox.mac/Lyrics-v2` (sejak v0.2.2; folder `Lyrics-v1` versi lama tidak dibaca atau dipangkas), maksimum 300 berkas; hasil ditemukan berlaku 30 hari, hasil kosong 30 menit. Plain text ditandai tidak sinkron dan tidak digulir mengikuti timer. Hasil instrumental ditampilkan sebagai status. Kesalahan jaringan dicoba kembali setelah 30 detik saat track masih aktif, tetap tunduk pada cooldown provider. Pergantian track/metadata membatalkan task; hasil lama tidak boleh menimpa track baru.
 
-Impor LRC UTF-8 melalui Setup, maksimal 1 MB, tetap tersedia sebagai override manual selama sesi. **Cari ulang** kembali memakai provider untuk lagu aktif. Positive offset manual menunda lirik; offset metadata LRC diterapkan parser secara terpisah.
+Impor LRC UTF-8 melalui Setup, maksimal 1 MB, tetap tersedia sebagai override manual selama sesi. **Kembali ke hasil otomatis** melepaskan override manual dan meminta ulang provider untuk lagu aktif dengan melewati pembacaan cache (`force`), lalu menulis hasil baru ke cache. Positive offset manual menunda lirik; offset metadata LRC diterapkan parser secara terpisah.
 
 Artwork berasal dari elemen gambar player bar YouTube Music, dengan fallback thumbnail video YouTube. Native client hanya menerima HTTPS pada host gambar yang diizinkan, membatasi redirect, ukuran unduhan 2 MB, dimensi sumber 8192 px, dan downsample 256 px. Cache artwork dibatasi 40 gambar dalam memori. Placeholder hanya dipakai saat gambar belum tersedia/gagal.
 
@@ -123,7 +123,7 @@ Normalisasi metadata tanpa membuang versi rekaman penting → pencarian dengan j
 - Jangan otomatis memilih hasil dengan judul mirip jika versi/durasi tidak cocok.
 - Cancel request saat lagu berubah; respons lambat hanya boleh diterapkan jika track/revision masih sesuai.
 - Parser perlu menangani timestamp ganda, metadata LRC, offset, urutan tidak teratur, dan baris invalid.
-- Cache v1 menggunakan query judul/artis/durasi; perubahan kebijakan pencocokan berikutnya harus menaikkan versi cache.
+- Cache `Lyrics-v2` menggunakan query judul/artis/durasi; perubahan kebijakan pencocokan berikutnya harus menaikkan versi cache. Normalisasi judul yang berubah menghasilkan key baru, tetapi perubahan aturan pemilihan kandidat tidak.
 - Pisahkan status loading, synced, plainText, unavailable, mismatch, offline, dan error.
 
 ## 7. Keamanan dan lifecycle
