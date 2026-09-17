@@ -40,6 +40,9 @@ jobs:
           /usr/bin/python3 scripts/check-localization.py
           /usr/bin/python3 scripts/check-docs.py
 
+      - name: Run tests
+        run: swift test
+
       - name: Build and sign ad hoc
         run: |
           bash scripts/build-app.sh

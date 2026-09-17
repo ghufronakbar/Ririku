@@ -43,6 +43,9 @@ jobs:
           done
           plutil -lint Localization/*/Localizable.strings
 
+      - name: Run tests
+        run: swift test
+
       - name: Build app bundle
         run: bash scripts/build-app.sh
 

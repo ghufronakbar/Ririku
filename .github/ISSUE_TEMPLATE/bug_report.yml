@@ -12,7 +12,7 @@ body:
     attributes:
       label: Before reporting
       options:
-        - label: I checked the [troubleshooting section](https://github.com/lanstheprodigy/ririku/blob/main/docs/user-guide.md#troubleshooting)
+        - label: I checked the [troubleshooting section](https://github.com/ghufronakbar/ririku/blob/main/docs/user-guide.md#troubleshooting)
           required: true
         - label: I searched existing issues
           required: true
