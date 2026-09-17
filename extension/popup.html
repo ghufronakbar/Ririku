@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,11 +8,12 @@
 </head>
 <body>
   <h1>Notch Box</h1>
-  <p id="status" role="status">Memeriksa koneksi…</p>
-  <p id="sources">Menunggu pemutar Chrome.</p>
-  <button id="setup" type="button">Buka Setup aplikasi</button>
-  <button id="reconnect" type="button">Coba sambungkan sekarang</button>
-  <p class="note">Sumber musik, lirik otomatis, dan tampilan diatur di jendela Setup native.</p>
+  <p id="status" role="status" data-i18n="checking"></p>
+  <p id="sources" data-i18n="waitingPlayer"></p>
+  <button id="setup" type="button" data-i18n="openSetup"></button>
+  <button id="reconnect" type="button" data-i18n="reconnect"></button>
+  <p class="note" data-i18n="note"></p>
+  <script src="i18n.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
