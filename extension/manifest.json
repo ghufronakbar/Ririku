@@ -1,12 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Notch Box — Chrome Bridge",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Hubungkan pemutar YouTube dan YouTube Music ke aplikasi native Notch Box lokal.",
   "permissions": ["nativeMessaging"],
   "background": { "service_worker": "background.js" },
   "action": { "default_title": "Notch Box — status koneksi", "default_popup": "popup.html" },
   "content_scripts": [{
+    "matches": ["https://www.youtube.com/*", "https://music.youtube.com/*"],
+    "js": ["player-state.js"],
+    "world": "MAIN",
+    "run_at": "document_idle",
+    "all_frames": false
+  }, {
     "matches": ["https://www.youtube.com/*", "https://music.youtube.com/*"],
     "js": ["content.js"],
     "run_at": "document_idle",

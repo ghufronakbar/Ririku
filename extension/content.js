@@ -5,6 +5,29 @@
   let hadMedia = false;
   let lastSent = 0;
   let stopped = false;
+  let playerMetadata = null;
+  let metadataReceivedAt = 0;
+  let lastIdentifier = "";
+  let metadataBar = null;
+  let metadataUpdate = null;
+  const metadataObserver = new MutationObserver(() => {
+    if (metadataUpdate !== null) return;
+    metadataUpdate = setTimeout(() => {
+      metadataUpdate = null;
+      window.postMessage({ type: "notchbox-request-metadata-v1" }, location.origin);
+      sendSnapshot(true);
+    }, 80);
+  });
+  window.addEventListener("message", event => {
+    if (event.source !== window || event.origin !== location.origin || event.data?.type !== "notchbox-player-metadata-v1") return;
+    const value = event.data.metadata;
+    if (value !== null && (!value || typeof value.videoId !== "string" || !/^[A-Za-z0-9_-]{11}$/.test(value.videoId)
+      || typeof value.title !== "string" || value.title.length > 500 || typeof value.artist !== "string" || value.artist.length > 500)) return;
+    const changed = JSON.stringify(playerMetadata) !== JSON.stringify(value);
+    playerMetadata = value;
+    metadataReceivedAt = performance.now();
+    if (changed) sendSnapshot(true);
+  });
   let captionPlayer = null;
   let captionUpdate = null;
   let captionSuppressed = false;
@@ -39,7 +62,18 @@
 
   const media = () => document.querySelector("#movie_player video") || document.querySelector("video");
   const text = selector => (document.querySelector(selector)?.textContent || "").trim().slice(0, 500);
-  const trackId = () => new URL(location.href).searchParams.get("v") || "";
+  const freshMetadata = () => performance.now() - metadataReceivedAt < 2500 ? playerMetadata : null;
+  const trackId = () => {
+    if (freshMetadata()) return freshMetadata().videoId;
+    if (music) {
+      const titleLink = document.querySelector("ytmusic-player-bar .title a[href*='watch'], ytmusic-player-bar a.title[href*='watch']");
+      try {
+        const identifier = new URL(titleLink?.href).searchParams.get("v");
+        if (/^[A-Za-z0-9_-]{11}$/.test(identifier || "")) return identifier;
+      } catch {}
+    }
+    return new URL(location.href).searchParams.get("v") || "";
+  };
   const advertisement = () => Boolean(document.querySelector("#movie_player.ad-showing, #movie_player.ad-interrupting"));
   const artwork = identifier => {
     if (music) {
@@ -63,8 +97,18 @@
   async function sendSnapshot(force = false) {
     if (stopped || (!force && performance.now() - lastSent < 100)) return;
     lastSent = performance.now();
+    const bar = document.querySelector(music ? "ytmusic-player-bar" : "ytd-watch-metadata");
+    if (bar !== metadataBar) {
+      metadataObserver.disconnect();
+      metadataBar = bar;
+      if (bar) metadataObserver.observe(bar, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["href", "title", "src"] });
+    }
     const video = media();
     const identifier = trackId();
+    if (identifier !== lastIdentifier) {
+      if (lastIdentifier) captionSuppressed = true;
+      lastIdentifier = identifier;
+    }
     let packet;
     if (!video || !identifier || video.readyState === 0) {
       if (!hadMedia) return;
@@ -78,8 +122,8 @@
         protocolVersion: 1, kind: "snapshot", sessionId, sequence: ++sequence,
         sourceLabel: music ? "YouTube Music · Chrome" : "YouTube · Chrome",
         trackId: identifier,
-        title: (music ? text("ytmusic-player-bar .title") : text("ytd-watch-metadata h1")) || document.title.replace(/ - YouTube(?: Music)?$/, "").slice(0, 500),
-        artist: music ? text("ytmusic-player-bar .byline a") : text("ytd-watch-metadata #channel-name a"),
+        title: freshMetadata()?.title || (music ? text("ytmusic-player-bar .title") : text("ytd-watch-metadata h1")) || document.title.replace(/ - YouTube(?: Music)?$/, "").slice(0, 500),
+        artist: freshMetadata()?.artist || (music ? text("ytmusic-player-bar .byline a") : text("ytd-watch-metadata #channel-name a")),
         artworkURL: artwork(identifier),
         ...captions(video),
         position: Math.max(0, Number.isFinite(video.currentTime) ? video.currentTime : 0),
@@ -126,7 +170,7 @@
     return true;
   });
 
-  for (const event of ["play", "pause", "playing", "waiting", "seeking", "seeked", "ratechange", "ended", "loadedmetadata"]) {
+  for (const event of ["play", "pause", "playing", "waiting", "seeking", "seeked", "ratechange", "ended", "loadedmetadata", "durationchange", "emptied"]) {
     document.addEventListener(event, () => {
       if (event === "seeking" || event === "loadedmetadata") captionSuppressed = true;
       sendSnapshot(true);
@@ -139,5 +183,6 @@
   document.addEventListener("ytmusic-navigate-finish", () => sendSnapshot(true));
   document.addEventListener("visibilitychange", () => sendSnapshot(true));
   const heartbeat = setInterval(() => sendSnapshot(), 1000);
+  window.postMessage({ type: "notchbox-request-metadata-v1" }, location.origin);
   sendSnapshot(true);
 })();
