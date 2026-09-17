@@ -4,6 +4,8 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 
 ## [0.3.0] - Unreleased
 
+Verified on 2026-09-18: the Chrome connection completed from Setup without Terminal, the app reported the connected extension version, and GitHub Actions CI passed. The Gatekeeper flow for a downloaded release is still untested.
+
 ### Changed
 - **Renamed the app to Ririku.** New bundle identifier `io.github.lanstheprodigy.ririku`, native messaging host `io.github.lanstheprodigy.ririku.bridge`, socket directory `/tmp/ririku-<uid>`, and cache folder. Settings from Notch Box are not migrated, and extension 0.2.x does not work with this version.
 - The documentation is now in English, with the README and user guide also in Bahasa Indonesia and Japanese. The original Indonesian planning documents moved to `docs/archive/id`.

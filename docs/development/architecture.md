@@ -104,7 +104,7 @@ Interface text is written in English in code and translated through `Localizatio
 
 ## Chrome setup
 
-The extension manifest contains a public `key`, so the unpacked extension always has the ID `bmmbkmngcmjoihlcmehlnfpedhoefofi`. `ChromeSetup`, triggered only by Setup buttons:
+The extension manifest contains a public `key`, so the unpacked extension always has the ID `bmmbkmngcmjoihlcmehlnfpedhoefofi`; this was confirmed in Chrome on 2026-09-18, with the app reporting the connected extension version. `ChromeSetup`, triggered only by Setup buttons:
 
 - writes `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json` (mode 0600) pointing to `RirikuHost` inside the running bundle and allowing only that extension ID;
 - reports whether the manifest is missing, points to another copy of the app, or is current;
