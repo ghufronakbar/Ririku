@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import NotchCore
+import QuartzCore
 
 final class NotchPanel: NSPanel {
     var dismissPanel: (() -> Void)?
@@ -19,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var hoverWork: DispatchWorkItem?
     private var popupWork: DispatchWorkItem?
     private var hovered = false
+    private var targetPanelFrame: NSRect?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         signal(SIGPIPE, SIG_IGN)
@@ -89,12 +91,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else { notch = 180 }
         if model.notchWidth != notch { model.notchWidth = notch }
         if model.topHeight != top { model.topHeight = top }
-        let active = model.current != nil
-        let width = min(screen.frame.width - 24, model.expanded ? max(model.panelWidth, notch + 120) : active ? notch + 100 : notch)
-        let height = top + (model.expanded ? (model.commandError == nil ? 286 : 316) : active && model.showLyrics ? 34 : 0)
+        let size = model.panelSize(screenWidth: screen.frame.width)
+        let width = size.width
+        let height = size.height
         let frame = NSRect(x: screen.frame.midX - width / 2, y: screen.frame.maxY - height, width: width, height: height)
+        guard targetPanelFrame != frame else { return }
+        targetPanelFrame = frame
         if model.canAnimate && panel.isVisible {
-            NSAnimationContext.runAnimationGroup { context in context.duration = 0.24; panel.animator().setFrame(frame, display: true) }
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = model.popupDuration
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                panel.animator().setFrame(frame, display: true)
+            }
         } else { panel.setFrame(frame, display: true) }
     }
 

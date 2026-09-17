@@ -23,16 +23,31 @@ struct SetupView: View {
                 if let error = model.bridgeError { Text(error).foregroundStyle(.red) }
             }
             Section("Tampilan") {
-                Picker("Ukuran panel", selection: $model.panelWidth) {
-                    Text("Kecil").tag(398.0)
-                    Text("Sedang").tag(442.0)
-                    Text("Besar").tag(480.0)
+                HStack {
+                    Text("Lebar island ringkas")
+                    Slider(value: $model.compactWidth, in: 280...620, step: 2)
+                    Text("\(Int(model.compactWidth)) pt").monospacedDigit().frame(width: 60)
                 }
+                HStack {
+                    Text("Lebar island terbuka")
+                    Slider(value: $model.panelWidth, in: 360...720, step: 2)
+                    Text("\(Int(model.panelWidth)) pt").monospacedDigit().frame(width: 60)
+                }
+                Text("Ukuran minimum mengikuti notch fisik. Tinggi menyesuaikan isi dan jumlah baris.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Reset ukuran") { model.compactWidth = 360; model.panelWidth = 442 }
                 Picker("Warna aksen", selection: $model.accentName) {
                     ForEach(["Peach", "Lavender", "Netral"], id: \.self) { Text($0) }
                 }
-                Toggle("Animasi panel", isOn: $model.animations)
-                Toggle("Baris lirik saat ringkas", isOn: $model.showLyrics)
+                Toggle("Transisi panel halus (ease-in/ease-out)", isOn: $model.animations)
+                Toggle("Tampilkan lirik di island", isOn: $model.showLyrics)
+                Picker("Jumlah baris lirik", selection: $model.lyricLineCount) {
+                    Text("1 · saat ini").tag(1)
+                    Text("2 · saat ini + berikutnya").tag(2)
+                    Text("3 · sebelum + saat ini + berikutnya").tag(3)
+                }.disabled(!model.showLyrics)
+                Text("Berlaku pada island ringkas dan terbuka. Konteks sebelum/berikutnya tersedia untuk LRC bertimestamp; caption hanya menampilkan teks aktif. Animasi spectrum belum diimplementasikan.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
             Section("Lirik") {
                 Picker("Sumber lirik", selection: $model.lyricSource) {
@@ -88,7 +103,7 @@ struct SetupView: View {
                 if let error = model.commandError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
             Section("Prototipe") {
-                Text("Notch Box 0.2.2 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                Text("Notch Box 0.2.3 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle("Demo lokal (tanpa audio)", isOn: $model.demo)
                 Text("Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.")
                     .font(.caption).foregroundStyle(.secondary)

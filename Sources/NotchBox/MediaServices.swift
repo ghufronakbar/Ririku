@@ -45,7 +45,7 @@ final class SafeHTTPClient: NSObject, URLSessionTaskDelegate, HTTPFetching, @unc
     func get(_ url: URL, limit: Int) async throws -> HTTPResult {
         guard allows(url) else { throw BridgeError.system("Alamat media tidak diizinkan.") }
         var request = URLRequest(url: url)
-        request.setValue("NotchBox/0.2.2 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
+        request.setValue("NotchBox/0.2.3 (https://github.com/ghufronakbar/notch-box-mac)", forHTTPHeaderField: "User-Agent")
         let (bytes, response) = try await session.bytes(for: request)
         guard let response = response as? HTTPURLResponse, allows(response.url), response.expectedContentLength <= limit else {
             throw BridgeError.system("Respons media tidak valid atau terlalu besar.")

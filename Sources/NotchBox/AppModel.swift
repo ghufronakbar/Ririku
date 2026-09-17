@@ -39,6 +39,8 @@ final class AppModel: ObservableObject {
     }
     @Published var expanded = false { didSet { geometryChanged?() } }
     @Published var panelWidth: Double { didSet { save(); geometryChanged?() } }
+    @Published var compactWidth: Double { didSet { save(); geometryChanged?() } }
+    @Published var lyricLineCount: Int { didSet { save(); geometryChanged?() } }
     @Published var accentName: String { didSet { save() } }
     @Published var animations: Bool { didSet { save() } }
     @Published var showLyrics: Bool { didSet { save(); geometryChanged?() } }
@@ -104,7 +106,11 @@ final class AppModel: ObservableObject {
         automaticSource = defaults.object(forKey: "automaticSource") as? Bool ?? true
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedWidth = defaults.double(forKey: "panelWidth")
-        panelWidth = [398.0, 442, 480].contains(storedWidth) ? storedWidth : 442
+        panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
+        let storedCompactWidth = defaults.double(forKey: "compactWidth")
+        compactWidth = storedCompactWidth.isFinite && (280...620).contains(storedCompactWidth) ? storedCompactWidth : 360
+        let storedLineCount = defaults.integer(forKey: "lyricLineCount")
+        lyricLineCount = (1...3).contains(storedLineCount) ? storedLineCount : 3
         accentName = defaults.string(forKey: "accentName") ?? "Peach"
         animations = defaults.object(forKey: "animations") as? Bool ?? true
         showLyrics = defaults.object(forKey: "showLyrics") as? Bool ?? true
@@ -137,6 +143,26 @@ final class AppModel: ObservableObject {
     }
 
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+    var popupDuration: Double { 0.32 }
+    var lyricBlockHeight: Double { Double(min(3, max(1, lyricLineCount)) * 20 + 14) }
+
+    func panelSize(screenWidth: Double) -> CGSize {
+        let active = current != nil
+        let width = expanded ? max(panelWidth, notchWidth + 120) : active ? max(compactWidth, notchWidth + 100) : notchWidth
+        let extraHeight = expanded ? 200 + (showLyrics ? lyricBlockHeight + 12 : 0) + (commandError == nil ? 0 : 30)
+            : active && showLyrics ? lyricBlockHeight : 0
+        return CGSize(width: min(max(0, screenWidth - 24), width), height: topHeight + extraHeight)
+    }
+
+    func displayedLyricRows() -> [(text: String, active: Bool)] {
+        guard let index = lyricIndex(), !currentLines.isEmpty else { return [(lyricStatus, true)] }
+        let offsets = lyricLineCount == 1 ? [0] : lyricLineCount == 2 ? [0, 1] : [-1, 0, 1]
+        return offsets.map { offset in
+            let target = index + offset
+            let text = currentLines.indices.contains(target) ? currentLines[target].text : ""
+            return (text.isEmpty ? (offset == 0 ? "♪" : " ") : text, offset == 0)
+        }
+    }
     var usesVideoCaption: Bool {
         lyricSource != "lrclib" && (lyricSource == "caption" || currentLines.isEmpty)
             && current?.snapshot.captionEnabled == true && current?.snapshot.isAdvertisement == false
@@ -193,7 +219,8 @@ final class AppModel: ObservableObject {
         let entry = PlaybackSession(snapshot: snapshot, receivedAt: ProcessInfo.processInfo.systemUptime)
         if let previous = sessions[entry.id], snapshot.sequence <= previous.snapshot.sequence { return }
         let beganPlaying = snapshot.state == "playing" && !snapshot.isAdvertisement
-            && (sessions[entry.id]?.snapshot.state != "playing" || sessions[entry.id]?.snapshot.isAdvertisement == true)
+            && (sessions[entry.id]?.snapshot.state != "playing" || sessions[entry.id]?.snapshot.isAdvertisement == true
+                || sessions[entry.id]?.snapshot.trackId != snapshot.trackId)
         let wasEmpty = current == nil
         sessions[entry.id] = entry
         reconcileSource(incomingID: entry.id, beganPlaying: beganPlaying)
@@ -444,6 +471,8 @@ final class AppModel: ObservableObject {
 
     private func save() {
         defaults.set(panelWidth, forKey: "panelWidth")
+        defaults.set(compactWidth, forKey: "compactWidth")
+        defaults.set(lyricLineCount, forKey: "lyricLineCount")
         defaults.set(accentName, forKey: "accentName")
         defaults.set(animations, forKey: "animations")
         defaults.set(showLyrics, forKey: "showLyrics")

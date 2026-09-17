@@ -20,17 +20,21 @@ struct PlayerView: View {
             .frame(height: model.topHeight)
             if model.expanded {
                 expandedContent.padding(.horizontal, 22).padding(.top, 12).padding(.bottom, 20)
+                    .transition(.opacity)
             } else if model.showLyrics && model.current != nil {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                    Text(model.lyricStatus).font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(model.accent).lineLimit(1).padding(.horizontal, 18).frame(height: 34)
+                    lyricBlock.padding(.horizontal, 18).frame(height: model.lyricBlockHeight)
                 }
+                .transition(.opacity)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .foregroundStyle(.white)
         .background(.black)
         .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: model.expanded ? 26 : 16, bottomTrailingRadius: model.expanded ? 26 : 16))
+        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.expanded)
+        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.showLyrics)
+        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.lyricLineCount)
         .contentShape(Rectangle())
         .onHover(perform: hoverChanged)
         .onTapGesture { model.expanded = true }
@@ -53,7 +57,7 @@ struct PlayerView: View {
             }
             TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                 VStack(spacing: 12) {
-                    lyricBlock.frame(height: 74)
+                    if model.showLyrics { lyricBlock.frame(height: model.lyricBlockHeight) }
                     VStack(spacing: 2) {
                         Slider(value: Binding(get: { scrubbing ? seekPosition : model.position() }, set: { seekPosition = $0 }),
                                in: 0...max(1, model.current?.snapshot.duration ?? 1), onEditingChanged: { editing in
@@ -83,17 +87,19 @@ struct PlayerView: View {
     }
 
     private var lyricBlock: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
             if model.usesVideoCaption {
-                Text("Caption video").font(.caption2).foregroundStyle(.white.opacity(0.45))
-                Text(model.lyricStatus).foregroundStyle(model.accent).lineLimit(2)
-            } else if let index = model.lyricIndex(), !model.currentLines.isEmpty {
-                Text(index > 0 ? model.currentLines[index - 1].text : " ").foregroundStyle(.white.opacity(0.45))
-                Text(model.lyricStatus).foregroundStyle(model.accent).fontWeight(.medium)
-                Text(index + 1 < model.currentLines.count ? model.currentLines[index + 1].text : " ").foregroundStyle(.white.opacity(0.45))
+                Text(model.lyricStatus).foregroundStyle(model.accent).lineLimit(model.lyricLineCount)
+                    .help("Caption video aktif; baris sebelum/sesudah belum tersedia dari pemutar.")
+            } else if model.lyricIndex() != nil, !model.currentLines.isEmpty {
+                let rows = model.displayedLyricRows()
+                ForEach(rows.indices, id: \.self) { row in
+                    Text(rows[row].text).foregroundStyle(rows[row].active ? model.accent : .white.opacity(0.45))
+                        .fontWeight(rows[row].active ? .medium : .regular)
+                }
             } else if let plain = model.currentPlainLyrics {
-                Text("Lirik teks · tanpa timing").font(.caption2).foregroundStyle(model.accent)
                 ScrollView { Text(plain).lineLimit(nil).foregroundStyle(.white.opacity(0.85)).frame(maxWidth: .infinity) }
+                    .help("Lirik teks tanpa timing; tidak memiliki baris aktif.")
             } else { Text(model.lyricStatus).foregroundStyle(.white.opacity(0.65)) }
         }.font(.system(size: 13)).lineLimit(1).frame(maxWidth: .infinity)
     }
