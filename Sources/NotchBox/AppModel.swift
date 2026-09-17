@@ -42,11 +42,19 @@ final class AppModel: ObservableObject {
     @Published var compactWidth: Double { didSet { save(); geometryChanged?() } }
     @Published var lyricLineCount: Int { didSet { save(); geometryChanged?() } }
     @Published var accentName: String { didSet { save() } }
-    @Published var animations: Bool { didSet { save() } }
+    @Published var animations: Bool { didSet { save(); geometryChanged?() } }
+    @Published var preferJapaneseLyrics: Bool { didSet { displayLineCache.removeAll(); save() } }
+    private var displayLineCache: [String: [LyricLine]] = [:]
+    @Published private var lyricNoticeText: String?
+    private var lyricNoticeKey: String?
+    private var lyricNoticeTask: Task<Void, Never>?
+    private var notifiedMissingTracks = Set<String>()
     @Published var showLyrics: Bool { didSet { save(); geometryChanged?() } }
     @Published var lyricSource: String {
         didSet {
             save()
+            lyricNoticeTask?.cancel()
+            lyricNoticeText = nil
             lyricTask?.cancel()
             lyricRequestID = nil
             if lyricSource == "caption" { cancelLyricSearch() }
@@ -71,10 +79,10 @@ final class AppModel: ObservableObject {
         }
     }
     @Published var demo = false { didSet { configureDemo() } }
-    @Published var lyrics: [String: [LyricLine]] = [:]
+    @Published var lyrics: [String: [LyricLine]] = [:] { didSet { displayLineCache.removeAll(); geometryChanged?() } }
     @Published var lyricNames: [String: String] = [:]
     @Published var lyricMessages: [String: String] = [:]
-    @Published var plainLyrics: [String: String] = [:]
+    @Published var plainLyrics: [String: String] = [:] { didSet { geometryChanged?() } }
     @Published var artwork: NSImage?
     @Published var commandError: String? { didSet { geometryChanged?() } }
     @Published var bridgeError: String?
@@ -82,7 +90,6 @@ final class AppModel: ObservableObject {
     @Published var notchWidth: CGFloat = 180
     @Published var topHeight: CGFloat = 34
     var geometryChanged: (() -> Void)?
-    var trackChanged: (() -> Void)?
     var openSetup: (() -> Void)?
     var sendPacket: ((Data) -> Void)?
     private var timer: Timer?
@@ -113,6 +120,7 @@ final class AppModel: ObservableObject {
         lyricLineCount = (1...3).contains(storedLineCount) ? storedLineCount : 3
         accentName = defaults.string(forKey: "accentName") ?? "Peach"
         animations = defaults.object(forKey: "animations") as? Bool ?? true
+        preferJapaneseLyrics = defaults.object(forKey: "preferJapaneseLyrics") as? Bool ?? true
         showLyrics = defaults.object(forKey: "showLyrics") as? Bool ?? true
         let storedSource = defaults.string(forKey: "lyricSource") ?? "auto"
         lyricSource = ["auto", "lrclib", "caption"].contains(storedSource) ? storedSource : "auto"
@@ -145,12 +153,19 @@ final class AppModel: ObservableObject {
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
     var popupDuration: Double { 0.32 }
     var lyricBlockHeight: Double { Double(min(3, max(1, lyricLineCount)) * 20 + 14) }
+    var hasIslandLyrics: Bool {
+        showLyrics && (usesVideoCaption || !currentLines.isEmpty || !(currentPlainLyrics?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true))
+    }
+    var lyricNotice: String? {
+        showLyrics && !hasIslandLyrics && lyricNoticeKey == trackKey ? lyricNoticeText : nil
+    }
+    var islandLyricHeight: Double { hasIslandLyrics ? lyricBlockHeight : lyricNotice != nil ? 34 : 0 }
 
     func panelSize(screenWidth: Double) -> CGSize {
         let active = current != nil
         let width = expanded ? max(panelWidth, notchWidth + 120) : active ? max(compactWidth, notchWidth + 100) : notchWidth
-        let extraHeight = expanded ? 200 + (showLyrics ? lyricBlockHeight + 12 : 0) + (commandError == nil ? 0 : 30)
-            : active && showLyrics ? lyricBlockHeight : 0
+        let extraHeight = expanded ? 200 + (islandLyricHeight > 0 ? islandLyricHeight + 12 : 0) + (commandError == nil ? 0 : 30)
+            : active ? islandLyricHeight : 0
         return CGSize(width: min(max(0, screenWidth - 24), width), height: topHeight + extraHeight)
     }
 
@@ -167,7 +182,13 @@ final class AppModel: ObservableObject {
         lyricSource != "lrclib" && (lyricSource == "caption" || currentLines.isEmpty)
             && current?.snapshot.captionEnabled == true && current?.snapshot.isAdvertisement == false
     }
-    var currentLines: [LyricLine] { lyricSource == "caption" ? [] : (trackKey.flatMap { lyrics[$0] } ?? []) }
+    var currentLines: [LyricLine] {
+        guard lyricSource != "caption", let key = trackKey else { return [] }
+        if let cached = displayLineCache[key] { return cached }
+        let prepared = LRCParser.displayLines(lyrics[key] ?? [], preferJapanese: preferJapaneseLyrics)
+        displayLineCache[key] = prepared
+        return prepared
+    }
     var currentPlainLyrics: String? { lyricSource == "caption" ? nil : trackKey.flatMap { plainLyrics[$0] } }
     var canControl: Bool { current != nil && current?.snapshot.isAdvertisement == false && pendingCommand == nil }
 
@@ -221,21 +242,18 @@ final class AppModel: ObservableObject {
         let beganPlaying = snapshot.state == "playing" && !snapshot.isAdvertisement
             && (sessions[entry.id]?.snapshot.state != "playing" || sessions[entry.id]?.snapshot.isAdvertisement == true
                 || sessions[entry.id]?.snapshot.trackId != snapshot.trackId)
-        let wasEmpty = current == nil
         sessions[entry.id] = entry
         reconcileSource(incomingID: entry.id, beganPlaying: beganPlaying)
         refreshMedia()
         if !demo && current?.id == entry.id {
             let key = snapshot.isAdvertisement ? nil : trackKey
             if lastTrackKey != key {
-                let notify = lastTrackKey != nil && key != nil
                 lastTrackKey = key
                 commandError = nil
                 pendingCommand = nil
-                if notify { trackChanged?() }
             }
         }
-        if wasEmpty != (current == nil) { geometryChanged?() }
+        geometryChanged?()
     }
 
     func disconnect() {
@@ -343,6 +361,11 @@ final class AppModel: ObservableObject {
     }
 
     private func refreshMedia(force: Bool = false) {
+        if lyricNoticeKey != trackKey {
+            lyricNoticeTask?.cancel()
+            lyricNoticeText = nil
+            lyricNoticeKey = nil
+        }
         if let candidateTrackKey, candidateTrackKey != trackKey { cancelLyricSearch() }
         guard let snapshot = current?.snapshot, let key = trackKey else {
             lyricTask?.cancel()
@@ -398,7 +421,11 @@ final class AppModel: ObservableObject {
                 self.resolvedQueries[key] = query
                 self.lyrics[key] = nil
                 self.plainLyrics[key] = nil
-                guard let record else { self.lyricMessages[key] = "Lirik yang cocok belum ditemukan"; return }
+                guard let record else {
+                    self.lyricMessages[key] = "Lirik yang cocok belum ditemukan"
+                    self.showMissingLyricsNotice(for: key)
+                    return
+                }
                 self.lyricNames[key] = "LRCLIB · \(record.artistName) — \(record.trackName)"
                 if record.instrumental { self.lyricMessages[key] = "Instrumental · tidak ada lirik" }
                 else if record.hasValidSyncedLyrics, let synced = record.syncedLyrics {
@@ -407,13 +434,31 @@ final class AppModel: ObservableObject {
                 } else if let plain = record.plainLyrics, !plain.isEmpty {
                     self.plainLyrics[key] = plain
                     self.lyricMessages[key] = "Lirik teks · belum tersinkron"
-                } else { self.lyricMessages[key] = "Lirik belum tersedia" }
+                } else {
+                    self.lyricMessages[key] = "Lirik belum tersedia"
+                    self.showMissingLyricsNotice(for: key)
+                }
             } catch {
                 guard !Task.isCancelled, self.lyricRequestID == signature, self.trackKey == key else { return }
                 self.lyricMessages[key] = "Lirik belum terhubung · mencoba lagi otomatis"
                 self.lyricNames[key] = error.localizedDescription
                 self.lyricRetryAfter = Date(timeIntervalSinceNow: 30)
             }
+        }
+    }
+
+    private func showMissingLyricsNotice(for key: String) {
+        guard trackKey == key, showLyrics, !hasIslandLyrics, !notifiedMissingTracks.contains(key) else { return }
+        notifiedMissingTracks.insert(key)
+        lyricNoticeTask?.cancel()
+        lyricNoticeKey = key
+        lyricNoticeText = "Lirik belum ditemukan"
+        geometryChanged?()
+        lyricNoticeTask = Task { [weak self] in
+            do { try await Task.sleep(for: .seconds(3)) } catch { return }
+            guard let self, self.lyricNoticeKey == key else { return }
+            self.lyricNoticeText = nil
+            self.geometryChanged?()
         }
     }
 
@@ -475,6 +520,7 @@ final class AppModel: ObservableObject {
         defaults.set(lyricLineCount, forKey: "lyricLineCount")
         defaults.set(accentName, forKey: "accentName")
         defaults.set(animations, forKey: "animations")
+        defaults.set(preferJapaneseLyrics, forKey: "preferJapaneseLyrics")
         defaults.set(showLyrics, forKey: "showLyrics")
         defaults.set(lyricSource, forKey: "lyricSource")
         defaults.set(automaticSource, forKey: "automaticSource")

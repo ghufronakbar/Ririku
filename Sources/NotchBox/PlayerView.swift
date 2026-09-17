@@ -12,29 +12,25 @@ struct PlayerView: View {
                 if model.current != nil { artwork(size: 24) }
                 Spacer(minLength: model.notchWidth)
                 if model.current != nil {
-                    Image(systemName: model.current?.snapshot.state == "playing" ? "waveform" : "pause.fill")
-                        .foregroundStyle(model.accent).frame(width: 24)
+                    DecorativeSpectrum(playing: model.current?.snapshot.state == "playing" && model.current?.snapshot.isAdvertisement == false,
+                                        animate: model.canAnimate, color: model.accent)
                 }
             }
             .padding(.horizontal, 14)
             .frame(height: model.topHeight)
+            .fixedSize(horizontal: false, vertical: true)
             if model.expanded {
                 expandedContent.padding(.horizontal, 22).padding(.top, 12).padding(.bottom, 20)
-                    .transition(.opacity)
-            } else if model.showLyrics && model.current != nil {
+            } else if model.islandLyricHeight > 0 && model.current != nil {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                    lyricBlock.padding(.horizontal, 18).frame(height: model.lyricBlockHeight)
+                    islandLyrics.padding(.horizontal, 18).frame(height: model.islandLyricHeight)
                 }
-                .transition(.opacity)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .foregroundStyle(.white)
         .background(.black)
         .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: model.expanded ? 26 : 16, bottomTrailingRadius: model.expanded ? 26 : 16))
-        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.expanded)
-        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.showLyrics)
-        .animation(model.canAnimate ? .easeInOut(duration: model.popupDuration) : nil, value: model.lyricLineCount)
         .contentShape(Rectangle())
         .onHover(perform: hoverChanged)
         .onTapGesture { model.expanded = true }
@@ -57,7 +53,7 @@ struct PlayerView: View {
             }
             TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                 VStack(spacing: 12) {
-                    if model.showLyrics { lyricBlock.frame(height: model.lyricBlockHeight) }
+                    if model.islandLyricHeight > 0 { islandLyrics.frame(height: model.islandLyricHeight) }
                     VStack(spacing: 2) {
                         Slider(value: Binding(get: { scrubbing ? seekPosition : model.position() }, set: { seekPosition = $0 }),
                                in: 0...max(1, model.current?.snapshot.duration ?? 1), onEditingChanged: { editing in
@@ -84,6 +80,13 @@ struct PlayerView: View {
                 Text(error).font(.caption2).foregroundStyle(.orange).lineLimit(2)
             }
         }
+    }
+
+    @ViewBuilder
+    private var islandLyrics: some View {
+        if let notice = model.lyricNotice {
+            Text(notice).font(.system(size: 12)).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
+        } else if model.hasIslandLyrics { lyricBlock }
     }
 
     private var lyricBlock: some View {

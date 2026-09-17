@@ -52,6 +52,17 @@ public struct LyricLine: Equatable, Sendable {
 }
 
 public enum LRCParser {
+    public static func displayLines(_ lines: [LyricLine], preferJapanese: Bool) -> [LyricLine] {
+        guard preferJapanese, lines.contains(where: { $0.text.range(of: #"[\p{Hiragana}\p{Katakana}]"#, options: .regularExpression) != nil }) else { return lines }
+        let japaneseTimes = Set(lines.filter {
+            $0.text.range(of: #"[\p{Hiragana}\p{Katakana}\p{Han}]"#, options: .regularExpression) != nil
+        }.map(\.time))
+        return lines.filter { line in
+            guard japaneseTimes.contains(line.time), !line.text.isEmpty else { return true }
+            return line.text.range(of: #"^[\p{Latin}\p{N}\p{P}\p{Z}\p{M}\s]+$"#, options: .regularExpression) == nil
+        }
+    }
+
     public static func parse(_ text: String) -> [LyricLine] {
         let stamp = try! NSRegularExpression(pattern: #"\[(\d{1,3}):([0-5]\d)(?:[.:](\d{1,3}))?\]"#)
         let offsetPattern = try! NSRegularExpression(pattern: #"\[offset:([+-]?\d+)\]"#, options: .caseInsensitive)

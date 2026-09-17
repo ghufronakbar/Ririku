@@ -1,7 +1,6 @@
 import AppKit
 import SwiftUI
 import NotchCore
-import QuartzCore
 
 final class NotchPanel: NSPanel {
     var dismissPanel: (() -> Void)?
@@ -18,8 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
     private var statusItem: NSStatusItem!
     private var hoverWork: DispatchWorkItem?
-    private var popupWork: DispatchWorkItem?
-    private var hovered = false
+    private var resizeTimer: Timer?
     private var targetPanelFrame: NSRect?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -35,16 +33,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         panel.isMovable = false
         panel.dismissPanel = { [weak self] in self?.panel.resignKey(); self?.model.expanded = false }
-        panel.contentView = NSHostingView(rootView: PlayerView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
+        let hosting = NSHostingView(rootView: PlayerView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
+        hosting.sizingOptions = []
+        panel.contentView = hosting
         model.geometryChanged = { [weak self] in self?.positionPanel() }
         model.openSetup = { [weak self] in self?.showSetup() }
-        model.trackChanged = { [weak self] in self?.showTrackPopup() }
         model.sendPacket = { [weak self] data in self?.bridge.send(data) }
         bridge.onPacket = { [weak self] data in self?.model.receive(data) }
         bridge.onDisconnect = { [weak self] in self?.model.disconnect() }
         do { try bridge.start() }
         catch { model.bridgeError = error.localizedDescription }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
         positionPanel()
         panel.orderFrontRegardless()
         if !UserDefaults.standard.bool(forKey: "didShowSetup") {
@@ -80,9 +80,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func expandPanel() { model.expanded = true; panel.makeKeyAndOrderFront(nil) }
-    @objc private func screenChanged() { positionPanel() }
+    @objc private func screenChanged() { positionPanel(animate: false) }
+    @objc private func accessibilityChanged() { model.objectWillChange.send(); positionPanel(animate: false) }
 
-    private func positionPanel() {
+    private func positionPanel(animate: Bool = true) {
         guard panel != nil, let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main else { return }
         let top = max(32, screen.safeAreaInsets.top)
         let notch: CGFloat
@@ -95,19 +96,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let width = size.width
         let height = size.height
         let frame = NSRect(x: screen.frame.midX - width / 2, y: screen.frame.maxY - height, width: width, height: height)
+        if !animate || !model.canAnimate || !panel.isVisible {
+            resizeTimer?.invalidate()
+            resizeTimer = nil
+            targetPanelFrame = frame
+            panel.setFrame(frame, display: true)
+            return
+        }
         guard targetPanelFrame != frame else { return }
         targetPanelFrame = frame
-        if model.canAnimate && panel.isVisible {
-            NSAnimationContext.runAnimationGroup { context in
-                context.duration = model.popupDuration
-                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-                panel.animator().setFrame(frame, display: true)
+        resizeTimer?.invalidate()
+        let start = panel.frame
+        let startedAt = ProcessInfo.processInfo.systemUptime
+        let duration = model.popupDuration
+        let timer = Timer(timeInterval: 1.0 / 60, repeats: true) { [weak self] timer in
+            MainActor.assumeIsolated {
+                guard let self else { timer.invalidate(); return }
+                let progress = min(1, (ProcessInfo.processInfo.systemUptime - startedAt) / duration)
+                self.panel.setFrame(IslandMotion.frame(from: start, to: frame, progress: progress), display: true)
+                if progress >= 1 {
+                    timer.invalidate()
+                    self.resizeTimer = nil
+                }
             }
-        } else { panel.setFrame(frame, display: true) }
+        }
+        resizeTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     private func hover(_ inside: Bool) {
-        hovered = inside
         hoverWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
@@ -118,19 +135,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + (inside ? 0.15 : 0.35), execute: work)
     }
 
-    private func showTrackPopup() {
-        popupWork?.cancel()
-        guard !model.expanded else { return }
-        model.expanded = true
-        let work = DispatchWorkItem { [weak self] in
-            guard let self, !self.hovered, !self.panel.isKeyWindow else { return }
-            self.model.expanded = false
-        }
-        popupWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: work)
-    }
-
-    func applicationWillTerminate(_ notification: Notification) { bridge.stop() }
+    func applicationWillTerminate(_ notification: Notification) { resizeTimer?.invalidate(); bridge.stop() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSetup(); return false }
 }
 

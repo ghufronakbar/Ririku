@@ -46,10 +46,13 @@ struct SetupView: View {
                     Text("2 · saat ini + berikutnya").tag(2)
                     Text("3 · sebelum + saat ini + berikutnya").tag(3)
                 }.disabled(!model.showLyrics)
-                Text("Berlaku pada island ringkas dan terbuka. Konteks sebelum/berikutnya tersedia untuk LRC bertimestamp; caption hanya menampilkan teks aktif. Animasi spectrum belum diimplementasikan.")
+                Text("Berlaku pada island ringkas dan terbuka. Spectrum bersifat dekoratif, bukan analisis audio; mereda saat pause/stop. Toggle animasi dan Reduce Motion juga mengatur spectrum.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("Lirik") {
+                Toggle("Utamakan Jepang pada timestamp ganda", isOn: $model.preferJapaneseLyrics)
+                Text("Baris Latin yang berbagi timestamp persis dengan Jepang disembunyikan dari tampilan, bukan dihapus. Baris bahasa lain pada waktu berbeda dan teks campuran tetap utuh. Matikan untuk melihat semua varian, termasuk duet bilingual simultan.")
+                    .font(.caption).foregroundStyle(.secondary)
                 Picker("Sumber lirik", selection: $model.lyricSource) {
                     Text("Otomatis · LRCLIB lalu caption").tag("auto")
                     Text("LRCLIB / LRC saja").tag("lrclib")
@@ -103,7 +106,7 @@ struct SetupView: View {
                 if let error = model.commandError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
             Section("Prototipe") {
-                Text("Notch Box 0.2.3 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                Text("Notch Box 0.2.4 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle("Demo lokal (tanpa audio)", isOn: $model.demo)
                 Text("Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.")
                     .font(.caption).foregroundStyle(.secondary)
