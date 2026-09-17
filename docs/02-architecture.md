@@ -1,5 +1,15 @@
 # Arsitektur awal
 
+## Pembaruan v0.2.4
+
+Resize menggunakan satu interpolator frame native (`IslandMotion`) dengan kurva smoothstep/ease-in-out 0,32 detik. Setiap frame menghitung `origin.y = target.maxY - height`, sehingga tepi atas konstan. Timer 60 Hz hanya hidup selama resize dan dibatalkan setelah selesai/retarget; NSHostingView tidak menentukan ukuran jendela dan animasi layout implisit root SwiftUI dihapus. Reduce Motion/toggle nonaktif memakai frame akhir langsung. Auto-popup pada track change dihapus; hover/klik/menu tetap membuka panel.
+
+`hasIslandLyrics` memisahkan konten dari status lookup. Geometri menghilangkan area lirik jika tidak ada konten/notifikasi. Status detail tetap di Setup; lookup miss memunculkan notice 3 detik maksimal sekali per identitas lagu per sesi, bukan saat jaringan gagal. Notice dibatalkan ketika lagu/sumber berubah dan tidak memicu expanded. Caption aktif tetap memiliki area cue, termasuk jeda, agar tidak resize setiap kata hilang.
+
+Spectrum dekoratif memakai lima band sintetis dan TimelineView maksimal 24 Hz saat playing dengan animasi aktif; tidak membaca/merekam audio. Pause/ended/buffering/iklan menuju tinggi 2 pt dalam 0,28 detik, timeline periodik berhenti. Toggle animasi/Reduce Motion menghasilkan bar statis.
+
+LRC raw tetap diparse/disimpan tanpa perubahan. Lapisan display default mengutamakan Jepang: pada track dengan kana, baris Latin-only yang waktunya persis sama dengan baris kana/kanji tidak ditampilkan. Tidak membuang baris Latin pada timestamp lain, teks campuran dalam satu baris, atau aksara lain. Ini preferensi display, bukan bukti dua baris bermakna sama. Toggle off mengembalikan semua raw cues; diperlukan bila vokal multilingual simultan harus terlihat. Hasil display dicache dalam memori dan invalidasi saat lirik/preferensi berubah.
+
 ## Pembaruan UI/identitas v0.2.3
 
 Geometri panel dihitung terpusat oleh model: lebar ringkas/terbuka, tinggi fisik notch, jumlah baris, visibility lirik, serta pesan error. Frame target yang sama tidak memulai ulang animasi. AppKit memakai ease-in/ease-out 0,32 detik; opacity/layout SwiftUI memakai durasi sama. Toggle animasi dan Reduce Motion tetap dihormati. `showLyrics` kini berlaku pada kedua mode; jumlah baris serta lebar ringkas/terbuka tersimpan di UserDefaults.

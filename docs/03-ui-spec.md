@@ -1,5 +1,11 @@
 # Spesifikasi UI dan motion
 
+## UI v0.2.4
+
+Tepi atas dan tinggi header tetap; hanya sisi horizontal dan batas bawah yang bergerak. Tidak ada scale transform/implicit root animation. Ganti lagu tidak membuka panel otomatis. Tanpa konten lirik, island ringkas hanya header; loading/error/miss rinci hanya di Setup. Lookup miss mendapat notifikasi **Lirik belum ditemukan** selama 3 detik tanpa membuka kontrol.
+
+Ikon kanan sekarang spectrum dekoratif lima bar, mereda menjadi datar saat pause/stop/buffering. Tooltip menyatakan bukan analisis audio. Preferensi **Utamakan Jepang pada timestamp ganda** berada di Setup → Lirik; penjelasannya menyebut pengecualian duet multilingual simultan dan cara melihat semua varian. Pengaturan 1/2/3 cue tetap berlaku setelah preferensi diterapkan.
+
 ## UI v0.2.3
 
 - **Tampilkan lirik di island** berlaku pada ringkas dan terbuka, tidak mematikan pencarian provider.

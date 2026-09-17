@@ -2,7 +2,7 @@
 
 Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
 
-**Status:** prototipe native lokal v0.2.3, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, serta pencarian LRCLIB telah diimplementasikan. Pengaturan 1/2/3 baris, hide/show lirik, ukuran ringkas/terbuka, transisi ease-in/ease-out, dan jalur metadata pemutar diuji dengan fixture/render lokal. Integrasi Chrome nyata dan kelancaran motion tetap perlu uji pengguna. Animasi spectrum serta pemilihan bahasa lirik belum diimplementasikan.
+**Status:** prototipe native lokal v0.2.4, 17 September 2026. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
 
 ## Arah proyek
 
@@ -37,7 +37,7 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
-**Update v0.2.3:** Setup → Tampilan mengatur hide/show lirik di kedua mode, 1/2/3 baris, serta lebar island ringkas/terbuka. Reload extension v0.2.3 dan refresh tab satu kali untuk jalur identitas pemutar yang tidak bergantung pada URL. Penjelasan spectrum dan kasus lirik Jepang/romaji ada di [catatan investigasi](docs/07-spectrum-and-lyrics-investigation.md); keduanya belum diubah.
+**Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Extension tetap v0.2.3, sehingga tidak perlu reload jika sudah diperbarui sebelumnya.
 
 ```sh
 bash scripts/build-app.sh

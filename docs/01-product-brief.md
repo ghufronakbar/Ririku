@@ -1,5 +1,9 @@
 # Product brief
 
+## Revisi kebutuhan v0.2.4 — 17 September 2026
+
+Pengguna meminta top edge island tetap sticky, ekspansi hanya horizontal dan ke bawah, tanpa auto-expand saat lagu berganti. Loading/miss tidak boleh menjadi teks permanen di island; miss diberi notifikasi beberapa detik. Spectrum dekoratif disetujui, termasuk mereda menjadi datar saat pause/stop. Preferensi Jepang untuk cue ganda アイドル disetujui dengan perlindungan baris multilingual dan opsi kembali ke tampilan asli.
+
 ## Pembaruan kebutuhan UI — 17 September 2026
 
 Pengguna meminta transisi popup lebih halus, hide/show lirik, 1 baris aktif / 2 aktif+berikutnya / 3 sebelum+aktif+berikutnya, serta ukuran island adjustable. v0.2.3 mengimplementasikan pengaturan tersebut pada mode ringkas dan terbuka. Animasi spectrum (termasuk transisi datar saat pause) dan perbaikan preferensi Jepang untuk アイドル ditunda sesuai permintaan penjelasan terlebih dahulu.

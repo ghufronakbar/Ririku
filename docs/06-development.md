@@ -1,5 +1,11 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.2.4
+
+App native v0.2.4 tetap kompatibel dengan extension v0.2.3; tidak perlu reload lagi jika update sebelumnya sudah terpasang. Lagu baru tidak auto-expand; gunakan hover/klik/menu. Status pencarian ada di Setup, dengan notifikasi miss 3 detik di island. Spectrum dekoratif otomatis mengikuti state pemutar, tanpa izin capture audio.
+
+Setup → Lirik → **Utamakan Jepang pada timestamp ganda** aktif secara default. Ini langsung berlaku pada cache lama, termasuk アイドル, tanpa pencarian ulang. Baris Inggris/Korea/dll pada waktu lain dan baris campuran tetap ada. Bila lirik asli memiliki vokal multibahasa bersamaan dengan timestamp persis sama, matikan toggle untuk mempertahankan semua varian. Raw/cache tidak diubah.
+
 ## Update v0.2.3
 
 Reload extension di `chrome://extensions` dan refresh tab lama sekali. Versi ini menambahkan helper metadata MAIN world tanpa izin baru; tanpa reload helper belum aktif. Setelah itu, uji play lagu dari hasil pencarian YouTube Music tanpa refresh lagi. Getter internal masih perlu validasi di situs nyata.

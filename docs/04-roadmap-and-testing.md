@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi v0.2.4 — 17 September 2026
+
+Fixture lulus: 122 sampel frame expand/collapse mempertahankan top edge/center; NSWindow aktual juga mempertahankan top edge saat resize; baris multilingual beda timestamp, teks campuran Jepang+Inggris, serta aksara Korea/China tidak dibuang; toggle off mengembalikan raw cues. Cache アイドル record 2116394 dibaca tanpa diubah dan pada posisi 31 detik memilih baris Jepang.
+
+Model fixture lulus untuk loading tanpa area status, notice miss 3 detik, pencegahan notifikasi berulang, pembatalan notice saat lagu berubah, pergantian lagu tidak mengubah expanded, dan invalidasi cache preferensi. Render native playing/paused/empty berhasil; gambar paused menunjukkan bar datar dan gambar empty menunjukkan header saja. Ini bukan benchmark performa atau bukti motion sempurna pada layar pengguna. Uji lanjutan: hover cepat berulang/retarget, pergantian layar, Reduce Motion, stop/disconnect, serta lagu multilingual dengan vokal simultan (toggle preferensi off bila ingin semua cue).
+
 ## Validasi v0.2.3 — 17 September 2026
 
 Fixture lokal lulus: 1/2/3 baris dan batas awal/akhir; hide/show mengubah geometri; lebar dibatasi layar; preferensi tersimpan; playing→playing dengan track baru mengikuti sumber, heartbeat lama tidak merebutnya, manual pin tetap berlaku. Render native mode ringkas 1/2/3 dan terbuka dengan/tanpa lirik berhasil; gambar ringkas 2 baris dan terbuka 3 baris diperiksa visual.

@@ -1,5 +1,9 @@
 # Investigasi spectrum dan bahasa lirik
 
+## Pembaruan implementasi v0.2.4
+
+Setelah pengguna menyetujui, spectrum dekoratif (bukan capture audio) dan preferensi Jepang pada timestamp ganda telah diimplementasikan. Bagian analisis di bawah adalah riwayat sebelum persetujuan. Preferensi bekerja pada lapisan display, bukan menghapus raw/cache. Track berkana dengan cue Jepang+Latin pada waktu persis sama mengutamakan Jepang; bahasa lain pada waktu berbeda dan teks campuran dipertahankan. Untuk duet bilingual simultan, toggle dapat dimatikan karena timestamp sama saja tidak membuktikan Latin merupakan transliterasi. Validasi cache record 2116394 pada detik 31 memilih Jepang. Tidak ada konversi romaji→kanji atau transkripsi audio.
+
 17 September 2026. Ini penjelasan/usulan, bukan fitur yang telah diimplementasikan.
 
 ## 1. Spectrum: pilihan dan tradeoff

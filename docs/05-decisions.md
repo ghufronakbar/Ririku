@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.2.4 — 17 September 2026
+
+Disetujui pengguna: top-sticky resize, tanpa auto-expand lagu baru, status lookup tidak permanen di island, spectrum dekoratif, serta perbaikan cue Jepang untuk アイドル. Timer resize terikat durasi dan diakhiri setelah selesai, menggantikan kombinasi animasi frame/layout sebelumnya. Notice miss dipilih 3 detik. Spectrum tidak memakai capture/izin baru. Preferensi cue Jepang dapat dimatikan; tidak menjanjikan deteksi romaji versus vokal Inggris simultan secara semantik. Raw LRC dan cache tidak ditulis ulang.
+
 ## Revisi v0.2.3 — 17 September 2026
 
 Pengaturan baris/visibility/ukuran dan transisi popup diterapkan sesuai permintaan. Larangan sementara animasi ditafsirkan untuk spectrum yang sedang dibahas; ikon spectrum tidak diubah. Metadata pemutar ditambahkan untuk mengatasi ketergantungan identitas lagu pada URL SPA. Preferensi bahasa アイドル tidak diubah: inspeksi cache membuktikan record Jepang+romaji bertimestamp sama; penjelasan dan tradeoff dicatat di dokumen 07, menunggu arahan pengguna.
