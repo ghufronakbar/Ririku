@@ -2,7 +2,7 @@
 
 Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
 
-**Status:** prototipe native lokal v0.2.4, 17 September 2026. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
+**Status:** prototipe native lokal v0.2.5, 17 September 2026. Antarmuka tersedia dalam English, Bahasa Indonesia, dan 日本語: default mengikuti bahasa sistem yang didukung (fallback English) dan dapat diganti langsung di Setup. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
 
 ## Arah proyek
 
@@ -36,6 +36,8 @@ Dokumentasi → review mockup → persetujuan arah UI → prototipe integrasi Ch
 Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi aplikasi sekarang menggunakan SwiftUI/AppKit, bukan tampilan web. Mode demo native juga tidak memutar audio.
 
 ## Mulai lokal
+
+**Update v0.2.5:** Setup → **Bahasa** memilih Ikuti sistem / English / Bahasa Indonesia / 日本語 tanpa restart. Bahasa sistem Mac ini saat ini diawali English, sehingga mode Ikuti sistem menampilkan English. Judul lagu, lirik, dan caption tidak diterjemahkan. Extension naik ke v0.2.5 agar popup mengikuti bahasa app; reload extension sekali. Dokumentasi proyek tetap berbahasa Indonesia.
 
 **Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Extension tetap v0.2.3, sehingga tidak perlu reload jika sudah diperbarui sebelumnya.
 

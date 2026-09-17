@@ -1,5 +1,13 @@
 # Roadmap dan pengujian
 
+## Validasi v0.2.5 — 17 September 2026
+
+Riset sebelum implementasi memakai paket percobaan terpisah: `.app` dengan `.lproj` di `Contents/Resources` memilih en/id/ja sesuai urutan bahasa sistem dan kembali ke English untuk fr/de; `Bundle.module` gagal di dalam `.app` atau membuat codesign gagal bila ditaruh di root; `String(localized:locale:)` tidak mengganti bahasa, sedangkan sub-bundle `.lproj` dan `LocalizedStringResource.locale` berhasil.
+
+Hasil implementasi: `swift build`, `bash scripts/build-app.sh`, `codesign --verify --deep --strict`, `plutil -lint` untuk ketiga `.strings`, `node --check` semua skrip extension, dan validasi JSON manifest/`_locales` berhasil. `check-localization.py` melaporkan 131 key lengkap untuk id dan ja. Harness sementara dalam bundle `.app` lulus untuk default `system`, resolusi sistem (en-ID→en, id-ID→id, ja-JP→ja, fr/de→en, zh-Hans+ja→ja), penggantian langsung en→id→ja, callback bahasa, persistensi dan pemulihan preferensi, status `UIText` tersimpan yang ikut berganti bahasa, `BridgeError` berargumen, argumen verbatim, fallback key, serta label demo. Render SwiftUI aktual Setup (seluruh section) dan panel expanded dalam ketiga bahasa diperiksa visual tanpa teks terpotong. Fixture Node dengan mock Chrome lulus untuk fallback bahasa Chrome, `hello`/`preferences` dari app, penolakan kode tidak valid, judul action, pesan disconnect, app lama tanpa field bahasa, dan kesamaan key antarbahasa.
+
+Belum diuji: pertukaran `hello`/`preferences` melalui socket dan native host sungguhan (app pengguna sedang berjalan sehingga lock socket tidak diganggu), popup di Chrome setelah reload extension v0.2.5, perubahan bahasa sistem saat app berjalan (mode sistem dihitung saat start/pergantian preferensi; buka ulang app bila perlu), VoiceOver dalam tiga bahasa, daftar bahasa per-app di System Settings untuk app menu bar, dan review penutur asli untuk terjemahan Jepang.
+
 ## Validasi v0.2.4 — 17 September 2026
 
 Fixture lulus: 122 sampel frame expand/collapse mempertahankan top edge/center; NSWindow aktual juga mempertahankan top edge saat resize; baris multilingual beda timestamp, teks campuran Jepang+Inggris, serta aksara Korea/China tidak dibuang; toggle off mengembalikan raw cues. Cache アイドル record 2116394 dibaca tanpa diubah dan pada posisi 31 detik memilih baris Jepang.

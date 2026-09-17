@@ -1,5 +1,9 @@
 # Spesifikasi UI dan motion
 
+## UI v0.2.5
+
+Section pertama Setup adalah **Bahasa**: pemilih **Bahasa antarmuka** dengan opsi **Ikuti sistem (nama bahasa efektif)**, English, Bahasa Indonesia, dan 日本語. Nama bahasa selalu ditulis dalam bahasanya sendiri. Perubahan langsung berlaku pada Setup, panel island, label aksesibilitas/tooltip, menu bar, judul jendela, serta popup extension yang terhubung. Keterangan di bawah pemilih menyatakan bahwa judul lagu, lirik, caption, dan pesan dari macOS/situs tetap dalam bahasa aslinya. Preferensi **Utamakan Jepang pada timestamp ganda** terpisah dari bahasa antarmuka. Dialog sistem seperti panel impor file mengikuti bahasa macOS.
+
 ## UI v0.2.4
 
 Tepi atas dan tinggi header tetap; hanya sisi horizontal dan batas bawah yang bergerak. Tidak ada scale transform/implicit root animation. Ganti lagu tidak membuka panel otomatis. Tanpa konten lirik, island ringkas hanya header; loading/error/miss rinci hanya di Setup. Lookup miss mendapat notifikasi **Lirik belum ditemukan** selama 3 detik tanpa membuka kontrol.

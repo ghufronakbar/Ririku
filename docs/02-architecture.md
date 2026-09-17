@@ -1,5 +1,15 @@
 # Arsitektur awal
 
+## Lokalisasi v0.2.5
+
+Teks sumber UI ditulis dalam English dan sekaligus menjadi key. Terjemahan berada di `Localization/{en,id,ja}.lproj/Localizable.strings` (format `.strings`, karena Command Line Tools tidak menyediakan `xcstringstool` untuk String Catalog). `build-app.sh` menyalin folder `.lproj` ke `Contents/Resources` serta menulis `CFBundleDevelopmentRegion=en` dan `CFBundleLocalizations`. Resource SwiftPM/`Bundle.module` sengaja tidak dipakai: pada spike, accessor mencari bundle di root `.app` (fatal error bila tidak ada), sedangkan bundle di root membuat `codesign --strict` gagal.
+
+Preferensi `interfaceLanguage` (`system`, `en`, `id`, `ja`) tersimpan di UserDefaults. Mode sistem memakai `Bundle.preferredLocalizations(from:forPreferences:)` terhadap `Locale.preferredLanguages`; tanpa bahasa cocok hasilnya English. `Localizer` membaca langsung sub-bundle `<kode>.lproj`, sehingga penggantian bahasa tidak memerlukan restart; `String(localized:locale:)` tidak dipakai karena parameter locale hanya memengaruhi format, bukan pemilihan terjemahan. Key yang tidak ditemukan tampil sebagai teks English.
+
+Status dan error yang disimpan model (`lyricMessages`, `lyricNames`, `lyricSearchStatus`, `commandError`, `bridgeError`, notifikasi lirik) berupa `UIText` (key + argumen) dan diterjemahkan saat render, agar status lama ikut berganti bahasa. `BridgeError.system` membawa key English + argumen; `errorDescription` tetap English untuk log native host. Error dari framework sistem tetap memakai teks sistem. Angka offset/selisih diformat dengan locale bahasa UI. Judul lagu, artis, label layanan dari extension, lirik, dan caption ditampilkan apa adanya.
+
+Menu bar dan judul jendela Setup diperbarui saat bahasa berubah. Bridge menyertakan `language` (kode efektif) pada `hello` dan mengirim pesan `preferences` saat bahasa berubah. Extension v0.2.5 memakai `i18n.js` bersama untuk popup/judul action: bahasa app bila terhubung, lalu bahasa UI Chrome, lalu English. Nama dan deskripsi manifest memakai `_locales` Chrome sehingga mengikuti bahasa Chrome, bukan app. Extension lama mengabaikan field/pesan baru; app baru tetap kompatibel dengan protokol lama. `scripts/check-localization.py` memastikan setiap key di kode tersedia pada id/ja dengan jumlah placeholder sama dan dijalankan oleh `build-app.sh`.
+
 ## Pembaruan v0.2.4
 
 Resize menggunakan satu interpolator frame native (`IslandMotion`) dengan kurva smoothstep/ease-in-out 0,32 detik. Setiap frame menghitung `origin.y = target.maxY - height`, sehingga tepi atas konstan. Timer 60 Hz hanya hidup selama resize dan dibatalkan setelah selesai/retarget; NSHostingView tidak menentukan ukuran jendela dan animasi layout implisit root SwiftUI dihapus. Reduce Motion/toggle nonaktif memakai frame akhir langsung. Auto-popup pada track change dihapus; hover/klik/menu tetap membuka panel.

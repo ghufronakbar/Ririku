@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.2.5 — 17 September 2026
+
+Pengguna meminta UI multi-bahasa (English, Bahasa Indonesia, 日本語) dengan default English atau bahasa sistem bila didukung. Setelah riset kelayakan tanpa perubahan kode, pengguna memilih opsi 2: ikuti sistem + pemilih bahasa di Setup yang langsung berlaku. Alternatif hanya-ikuti-sistem ditolak karena tidak dapat diganti dari app; pemilih dengan restart ditolak karena kurang nyaman. Pilihan teknis agen: `.strings` dengan key English (String Catalog butuh Xcode), `.lproj` disalin skrip build alih-alih `Bundle.module`, lookup sub-bundle untuk penggantian tanpa restart, status model sebagai key + argumen, serta bahasa app diteruskan ke popup extension lewat bridge. Dokumentasi proyek tetap berbahasa Indonesia sesuai panduan agen. Dokumen terdampak: README, 01, 02, 03, 04, 06.
+
 ## Revisi v0.2.4 — 17 September 2026
 
 Disetujui pengguna: top-sticky resize, tanpa auto-expand lagu baru, status lookup tidak permanen di island, spectrum dekoratif, serta perbaikan cue Jepang untuk アイドル. Timer resize terikat durasi dan diakhiri setelah selesai, menggantikan kombinasi animasi frame/layout sebelumnya. Notice miss dipilih 3 detik. Spectrum tidak memakai capture/izin baru. Preferensi cue Jepang dapat dimatikan; tidak menjanjikan deteksi romaji versus vokal Inggris simultan secara semantik. Raw LRC dan cache tidak ditulis ulang.
@@ -34,6 +38,7 @@ Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari reko
 | D-008 | Pemilih sumber berada di jendela Setup, bukan pop-up notch | Menjaga pop-up fokus pada musik dan lirik; 17 September 2026 |
 | D-009 | Melanjutkan dari review mockup ke implementasi prototipe | Instruksi pengguna “lanjutkan”, 17 September 2026; bukan persetujuan semua detail teknis berikutnya |
 | D-010 | Lirik otomatis, thumbnail nyata, koneksi/pemilihan sumber otomatis, serta respons klik extension | Permintaan setelah uji pengguna, 17 September 2026; impor LRC menjadi cadangan |
+| D-011 | Antarmuka English, Bahasa Indonesia, 日本語; ikuti bahasa sistem dengan fallback English dan pemilih langsung di Setup | Permintaan pengguna dan pilihan opsi 2 setelah riset, 17 September 2026 |
 
 ## 2. Usulan, belum persetujuan final
 

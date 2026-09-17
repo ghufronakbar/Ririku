@@ -1,5 +1,9 @@
 # Product brief
 
+## Pembaruan kebutuhan v0.2.5 — 17 September 2026
+
+Pengguna meminta antarmuka multi-bahasa: English, Bahasa Indonesia, dan 日本語. Default English; bila bahasa sistem macOS termasuk bahasa yang didukung, bahasa tersebut dipakai. Setelah riset kelayakan, pengguna memilih opsi mengikuti sistem ditambah pemilih bahasa di Setup yang berlaku tanpa restart. Cakupan terjemahan adalah teks UI aplikasi dan popup extension, bukan judul lagu, lirik, caption, pesan sistem/situs, maupun dokumentasi proyek.
+
 ## Revisi kebutuhan v0.2.4 — 17 September 2026
 
 Pengguna meminta top edge island tetap sticky, ekspansi hanya horizontal dan ke bawah, tanpa auto-expand saat lagu berganti. Loading/miss tidak boleh menjadi teks permanen di island; miss diberi notifikasi beberapa detik. Spectrum dekoratif disetujui, termasuk mereda menjadi datar saat pause/stop. Preferensi Jepang untuk cue ganda アイドル disetujui dengan perlindungan baris multilingual dan opsi kembali ke tampilan asli.
@@ -41,6 +45,7 @@ Prioritas: ketepatan sumber dan timing → kontrol yang dapat diandalkan → UI 
 | Lirik otomatis | Mencari lirik per lagu tanpa impor rutin; LRC hanya cadangan | Disepakati |
 | Artwork dan extension | Thumbnail nyata; klik extension menampilkan status dan akses Setup | Disepakati |
 | Pengaturan | Tombol Setup membuka jendela terpisah; pilihan sumber dan visual adjustable | Disepakati; detail kontrol visual masih usulan |
+| Bahasa antarmuka | English, Bahasa Indonesia, 日本語; ikuti sistem dengan fallback English, pemilih langsung di Setup | Disepakati 17 September 2026 |
 
 Tidak termasuk: karaoke per kata, unduhan audio, bypass DRM/premium, file shelf, clipboard, kalender, cuaca, atau akun cloud aplikasi.
 

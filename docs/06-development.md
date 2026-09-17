@@ -1,5 +1,19 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.2.5
+
+Keluar dari Notch Box yang sedang berjalan, jalankan `bash scripts/build-app.sh`, lalu buka ulang bundle. Setup → **Bahasa** menyediakan Ikuti sistem / English / Bahasa Indonesia / 日本語; pilihan tersimpan dan langsung berlaku. Mode Ikuti sistem memakai bahasa pertama yang didukung dari System Settings → General → Language & Region, dengan fallback English; setelah mengubah urutan bahasa sistem, buka ulang app.
+
+Reload extension di `chrome://extensions` (versi **0.2.5**) agar popup dan judul ikon mengikuti bahasa app. Saat app belum terhubung, popup memakai bahasa Chrome atau English. Nama/deskripsi extension di halaman extensions mengikuti bahasa Chrome.
+
+Menambah atau mengubah teks UI: tulis teks English di kode melalui `model.t("…")`, `UIText("…")`, atau `BridgeError.system("…", [argumen])` (tanpa interpolasi Swift; gunakan `%@`, atau `%1$@` bila urutan terjemahan berbeda). Tambahkan terjemahan ke `Localization/id.lproj/Localizable.strings` dan `Localization/ja.lproj/Localizable.strings`, lalu jalankan:
+
+```sh
+/usr/bin/python3 scripts/check-localization.py
+```
+
+Skrip build juga menjalankannya dan gagal bila key belum diterjemahkan, tidak dipakai, atau jumlah placeholder berbeda. Teks popup extension berada di `extension/i18n.js`. Binary di luar bundle `.app` tidak memuat `.lproj` sehingga menampilkan English.
+
 ## Update v0.2.4
 
 App native v0.2.4 tetap kompatibel dengan extension v0.2.3; tidak perlu reload lagi jika update sebelumnya sudah terpasang. Lagu baru tidak auto-expand; gunakan hover/klik/menu. Status pencarian ada di Setup, dengan notifikasi miss 3 detik di island. Spectrum dekoratif otomatis mengikuti state pemutar, tanpa izin capture audio.
@@ -126,6 +140,9 @@ swift build
 bash scripts/build-app.sh
 node --check extension/background.js
 node --check extension/content.js
+node --check extension/i18n.js
+node --check extension/popup.js
+/usr/bin/python3 scripts/check-localization.py
 codesign --verify --deep --strict "build/Notch Box.app"
 ```
 
@@ -158,7 +175,8 @@ Sources/NotchCore/      Playback, parser/matching lirik, framing, Unix socket
 Sources/NotchBox/       SwiftUI/AppKit, Setup, coordinator, IPC, LRCLIB/artwork
 Sources/NotchBoxHost/   Transport stdin/stdout Chrome ↔ Unix socket
 extension/             Manifest V3, worker, content script, popup status
-scripts/               Build bundle dan pendaftaran native host
+scripts/               Build bundle, pemeriksa lokalisasi, dan pendaftaran native host
+Localization/          Terjemahan UI id/ja (.lproj); English memakai key sumber
 samples/               LRC orisinal untuk demo
 build/                 Bundle dan hasil render lokal, tidak masuk Git
 ```
