@@ -2,7 +2,7 @@
 
 Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
 
-**Status:** perencanaan dan eksplorasi desain, 17 September 2026. Belum ada aplikasi native, extension, atau integrasi pemutar yang diimplementasikan. Nama proyek masih sementara.
+**Status:** prototipe native lokal v0.2.0, 17 September 2026. Panel SwiftUI/AppKit, Setup, extension Chrome, sumber otomatis/reconnect, thumbnail, dan pencarian lirik LRCLIB dengan cache lokal telah diimplementasikan. Metadata/kontrol dasar v0.1 sudah dicoba pengguna; perubahan extension v0.2 masih perlu reload dan uji situs nyata. Nama proyek masih sementara.
 
 ## Arah proyek
 
@@ -23,6 +23,7 @@ Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel n
 | [Spesifikasi UI](docs/03-ui-spec.md) | State panel, layout, animasi, dan aksesibilitas |
 | [Roadmap dan pengujian](docs/04-roadmap-and-testing.md) | Tahapan, kriteria penerimaan, dan skenario uji |
 | [Catatan keputusan](docs/05-decisions.md) | Keputusan disepakati, usulan, dan pertanyaan terbuka |
+| [Pengembangan dan pemasangan](docs/06-development.md) | Build aplikasi, pemasangan Chrome, pemakaian, batasan, dan uninstall |
 
 ## Cara membaca status
 
@@ -32,4 +33,15 @@ Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel n
 
 Dokumentasi → review mockup → persetujuan arah UI → prototipe integrasi Chrome → UI native → adapter pemutar desktop → pengujian harian.
 
-Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Mockup bukan implementasi aplikasi berbasis web dan tidak membuktikan sinkronisasi musik sesungguhnya. Belum ada perintah build/run untuk aplikasi.
+Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi aplikasi sekarang menggunakan SwiftUI/AppKit, bukan tampilan web. Mode demo native juga tidak memutar audio.
+
+## Mulai lokal
+
+```sh
+bash scripts/build-app.sh
+open "build/Notch Box.app"
+```
+
+Gunakan **Setup → Demo lokal** untuk mencoba panel tanpa extension. Untuk musik nyata, ikuti [panduan pemasangan Chrome](docs/06-development.md). Default mengikuti pemutar aktif dan mencari lirik otomatis; pemilihan sumber manual tetap hanya di Setup. Lirik otomatis disimpan di cache lokal. Impor LRC adalah cadangan, bukan keharusan setiap lagu.
+
+**Belum tersedia:** Apple Music/Spotify desktop, launch at login, dan distribusi ter-notarisasi. Ketersediaan/timing lirik bergantung pada kecocokan rekaman dan data penyedia, bukan jaminan setiap lagu. Jangan menganggap tiga sumber sudah didukung penuh hanya karena tercantum sebagai target produk.

@@ -16,6 +16,8 @@ Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari reko
 | D-006 | Dokumentasi Markdown sebelum review mockup dan implementasi | Permintaan pengguna pada tahap ini |
 | D-007 | Visual adjustable melalui tombol Setup yang membuka jendela terpisah | Arahan pengguna, 17 September 2026 |
 | D-008 | Pemilih sumber berada di jendela Setup, bukan pop-up notch | Menjaga pop-up fokus pada musik dan lirik; 17 September 2026 |
+| D-009 | Melanjutkan dari review mockup ke implementasi prototipe | Instruksi pengguna “lanjutkan”, 17 September 2026; bukan persetujuan semua detail teknis berikutnya |
+| D-010 | Lirik otomatis, thumbnail nyata, koneksi/pemilihan sumber otomatis, serta respons klik extension | Permintaan setelah uji pengguna, 17 September 2026; impor LRC menjadi cadangan |
 
 ## 2. Usulan, belum persetujuan final
 
@@ -44,3 +46,23 @@ Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari reko
 ## 4. Aturan pembaruan
 
 Saat keputusan berubah, catat tanggal, alasan, serta dokumen terdampak. Jangan menaikkan usulan menjadi disepakati hanya karena sudah divisualisasikan. Setelah fitur dibuat, perbarui status dan sertakan hasil pengujiannya; keberhasilan mockup tidak membuktikan integrasi native.
+
+## 5. Pilihan implementasi prototipe — 17 September 2026
+
+Pilihan teknis agen, dapat direvisi, bukan keputusan produk tambahan yang diasumsikan disetujui:
+
+- Swift Package Manager dan macOS 14+ agar dapat dibangun memakai Command Line Tools yang tersedia; paket menghasilkan app dan host terpisah.
+- Unix domain socket dengan pemeriksaan UID untuk transport host-ke-app, tanpa HTTP listener atau layanan cloud.
+- Shell native minimal dikerjakan bersama spike Chrome agar sumber dan timing bisa diamati langsung; gate integrasi situs nyata tetap belum selesai.
+- Impor LRC lokal mendahului pencarian daring untuk memisahkan verifikasi clock dari masalah matching/ketentuan provider.
+- Heartbeat browser 1 detik dan snapshot event playback; status dianggap stale setelah 5 detik. Ini baseline prototipe, belum hasil optimasi resource.
+- Target Apple Music dan Spotify tetap di roadmap dan ditandai belum tersedia di Setup.
+
+## 6. Revisi v0.2 — 17 September 2026
+
+- Kebijakan sumber pertama/manual-only diganti otomatis mengikuti pemutar yang mulai memainkan musik; manual pin tetap tersedia dan memulihkan sesi tab yang sama.
+- LRCLIB kini diintegrasikan setelah dokumentasi API diperiksa. Identifikasi klien, throttling, cooldown, pencocokan konservatif, dan cache lokal diterapkan.
+- Impor LRC bukan lagi alur utama. Plain text tetap diberi label tidak sinkron; tidak ada janji setiap lagu memiliki timestamp akurat.
+- Popup extension menampilkan status dan tombol Setup/reconnect. Membuka aplikasi yang sedang tertutup hanya dilakukan lewat klik **Buka Setup**, bukan menghidupkannya kembali tanpa henti setelah pengguna memilih Keluar.
+- Thumbnail diambil dari host gambar YouTube/Google yang dibatasi. Metadata judul/artis/durasi dikirim ke LRCLIB saat pencarian otomatis aktif; pengungkapan privasi di Setup diperbarui.
+- Upgrade extension unpacked memerlukan reload satu kali dan refresh tab lama. Ini langkah update development, bukan kewajiban menyambung setiap lagu.

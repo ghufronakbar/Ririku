@@ -20,10 +20,12 @@ Urutan dapat disesuaikan setelah spike. Tidak menjanjikan tenggat sebelum menget
 - [x] Tujuan native dan fitur inti disepakati.
 - [x] Chrome sebagai prioritas dan extension pendamping disetujui.
 - [x] Dokumentasi awal dibuat.
-- [ ] Mockup direview dan disetujui pengguna.
-- [ ] Versi macOS, model layar, dan toolchain dicatat.
+- [x] Review mockup menghasilkan arahan Setup terpisah; pengguna meminta melanjutkan implementasi.
+- [x] Versi macOS dan toolchain dicatat: macOS 15.7.2, arm64, Swift 6.1.2. Model layar belum dicatat.
 - [ ] Integrasi pemutar dibuktikan.
-- [ ] Aplikasi native dapat dibangun dan dijalankan.
+- [x] Build debug/release berhasil; view native dirender melalui harness lokal. Bundle diluncurkan dan handshake host terhadap aplikasi yang berjalan berhasil. Pemasangan Chrome tetap belum selesai.
+
+Shell native minimal dikerjakan bersama spike transport untuk memberi tempat pengujian sumber dan timing. Gate pemutar nyata belum dianggap selesai. Pencarian lirik otomatis serta adapter desktop tidak ikut dinyatakan selesai.
 
 ## 3. Kriteria penerimaan
 
@@ -37,6 +39,10 @@ Urutan dapat disesuaikan setelah spike. Tidak menjanjikan tenggat sebelum menget
 - UI tidak mengambil fokus ketika pengguna mengetik di aplikasi lain.
 - Setup dibuka melalui tindakan eksplisit, menggunakan jendela terpisah, dan tidak menduplikasi jendela saat dibuka ulang. Pemilih sumber tidak berada di pop-up musik.
 - Preferensi tampilan diterapkan tanpa menabrak notch; menutup Setup tidak menghentikan playback. Persistensi pilihan diuji pada aplikasi native, bukan dianggap terbukti dari mockup.
+- Klik ikon extension menampilkan status, bukan panel kosong; akses Setup membuka jendela native yang sama.
+- Mode otomatis mengikuti pemutar yang baru mulai; heartbeat biasa tidak merebut pilihan. Mode manual tetap mengunci tab dan memulihkan sesi baru tab yang sama.
+- Thumbnail ditampilkan jika tersedia; unduhan gambar dan respons lirik track lama tidak boleh menimpa track baru.
+- Lirik otomatis tidak membutuhkan impor per lagu; cache mencegah request berulang, HTTP 429 dihormati, dan lirik tanpa timing tidak diberi label synced.
 - Tidak ada network traffic yang tidak diperlukan selain pengambilan metadata/artwork/lirik yang dijelaskan.
 
 Usulan target awal: UI memilih baris benar dalam ≤300 ms setelah snapshot seek valid diterima. Ini mengukur respons aplikasi, bukan jaminan ketepatan timestamp penyedia atau latensi end-to-end. Latensi pemutar-ke-panel dan drift sesi panjang dilaporkan terpisah; target akhir ditetapkan setelah baseline.

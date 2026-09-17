@@ -11,7 +11,7 @@ Prioritas: ketepatan sumber dan timing → kontrol yang dapat diandalkan → UI 
 ## 2. Pengguna dan platform
 
 - Pengguna awal: pemilik Mac ini, untuk penggunaan pribadi.
-- Target platform: macOS; versi minimum, chip, dan model layar belum diverifikasi.
+- Target prototipe: macOS 14+. Build awal pada macOS 15.7.2, arm64, Swift 6.1.2 melalui Command Line Tools. Model layar belum dicatat; geometri dibaca saat runtime. Dukungan Intel belum diuji.
 - Target utama: layar dengan notch. Perilaku layar tanpa notch/monitor eksternal masih berupa usulan fallback.
 - Distribusi awal: lokal. Distribusi App Store, signing, dan notarization belum diputuskan.
 
@@ -25,7 +25,9 @@ Prioritas: ketepatan sumber dan timing → kontrol yang dapat diandalkan → UI 
 | Kontrol | Play/pause, previous/next | Usulan detail kontrol; bergantung kemampuan sumber |
 | Posisi | Progress dan seek bila didukung sumber | Usulan |
 | Lirik | Sinkron per baris terhadap posisi playback | Target inti |
-| Multi-sumber | Sumber terpilih jelas, opsi memilih manual | Usulan |
+| Multi-sumber | Otomatis mengikuti pemutar aktif dan pulih setelah reconnect; opsi mengunci sumber manual di Setup | Disepakati setelah pengujian pengguna |
+| Lirik otomatis | Mencari lirik per lagu tanpa impor rutin; LRC hanya cadangan | Disepakati |
+| Artwork dan extension | Thumbnail nyata; klik extension menampilkan status dan akses Setup | Disepakati |
 | Pengaturan | Tombol Setup membuka jendela terpisah; pilihan sumber dan visual adjustable | Disepakati; detail kontrol visual masih usulan |
 
 Tidak termasuk: karaoke per kata, unduhan audio, bypass DRM/premium, file shelf, clipboard, kalender, cuaca, atau akun cloud aplikasi.
@@ -35,7 +37,7 @@ Tidak termasuk: karaoke per kata, unduhan audio, bypass DRM/premium, file shelf,
 1. Pengguna memutar lagu di YouTube Music; panel menunjukkan sumber dan lagu yang benar.
 2. Pengguna pause atau seek dari browser maupun panel; baris lirik mengikuti posisi yang dilaporkan pemutar.
 3. Pengguna membuka panel untuk kontrol, lalu kembali bekerja tanpa fokus keyboard diambil.
-4. Dua pemutar aktif; pengguna melihat indikator sumber di panel dan memilih sumber yang dikendalikan melalui jendela Setup, bukan pop-up notch.
+4. Pemutar baru mulai memainkan lagu; mode otomatis mengikutinya. Pengguna dapat mengunci sumber melalui jendela Setup, bukan pop-up notch.
 5. Lirik tidak tersedia atau versi rekaman tidak cocok; UI menyatakan kondisinya tanpa menampilkan sinkronisasi palsu.
 6. Koneksi extension terputus; UI tidak terus menampilkan playback lama sebagai data aktif.
 

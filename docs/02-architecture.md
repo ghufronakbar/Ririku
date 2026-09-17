@@ -2,7 +2,7 @@
 
 [Kembali ke indeks](../README.md)
 
-Seluruh bagian dokumen ini adalah rancangan, belum implementasi. Detail API dan kelayakan adapter harus diverifikasi saat technical spike.
+Dokumen ini memuat rancangan target dan status prototipe. Per 17 September 2026, shell native, adapter browser, IPC, parser/clock LRC, pemilihan sumber otomatis, artwork, serta pencarian/cache LRCLIB telah diimplementasikan. Dukungan pemutar desktop tetap belum ada; v0.2 masih perlu verifikasi end-to-end pada extension yang di-reload.
 
 ## 1. Komponen
 
@@ -11,7 +11,7 @@ YouTube / YouTube Music
   ↕ Chrome content script
   ↕ extension service worker
   ↕ native messaging host
-  ↕ local IPC (mekanisme belum dipilih)
+  ↕ Unix domain socket lokal
 Native macOS application
   ├─ Browser adapter
   ├─ Apple Music adapter (perlu validasi)
@@ -22,9 +22,11 @@ Native macOS application
   └─ SwiftUI views + AppKit panel controller
 ```
 
-Panel musik dan jendela Setup memiliki lifecycle terpisah. Sumber dipilih di jendela Setup, bukan pop-up notch. Usulan: preferences store bersama memasok pilihan sumber dan tampilan ke coordinator serta views, menerapkan preview langsung, dan menyimpan preferensi lokal pada aplikasi native. Membuka Setup kembali mengaktifkan jendela yang sudah ada, bukan membuat duplikat.
+Panel musik dan jendela Setup memiliki lifecycle terpisah. Kebijakan sumber diatur di Setup, bukan pop-up notch. Preferences store bersama memasok pilihan sumber dan tampilan ke coordinator serta views. Membuka Setup kembali mengaktifkan jendela yang sudah ada. Popup extension hanya menampilkan status/reconnect dan membuka Setup native melalui pesan `openSetup`; tidak menjadi UI musik utama.
 
-Native messaging host adalah komponen transport, bukan diasumsikan identik dengan GUI app. Registrasi host, framing pesan, batas ukuran, pembatasan extension ID, dan lifecycle perlu dibuktikan. Transport host-ke-app belum dipilih.
+Native messaging host adalah executable terpisah di bundle aplikasi. Registrasi host dibuat melalui skrip dengan allowlist satu extension ID. Prototipe memakai framing panjang UInt32 little-endian dan JSON, batas 256 KiB, serta Unix domain socket di direktori `/tmp/notchbox-<uid>` dengan mode 0700. Socket bermode 0600; kedua sisi memeriksa UID peer. Hanya satu host/profile Chrome aktif pada satu waktu. Lock file mencegah instance server kedua mengambil socket aktif.
+
+Implementasi awal mencakup handshake, pembatasan framing, sumber per tab/sesi, acknowledgement perintah, pemulihan koneksi lewat heartbeat, dan penolakan snapshot dengan urutan lama. Ini bukan audit keamanan penuh.
 
 ## 2. Adapter pemutar
 
@@ -48,13 +50,14 @@ Setiap adapter menyediakan snapshot playback, status koneksi, daftar kemampuan, 
 | observedAt, receivedAt | Waktu observasi dan penerimaan; basis clock harus didefinisikan |
 | isAdvertisement | true, false, atau unknown; jangan menganggap deteksi selalu andal |
 | capabilities | canPlayPause, canPrevious, canNext, canSeek |
+| artworkURL | URL HTTPS thumbnail opsional; host native membatasi tujuan unduhan |
 | connectionState | connected, stale, disconnected, permissionRequired |
 
 Perintah membawa commandId, sourceId, sessionId, trackId/revision bila relevan, aksi, dan argumen. Respons mengembalikan acknowledgement/error. Jangan memperbarui playback permanen hanya berdasarkan klik; rekonsiliasi dengan snapshot aktual. Perintah seek wajib divalidasi terhadap durasi dan kemampuan sumber.
 
 ## 4. Pemilihan sumber
 
-Usulan default: pilih sumber yang baru memulai playback bila belum ada pilihan manual. Setelah dipilih manual, pertahankan pilihan selama sesi tersedia. Jangan mengirim kontrol ke semua pemutar. Sumber hilang → tampilkan terputus dan tawarkan sumber lain; jangan diam-diam mengalihkan perintah yang sudah antre.
+Default v0.2 mengikuti sumber yang baru mulai memutar. Heartbeat pemutar yang terus berjalan tidak merebut pilihan. Jika sumber hilang, pilih sumber segar lain dengan prioritas playing. Dalam mode manual, pilihan dikunci; sesi baru pada tab yang sama dipulihkan otomatis, tetapi tidak diganti ke tab lain tanpa izin. Pergantian sumber membatalkan command pending; command tetap membawa identitas sesi/track. Kebijakan otomatis tersimpan, ID tab/sesi tidak disimpan lintas restart.
 
 ## 5. Sinkronisasi
 
@@ -69,14 +72,22 @@ Usulan default: pilih sumber yang baru memulai playback bila belum ada pilihan m
 
 ## 6. Pipeline lirik
 
-LRCLIB adalah kandidat provider, bukan dependensi yang telah divalidasi. Periksa dokumentasi, ketentuan penggunaan, attribution, rate limits, dan kebijakan caching sebelum integrasi.
+LRCLIB dipakai sebagai provider v0.2. Dokumentasi API resmi diperiksa pada 17 September 2026: klien menyertakan User-Agent berisi nama/versi/link proyek, menjalankan request berurutan, jeda 350 ms, dan menghormati `Retry-After` pada HTTP 429. Tidak ada API key atau unggahan lirik. Attribution LRCLIB ditampilkan di Setup. Integrasi ini tidak menganggap lisensi kode server sebagai lisensi seluruh konten lirik; distribusi publik tetap memerlukan review tersendiri.
+
+Pipeline saat ini: debounce metadata 650 ms → normalisasi judul dekoratif tanpa menghapus live/remix → exact lookup judul/artis/durasi → pencarian terstruktur bila belum mendapat lirik sinkron → pemilihan hasil dengan judul/artis sama setelah normalisasi dan selisih durasi maksimal 3 detik → parse dan cache. Hasil tanpa durasi tidak dianggap cocok. Pencarian lanjutan diperlukan karena exact lookup kadang hanya mengembalikan plain text walaupun hasil sinkron tersedia pada record lain.
+
+Cache memakai hash SHA-256 dari query terurut di `~/Library/Caches/local.notchbox.mac/Lyrics-v1`, maksimum 300 berkas; hasil ditemukan berlaku 30 hari, hasil kosong 30 menit. Plain text ditandai tidak sinkron dan tidak digulir mengikuti timer. Hasil instrumental ditampilkan sebagai status. Kesalahan jaringan dicoba kembali setelah 30 detik saat track masih aktif, tetap tunduk pada cooldown provider. Pergantian track/metadata membatalkan task; hasil lama tidak boleh menimpa track baru.
+
+Impor LRC UTF-8 melalui Setup, maksimal 1 MB, tetap tersedia sebagai override manual selama sesi. **Cari ulang** kembali memakai provider untuk lagu aktif. Positive offset manual menunda lirik; offset metadata LRC diterapkan parser secara terpisah.
+
+Artwork berasal dari elemen gambar player bar YouTube Music, dengan fallback thumbnail video YouTube. Native client hanya menerima HTTPS pada host gambar yang diizinkan, membatasi redirect, ukuran unduhan 2 MB, dimensi sumber 8192 px, dan downsample 256 px. Cache artwork dibatasi 40 gambar dalam memori. Placeholder hanya dipakai saat gambar belum tersedia/gagal.
 
 Normalisasi metadata tanpa membuang versi rekaman penting → pencarian dengan judul/artis/durasi → evaluasi kecocokan → cache → parse timestamp → pilih baris aktif.
 
 - Jangan otomatis memilih hasil dengan judul mirip jika versi/durasi tidak cocok.
 - Cancel request saat lagu berubah; respons lambat hanya boleh diterapkan jika track/revision masih sesuai.
 - Parser perlu menangani timestamp ganda, metadata LRC, offset, urutan tidak teratur, dan baris invalid.
-- Simpan cache dengan identitas provider, versi pencocokan, dan identitas rekaman. Detail TTL/batas ukuran masih terbuka.
+- Cache v1 menggunakan query judul/artis/durasi; perubahan kebijakan pencocokan berikutnya harus menaikkan versi cache.
 - Pisahkan status loading, synced, plainText, unavailable, mismatch, offline, dan error.
 
 ## 7. Keamanan dan lifecycle

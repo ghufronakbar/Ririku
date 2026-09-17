@@ -6,6 +6,8 @@
 
 **Keputusan 17 September 2026:** visual dapat disesuaikan melalui jendela Setup terpisah. Pemilihan sumber hanya berada di jendela tersebut, bukan pop-up notch.
 
+**Prototipe native:** panel nonactivating, hover expand/collapse, pop-up track, gear/menu bar menuju satu Setup, ukuran/aksen/animasi, lirik, offset, dan demo lokal telah dibuat. V0.2 menambahkan thumbnail nyata, sumber otomatis, status pencarian lirik, serta popup status extension. Fullscreen, VoiceOver, fokus lintas aplikasi, dan multi-monitor belum lulus pengujian harian. Animasi awal memakai transisi frame AppKit 240 ms, belum motion spring final.
+
 ## 1. Arah visual
 
 Hitam menyatu dengan notch, tipografi sistem, artwork sebagai satu aksen warna, sudut membulat, serta hierarki lirik yang jelas. Hindari glow berlebihan, kartu bertumpuk, dan indikator yang terus bergerak tanpa informasi.
@@ -61,6 +63,8 @@ Usulan isi jendela:
 - Umum: launch at login; preferensi layar/fullscreen ditentukan setelah pengujian.
 
 Usulan perilaku: perubahan visual langsung terlihat, preferensi disimpan lokal di aplikasi native, dan satu jendela Setup digunakan kembali. Jendela boleh menerima fokus ketika sengaja dibuka, berbeda dari pop-up pergantian lagu yang tidak boleh mengambil fokus. Menutup Setup tidak menghentikan musik atau menutup aplikasi. Reduce Motion sistem tetap mengungguli pilihan animasi aplikasi.
+
+Perilaku v0.2: toggle **Otomatis ikuti pemutar aktif** aktif secara default; picker manual dinonaktifkan saat mode otomatis aktif. Toggle **Cari lirik otomatis** aktif secara default, disertai status/provenance, **Cari ulang**, dan **Impor LRC cadangan…**. Jika hanya plain text tersedia, panel memberi label tanpa timing dan scroll manual. Popup extension menyediakan status koneksi, jumlah tab, **Buka Setup aplikasi**, dan retry koneksi tanpa menaruh pemilih sumber di popup.
 
 ## 6. Aksesibilitas
 
