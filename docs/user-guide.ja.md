@@ -29,7 +29,7 @@
 
 ### 1. Ririku をダウンロードする
 
-[Releases ページ](https://github.com/lanstheprodigy/ririku/releases)から `Ririku.zip` をダウンロードし、ダブルクリックして展開します。まだ最初のリリースは公開されていません。それまでは[ソースからビルド](development/README.md)する必要があります。
+[Releases ページ](https://github.com/ghufronakbar/ririku/releases)から `Ririku.zip` をダウンロードし、ダブルクリックして展開します。まだ最初のリリースは公開されていません。それまでは[ソースからビルド](development/README.md)する必要があります。
 
 **開く前に** **Ririku.app** を「アプリケーション」フォルダに移動してください。「ダウンロード」から直接開くと、macOS が一時的な場所から実行するため、Chrome と接続できません。
 
@@ -175,7 +175,7 @@ Ririku を別のフォルダに移動した場合は、手順 1 の **再登録*
 
 **「別の Ririku がすでに起動しています」と表示される。** もう一方の Ririku を終了してください。
 
-**YouTube の変更で動かなくなった。** Ririku は YouTube のページを読み取るため、ページの変更で動作しなくなることがあります。[Issue を作成](https://github.com/lanstheprodigy/ririku/issues)してください。
+**YouTube の変更で動かなくなった。** Ririku は YouTube のページを読み取るため、ページの変更で動作しなくなることがあります。[Issue を作成](https://github.com/ghufronakbar/ririku/issues)してください。
 
 ## アンインストール
 

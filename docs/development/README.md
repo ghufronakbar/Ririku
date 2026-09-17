@@ -32,6 +32,7 @@ Sources/Ririku/            macOS app: AppKit panel and menu bar, SwiftUI views, 
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
 extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup
 Localization/              App interface translations (<code>.lproj/Localizable.strings)
+Tests/                     Swift Testing suites for RirikuCore and the app target
 scripts/                   build-app.sh, check-localization.py, check-version.py, check-docs.py,
                            release-notes.py, install-host.py
 samples/                   Original LRC file used by the local demo
@@ -82,6 +83,7 @@ Run the checks that match your change before opening a pull request:
 
 ```sh
 swift build
+swift test
 bash scripts/build-app.sh
 codesign --verify --deep --strict build/Ririku.app
 /usr/bin/python3 scripts/check-localization.py   # translations complete, placeholders match
@@ -92,7 +94,14 @@ for file in extension/*.js; do node --check "$file"; done
 
 GitHub Actions runs the same checks on every push and pull request (`.github/workflows/ci.yml`) on a macOS runner, builds the bundle, verifies its signature and contents, and uploads a zip as a build artifact. `.github/workflows/release.yml` builds a tag into a **draft** release; see [releasing.md](releasing.md).
 
-There is no permanent automated test suite yet. Parser, clock, source selection, localization, and Chrome setup changes have so far been validated with temporary harnesses; adding a `swift test` target is welcome (the Command Line Tools include the Swift Testing framework, not yet validated in this repository). Describe in your pull request what you ran and what you could not test.
+`swift test` runs the Swift Testing suites in `Tests/`:
+
+| Target | Covers |
+| --- | --- |
+| `RirikuCoreTests` | LRC parsing, active line and offset, the Japanese display filter, snapshot validation, the position estimate, title normalization and candidate matching, bridge framing, and island motion |
+| `RirikuTests` | Interface language resolution, `UIText`/`Localizer`, `ChromeSetup` outside an app bundle, source selection, commands and acks, preferences, panel geometry, and lyric rows |
+
+The tests use fixtures only: no network requests, no Chrome, and no access to your Chrome profile (`ChromeSetup.home` can be redirected, and model tests use a temporary `UserDefaults` suite and cache folder). UI rendering, real Chrome integration, and audio timing are still verified by hand. Describe in your pull request what you ran and what you could not test.
 
 ### Manual smoke test
 

@@ -27,7 +27,7 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 
 Ririku is free and is not notarized by Apple (notarization requires a paid developer account), so macOS asks you to confirm the first launch. The [user guide](docs/user-guide.md#install) covers every step in detail.
 
-1. **Get the app.** Download `Ririku.zip` from [Releases](https://github.com/lanstheprodigy/ririku/releases) once available, unzip it, and move **Ririku.app** to your **Applications** folder. Until the first release, [build it from source](docs/development/README.md).
+1. **Get the app.** Download `Ririku.zip` from [Releases](https://github.com/ghufronakbar/ririku/releases) once available, unzip it, and move **Ririku.app** to your **Applications** folder. Until the first release, [build it from source](docs/development/README.md).
 2. **Allow it to open.** Open Ririku. If macOS blocks it, go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
 3. **Connect Chrome.** Ririku opens **Setup**. In **Chrome connection**, follow the four steps: **Register**, **Show in Finder**, load that folder from `chrome://extensions` with **Developer mode** and **Load unpacked**, then refresh your YouTube tab.
 
@@ -51,6 +51,12 @@ Lyrics come from LRCLIB; their availability and timing are not guaranteed. Ririk
 ## Contributing
 
 Bug reports, translations, and code are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the [developer documentation](docs/development/README.md). Please report security issues privately as described in [SECURITY.md](SECURITY.md). Release notes are in [CHANGELOG.md](CHANGELOG.md).
+
+## Contact
+
+Maintained by **lanstheprodigy** — GitHub [@ghufronakbar](https://github.com/ghufronakbar), X [@lansProdigy](https://x.com/lansProdigy), Instagram [@lanstheprodigy](https://instagram.com/lanstheprodigy).
+
+Use [issues](https://github.com/ghufronakbar/ririku/issues) for bugs and ideas, and [SECURITY.md](SECURITY.md) for security reports.
 
 ## License
 

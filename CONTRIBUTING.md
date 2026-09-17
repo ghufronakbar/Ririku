@@ -4,11 +4,11 @@ Thank you for helping! Ririku is a small project maintained in spare time, so cl
 
 ## Ways to help
 
-- **Report a bug:** [open an issue](https://github.com/lanstheprodigy/ririku/issues) with your macOS version, Mac model (Apple silicon or Intel), Chrome version, Ririku and extension versions (shown in Setup), whether you use YouTube or YouTube Music, the steps to reproduce, and what you expected. For lyrics problems, include the song title and artist and whether **Setup → Lyrics** found a version.
+- **Report a bug:** [open an issue](https://github.com/ghufronakbar/ririku/issues) with your macOS version, Mac model (Apple silicon or Intel), Chrome version, Ririku and extension versions (shown in Setup), whether you use YouTube or YouTube Music, the steps to reproduce, and what you expected. For lyrics problems, include the song title and artist and whether **Setup → Lyrics** found a version.
 - **Suggest a feature:** open an issue first so we can agree on scope before you write code.
 - **Translate:** improve Bahasa Indonesia or Japanese text, or add a language. See [localization](docs/development/localization.md).
 - **Improve documentation:** fix unclear steps in the [user guide](docs/user-guide.md), especially from a non-technical point of view.
-- **Write code:** fix bugs or pick an issue labeled `good first issue` or `help wanted`.
+- **Write code:** fix bugs or pick an issue labeled `good first issue` or `help wanted`. Tests for existing behavior are welcome too.
 
 Security vulnerabilities must not be reported in public issues; follow [SECURITY.md](SECURITY.md).
 
@@ -37,10 +37,10 @@ Follow the [developer documentation](docs/development/README.md) to build the ap
 5. Run the checks in the [developer documentation](docs/development/README.md#verification) that apply to your change. GitHub Actions runs them again on your pull request.
 6. In the pull request, describe what changed and why, what you tested (commands and manual steps), and what you could not test. Add screenshots for visible UI changes. Do not claim something works if you did not run it.
 
-Commit messages follow the existing style `type (area): short description`, for example `fix (lyrics): ignore results for a previous track` or `docs (guide): clarify Chrome setup`. Common types are `feat`, `fix`, `docs`, `refactor`, and `chore`; areas include `native`, `extension`, `lyrics`, `bridge`, `i18n`, `guide`, and `spec`.
+Commit messages follow the existing style `type (area): short description`, for example `fix (lyrics): ignore results for a previous track` or `docs (guide): clarify Chrome setup`. Common types are `feat`, `fix`, `docs`, `test`, `refactor`, and `chore`; areas include `native`, `extension`, `lyrics`, `bridge`, `i18n`, `guide`, and `spec`.
 
 By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
 
 ## Behavior
 
-Be respectful and constructive. Assume good intent, keep discussions about the work, and remember that contributors and users have different backgrounds and languages. Harassment and personal attacks are not tolerated; the maintainer may remove such content and block participants.
+Be respectful and constructive. Assume good intent, keep discussions about the work, and remember that contributors and users have different backgrounds and languages. Harassment and personal attacks are not tolerated; the maintainer may remove such content and block participants. To report behavior privately, contact the maintainer on X ([@lansProdigy](https://x.com/lansProdigy)) or Instagram ([@lanstheprodigy](https://instagram.com/lanstheprodigy)).

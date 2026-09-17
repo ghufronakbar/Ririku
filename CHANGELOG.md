@@ -15,6 +15,9 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - User guide, developer documentation, contributing guide, security policy, and decision log.
 - GitHub Actions: CI that builds the app and checks translations, versions, documentation, and the extension on every push and pull request; a release workflow that builds a tag into a draft release with a zip and SHA-256 checksum.
 - Issue and pull request templates, and `scripts/check-version.py`, `scripts/check-docs.py`, and `scripts/release-notes.py`.
+- Automated tests: `swift test` runs 86 Swift Testing cases for the LRC parser, playback clock, lyrics matching, bridge framing, island motion, localization, Chrome setup, source selection, commands, and preferences. CI and the release workflow run them.
+- Maintainer contact links in the README.
+- Repository links point to `github.com/ghufronakbar/ririku`; app identifiers keep `io.github.lanstheprodigy.ririku` on purpose, so no re-registration is needed.
 
 ## [0.2.5] - 2026-09-17
 

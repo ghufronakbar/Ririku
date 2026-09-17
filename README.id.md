@@ -29,7 +29,7 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 
 Ririku gratis dan tidak di-notarize Apple (notarisasi memerlukan akun developer berbayar), sehingga macOS meminta konfirmasi saat pertama dibuka. [Panduan pengguna](docs/user-guide.id.md#instalasi) menjelaskan setiap langkah secara rinci.
 
-1. **Unduh app.** Unduh `Ririku.zip` dari [Releases](https://github.com/lanstheprodigy/ririku/releases) setelah tersedia, ekstrak, lalu pindahkan **Ririku.app** ke folder **Applications**. Sebelum rilis pertama, [build dari source](docs/development/README.md).
+1. **Unduh app.** Unduh `Ririku.zip` dari [Releases](https://github.com/ghufronakbar/ririku/releases) setelah tersedia, ekstrak, lalu pindahkan **Ririku.app** ke folder **Applications**. Sebelum rilis pertama, [build dari source](docs/development/README.md).
 2. **Izinkan dibuka.** Buka Ririku. Jika macOS memblokirnya, buka **System Settings → Privacy & Security**, gulir ke bawah, lalu klik **Open Anyway**.
 3. **Hubungkan Chrome.** Ririku membuka **Setup**. Di **Koneksi Chrome**, ikuti empat langkah: **Daftarkan**, **Tampilkan di Finder**, muat folder tersebut dari `chrome://extensions` dengan **Developer mode** dan **Load unpacked**, lalu refresh tab YouTube.
 
@@ -53,6 +53,12 @@ Lirik berasal dari LRCLIB; ketersediaan dan timing-nya tidak dijamin. Ririku han
 ## Kontribusi
 
 Laporan bug, terjemahan, dan kode sangat diterima. Mulai dari [CONTRIBUTING.md](CONTRIBUTING.md) dan [dokumentasi developer](docs/development/README.md) (English). Laporkan masalah keamanan secara privat sesuai [SECURITY.md](SECURITY.md). Catatan rilis ada di [CHANGELOG.md](CHANGELOG.md).
+
+## Kontak
+
+Dikelola oleh **lanstheprodigy** — GitHub [@ghufronakbar](https://github.com/ghufronakbar), X [@lansProdigy](https://x.com/lansProdigy), Instagram [@lanstheprodigy](https://instagram.com/lanstheprodigy).
+
+Gunakan [issues](https://github.com/ghufronakbar/ririku/issues) untuk bug dan ide, serta [SECURITY.md](SECURITY.md) untuk laporan keamanan.
 
 ## Lisensi
 
