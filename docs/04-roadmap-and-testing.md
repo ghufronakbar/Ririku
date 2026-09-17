@@ -1,5 +1,11 @@
 # Roadmap dan pengujian
 
+## Validasi v0.3.0 — 17 September 2026
+
+Rename ke Ririku: `check-localization.py` (131 key × id/ja), `bash scripts/build-app.sh`, dan `codesign --verify --deep --strict build/Ririku.app` berhasil; Info.plist berisi `io.github.lanstheprodigy.ririku`, executable `Ririku`, dan versi 0.3.0 (build 4). `node --check` semua skrip extension serta validasi JSON manifest lulus. `install-host.py` dengan HOME sementara menulis `io.github.lanstheprodigy.ririku.bridge.json` yang menunjuk `RirikuHost` dan tetap menolak ID tidak valid. Fixture Node extension dan harness Swift dalam bundle `.app` (bahasa, `UIText`, render/demo) diulang terhadap sumber yang sudah di-rename dan lulus. Pencarian teks tidak menemukan identifier lama di kode, skrip, extension, maupun terjemahan.
+
+Belum diuji: app Ririku dengan Chrome sungguhan setelah registrasi ulang native host dan reload extension v0.3.0, rilis GitHub yang diunduh (Gatekeeper/Open Anyway), serta ketersediaan nama di luar pencarian web.
+
 ## Validasi v0.2.5 — 17 September 2026
 
 Riset sebelum implementasi memakai paket percobaan terpisah: `.app` dengan `.lproj` di `Contents/Resources` memilih en/id/ja sesuai urutan bahasa sistem dan kembali ke English untuk fr/de; `Bundle.module` gagal di dalam `.app` atau membuat codesign gagal bila ditaruh di root; `String(localized:locale:)` tidak mengganti bahasa, sedangkan sub-bundle `.lproj` dan `LocalizedStringResource.locale` berhasil.

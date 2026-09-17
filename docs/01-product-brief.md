@@ -1,5 +1,9 @@
 # Product brief
 
+## Pembaruan kebutuhan v0.3.0 — 17 September 2026
+
+Pengguna memutuskan menjadikan proyek open source agar orang lain dapat berkontribusi dan pengguna non-teknis dapat memasang aplikasi. Nama aplikasi menjadi **Ririku**, lisensi MIT, repository di bawah akun `lanstheprodigy`. Distribusi tetap gratis tanpa program berbayar (tanpa notarisasi Apple dan tanpa Chrome Web Store); extension dipasang melalui Load unpacked dengan tutorial. Dokumentasi akan beralih ke English sebagai bahasa utama dengan terjemahan untuk panduan pengguna.
+
 ## Pembaruan kebutuhan v0.2.5 — 17 September 2026
 
 Pengguna meminta antarmuka multi-bahasa: English, Bahasa Indonesia, dan 日本語. Default English; bila bahasa sistem macOS termasuk bahasa yang didukung, bahasa tersebut dipakai. Setelah riset kelayakan, pengguna memilih opsi mengikuti sistem ditambah pemilih bahasa di Setup yang berlaku tanpa restart. Cakupan terjemahan adalah teks UI aplikasi dan popup extension, bukan judul lagu, lirik, caption, pesan sistem/situs, maupun dokumentasi proyek.
@@ -26,10 +30,10 @@ Prioritas: ketepatan sumber dan timing → kontrol yang dapat diandalkan → UI 
 
 ## 2. Pengguna dan platform
 
-- Pengguna awal: pemilik Mac ini, untuk penggunaan pribadi.
+- Pengguna: awalnya pemilik proyek; sejak v0.3.0 ditujukan juga untuk pengguna umum macOS, termasuk non-teknis, melalui rilis open source.
 - Target prototipe: macOS 14+. Build awal pada macOS 15.7.2, arm64, Swift 6.1.2 melalui Command Line Tools. Model layar belum dicatat; geometri dibaca saat runtime. Dukungan Intel belum diuji.
 - Target utama: layar dengan notch. Perilaku layar tanpa notch/monitor eksternal masih berupa usulan fallback.
-- Distribusi awal: lokal. Distribusi App Store, signing, dan notarization belum diputuskan.
+- Distribusi: gratis melalui GitHub Releases dengan signature ad-hoc, tanpa App Store maupun notarisasi berbayar. Pengguna perlu mengizinkan app lewat System Settings → Privacy & Security saat pertama dibuka (alur persisnya perlu validasi dengan rilis nyata).
 
 ## 3. Cakupan
 

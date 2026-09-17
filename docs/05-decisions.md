@@ -1,5 +1,9 @@
 # Catatan keputusan
 
+## Revisi v0.3.0 — 17 September 2026
+
+Pengguna memutuskan menyiapkan proyek sebagai open source. Nama **Notch Box** ditinggalkan karena sudah dipakai app NotchBox di Mac App Store dengan fitur musik di notch; kandidat **Ririkku** ditolak karena `ririkku.com` adalah pemutar musik berlirik Jepang. Nama **Ririku** dipilih karena pencarian web tidak menemukan app musik/lirik dengan nama tersebut (bukan pemeriksaan merek resmi). Lisensi MIT dipilih karena sederhana dan tidak ada dependensi pihak ketiga. Akun `lanstheprodigy` menjadi pemilik repository dan pemegang hak cipta; email pada histori commit boleh tetap publik. Distribusi harus gratis: tanpa Apple Developer Program/notarisasi dan tanpa Chrome Web Store, sehingga app dirilis ber-signature ad-hoc dan extension dipasang lewat Load unpacked dengan tutorial. Pengaturan lama tidak dimigrasi. Pilihan teknis agen: identifier reverse-DNS `io.github.lanstheprodigy.ririku`, versi dinaikkan ke 0.3.0 karena identifier berubah. Rencana lanjutan (usulan, belum dikerjakan): ID extension tetap melalui `key` manifest agar app dapat mendaftarkan native host tanpa Terminal, dokumentasi English sebagai bahasa utama dengan terjemahan id/ja untuk README dan panduan pengguna, file komunitas, serta CI/rilis GitHub. Dokumen terdampak: README, 01, 02, 04, 05, 06.
+
 ## Koreksi dokumentasi — 17 September 2026
 
 Bukan keputusan produk baru. Pemeriksaan dokumen terhadap kode menemukan bagian isi yang tertinggal dari catatan versi: path cache `Lyrics-v1` (kode memakai `Lyrics-v2` sejak v0.2.2), offset disebut global (kode per lagu sejak v0.2.2), nama tombol **Cari ulang**/**Impor LRC cadangan…**, alur pencarian LRCLIB, pop-up ganti lagu dan motion spring pada spesifikasi UI, aturan validasi agen yang masih menganggap proyek hanya dokumentasi, serta status usulan/pertanyaan terbuka yang sudah terjawab. Pengguna menyetujui koreksi. Nama tombol **Kembali ke hasil otomatis** dipertahankan; perilakunya (meminta ulang LRCLIB tanpa cache) dijelaskan di dokumen. Tidak ada perubahan kode; folder `Lyrics-v1` dan key `lyricOffset` lama hanya didokumentasikan, tidak dihapus otomatis. Dokumen terdampak: README, 02, 03, 05, 06, AGENTS.
@@ -43,6 +47,9 @@ Dicatat 17 September 2026. Dokumen ini membedakan persetujuan pengguna dari reko
 | D-009 | Melanjutkan dari review mockup ke implementasi prototipe | Instruksi pengguna “lanjutkan”, 17 September 2026; bukan persetujuan semua detail teknis berikutnya |
 | D-010 | Lirik otomatis, thumbnail nyata, koneksi/pemilihan sumber otomatis, serta respons klik extension | Permintaan setelah uji pengguna, 17 September 2026; impor LRC menjadi cadangan |
 | D-011 | Antarmuka English, Bahasa Indonesia, 日本語; ikuti bahasa sistem dengan fallback English dan pemilih langsung di Setup | Permintaan pengguna dan pilihan opsi 2 setelah riset, 17 September 2026 |
+| D-012 | Proyek open source dengan nama Ririku, lisensi MIT, pemilik `lanstheprodigy` | Keputusan pengguna setelah pemeriksaan nama, 17 September 2026 |
+| D-013 | Distribusi gratis: rilis GitHub ber-signature ad-hoc tanpa notarisasi, extension via Load unpacked dengan tutorial, tanpa migrasi pengaturan lama | Keputusan pengguna, 17 September 2026 |
+| D-014 | Dokumentasi berbahasa utama English, dengan bahasa lain untuk pengguna | Permintaan pengguna, 17 September 2026; struktur detail masih usulan |
 
 ## 2. Usulan, belum persetujuan final
 
@@ -57,7 +64,7 @@ Status diperbarui 17 September 2026. **Diimplementasikan** berarti sudah ada di 
 | Compact + satu baris lirik + expanded saat hover/klik | Diganti permintaan pengguna v0.2.3: tampil/sembunyi lirik dan 1/2/3 baris pada kedua mode; expanded tetap lewat hover/klik/menu |
 | Kontrol seek, cache, dan offset | Seek dan cache diimplementasikan; offset per lagu disetujui pengguna (v0.2.2) |
 | Detail penyesuaian visual: ukuran panel, aksen, dan animasi | Lebar adjustable diminta pengguna (v0.2.3); aksen dan toggle animasi diimplementasikan sebagai pilihan teknis |
-| Distribusi lokal dahulu; nama Notch Box Mac sementara | Masih berlaku |
+| Distribusi lokal dahulu; nama Notch Box Mac sementara | Diganti D-012/D-013: nama Ririku, distribusi gratis open source |
 
 ## 3. Pertanyaan terbuka
 
@@ -70,7 +77,7 @@ Status diperbarui 17 September 2026. **Diimplementasikan** berarti sudah ada di 
 | Provider lirik, ketentuan penggunaan, dan caching? | Sebelum integrasi provider | Sebagian: LRCLIB diintegrasikan setelah dokumentasi API diperiksa, cache lokal diterapkan. Lisensi konten untuk distribusi publik terbuka |
 | IPC, host registration, dan pemasangan extension lokal? | Spike Chrome | Diimplementasikan dan diuji dengan fixture/native host lokal; uji popup dan situs nyata setelah reload tetap perlu |
 | Fullscreen, Spaces, dan layar tanpa notch? | Pengujian panel native | Terbuka; fallback main screen belum diverifikasi |
-| Signing/distribusi untuk perangkat lain? | Setelah penggunaan lokal stabil | Terbuka |
+| Signing/distribusi untuk perangkat lain? | Setelah penggunaan lokal stabil | Diputuskan D-013: ad-hoc tanpa notarisasi; pengalaman Gatekeeper pada rilis nyata perlu validasi |
 
 ## 4. Aturan pembaruan
 

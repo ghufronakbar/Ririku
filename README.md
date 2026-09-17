@@ -1,8 +1,8 @@
-# Notch Box Mac
+# Ririku
 
-Aplikasi musik macOS pribadi: kontrol pemutar dan lirik tersinkron dalam panel native bergaya Dynamic Island.
+Aplikasi musik macOS open source (lisensi MIT): kontrol pemutar dan lirik tersinkron dalam panel native di area notch. Nama Ririku (リリク) terinspirasi dari kata "lyric". Sebelumnya bernama sementara Notch Box.
 
-**Status:** prototipe native lokal v0.2.5, 17 September 2026. Antarmuka tersedia dalam English, Bahasa Indonesia, dan 日本語: default mengikuti bahasa sistem yang didukung (fallback English) dan dapat diganti langsung di Setup. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
+**Status:** prototipe native v0.3.0, 17 September 2026. Proyek disiapkan menjadi open source di `github.com/lanstheprodigy/ririku`; identifier app, native host, socket, dan cache berganti ke nama Ririku tanpa migrasi pengaturan lama. Antarmuka tersedia dalam English, Bahasa Indonesia, dan 日本語: default mengikuti bahasa sistem yang didukung (fallback English) dan dapat diganti langsung di Setup. Transisi island kini mengunci tepi atas, pergantian lagu tidak auto-expand, status lirik kosong hanya ada di Setup dengan notifikasi miss 3 detik di island. Spectrum dekoratif dan preferensi Jepang pada timestamp ganda tersedia. Build, fixture, cache アイドル, serta render native diuji lokal; pengalaman Chrome/hover nyata tetap perlu uji pengguna.
 
 ## Arah proyek
 
@@ -37,15 +37,21 @@ Mockup menggunakan data fiktif dan hanya mensimulasikan interaksi. Implementasi 
 
 ## Mulai lokal
 
+**Update v0.3.0:** nama app menjadi **Ririku** dan bundle menjadi `build/Ririku.app`. Pengguna build lama: keluar dari Notch Box, build ulang, daftarkan ulang native host dengan ID extension yang sama, reload extension (v0.3.0) lalu refresh tab YouTube. Pengaturan dimulai dari default. Langkah lengkap dan pembersihan berkas lama ada di [panduan pengembangan](docs/06-development.md).
+
 **Update v0.2.5:** Setup → **Bahasa** memilih Ikuti sistem / English / Bahasa Indonesia / 日本語 tanpa restart. Bahasa sistem Mac ini saat ini diawali English, sehingga mode Ikuti sistem menampilkan English. Judul lagu, lirik, dan caption tidak diterjemahkan. Extension naik ke v0.2.5 agar popup mengikuti bahasa app; reload extension sekali. Dokumentasi proyek tetap berbahasa Indonesia.
 
 **Update v0.2.4:** transisi tumbuh ke samping/bawah tanpa menggeser tepi atas. Spectrum dekoratif mereda saat pause/stop; tidak ada capture audio. Setup → Lirik menyediakan toggle **Utamakan Jepang pada timestamp ganda**, tanpa mengubah LRC mentah/cache. Baris bahasa lain pada timestamp berbeda tetap utuh; matikan toggle untuk semua varian simultan. Saat rilis v0.2.4, extension tetap v0.2.3; versi terbaru kini v0.2.5 dan perlu reload sekali seperti catatan di atas.
 
 ```sh
 bash scripts/build-app.sh
-open "build/Notch Box.app"
+open "build/Ririku.app"
 ```
 
 Gunakan **Setup → Demo lokal** untuk mencoba panel tanpa extension. Untuk musik nyata, ikuti [panduan pemasangan Chrome](docs/06-development.md). Default mengikuti pemutar aktif dan mencari lirik otomatis; pemilihan sumber manual tetap hanya di Setup. Lirik otomatis disimpan di cache lokal. Impor LRC adalah cadangan, bukan keharusan setiap lagu.
 
 **Belum tersedia:** Apple Music/Spotify desktop, launch at login, dan distribusi ter-notarisasi. Ketersediaan/timing lirik bergantung pada kecocokan rekaman dan data penyedia, bukan jaminan setiap lagu. Jangan menganggap tiga sumber sudah didukung penuh hanya karena tercantum sebagai target produk.
+
+## Lisensi
+
+[MIT](LICENSE) © 2026 lanstheprodigy. Ririku tidak berafiliasi dengan Apple, Google, atau YouTube; nama produk pihak lain adalah merek pemiliknya.

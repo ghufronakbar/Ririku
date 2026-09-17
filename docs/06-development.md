@@ -1,8 +1,20 @@
 # Pengembangan dan pemasangan lokal
 
+## Update v0.3.0 (rename ke Ririku)
+
+App kini bernama **Ririku** dengan identifier baru dan tanpa migrasi pengaturan. Untuk build lama Notch Box:
+
+1. Keluar dari Notch Box melalui menu bar **Keluar Notch Box**.
+2. Jalankan `bash scripts/build-app.sh`, lalu `open "build/Ririku.app"`.
+3. Daftarkan native host baru dengan ID extension yang sama seperti sebelumnya (ID tidak berubah selama folder `extension` tidak dipindah): `/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME`.
+4. Di `chrome://extensions`, klik **Reload** pada **Ririku — Chrome Bridge** (versi **0.3.0**), lalu refresh tab YouTube/YouTube Music yang terbuka. Extension lama tidak cocok dengan app baru.
+5. Atur ulang bahasa, tampilan, dan offset di Setup bila perlu.
+
+Pembersihan opsional berkas Notch Box lama: `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/local.notchbox.bridge.json`, folder `~/Library/Caches/local.notchbox.mac`, preferensi `defaults delete local.notchbox.mac`, bundle `build/Notch Box.app`, dan direktori `/tmp/notchbox-<uid>`. Hapus hanya berkas tersebut.
+
 ## Update v0.2.5
 
-Keluar dari Notch Box yang sedang berjalan, jalankan `bash scripts/build-app.sh`, lalu buka ulang bundle. Setup → **Bahasa** menyediakan Ikuti sistem / English / Bahasa Indonesia / 日本語; pilihan tersimpan dan langsung berlaku. Mode Ikuti sistem memakai bahasa pertama yang didukung dari System Settings → General → Language & Region, dengan fallback English; setelah mengubah urutan bahasa sistem, buka ulang app.
+Keluar dari app yang sedang berjalan, jalankan `bash scripts/build-app.sh`, lalu buka ulang bundle. Setup → **Bahasa** menyediakan Ikuti sistem / English / Bahasa Indonesia / 日本語; pilihan tersimpan dan langsung berlaku. Mode Ikuti sistem memakai bahasa pertama yang didukung dari System Settings → General → Language & Region, dengan fallback English; setelah mengubah urutan bahasa sistem, buka ulang app.
 
 Reload extension di `chrome://extensions` (versi **0.2.5**) agar popup dan judul ikon mengikuti bahasa app. Saat app belum terhubung, popup memakai bahasa Chrome atau English. Nama/deskripsi extension di halaman extensions mengikuti bahasa Chrome.
 
@@ -61,10 +73,10 @@ Jalankan dari root repository:
 ```sh
 swift build
 bash scripts/build-app.sh
-open "build/Notch Box.app"
+open "build/Ririku.app"
 ```
 
-Skrip menghasilkan `build/Notch Box.app`, metadata bundle, serta signature ad-hoc lokal. Ini bukan notarization untuk distribusi publik. Keluar dari aplikasi sebelum mengganti bundle lewat build ulang.
+Skrip menghasilkan `build/Ririku.app`, metadata bundle, serta signature ad-hoc lokal. Ini bukan notarization untuk distribusi publik. Keluar dari aplikasi sebelum mengganti bundle lewat build ulang.
 
 Aplikasi menggunakan ikon waveform di menu bar, bukan ikon Dock. Setup terbuka pada peluncuran pertama. Selanjutnya pilih **waveform → Setup…**, atau gear di panel musik. Jendela Setup digunakan kembali, bukan dibuat berulang.
 
@@ -82,21 +94,21 @@ Untuk mencoba tanpa Chrome, aktifkan **Setup → Demo lokal (tanpa audio)**. Dem
 /usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME
 ```
 
-6. Pastikan Notch Box terbuka. Muat ulang tab YouTube/YouTube Music yang sudah ada, lalu putar video/lagu.
+6. Pastikan Ririku terbuka. Muat ulang tab YouTube/YouTube Music yang sudah ada, lalu putar video/lagu.
 7. Biarkan **Otomatis ikuti pemutar aktif** menyala. Jika ingin mengunci satu tab, matikan toggle tersebut lalu pilih **Pemutar aktif** di Setup.
 
 ### Update dari v0.1 ke v0.2
 
-Di profil Chrome yang sudah memasang extension, buka `chrome://extensions`, klik **Reload** pada **Notch Box — Chrome Bridge**, lalu refresh tab YouTube/YouTube Music yang sudah terbuka. Periksa versi **0.2.0**. ID extension dan manifest native host tidak perlu diganti jika folder tidak dipindahkan.
+Di profil Chrome yang sudah memasang extension, buka `chrome://extensions`, klik **Reload** pada **Ririku — Chrome Bridge**, lalu refresh tab YouTube/YouTube Music yang sudah terbuka. Periksa versi **0.2.0**. ID extension dan manifest native host tidak perlu diganti jika folder tidak dipindahkan.
 
 Ini reload sekali untuk memuat kode development baru, bukan langkah yang perlu diulang setiap ganti lagu atau pindah YouTube/YouTube Music. Klik ikon extension sekarang membuka status koneksi dan tombol **Buka Setup aplikasi**; pilihan sumber tetap berada di jendela native.
 
-Host manifest disimpan di `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/local.notchbox.bridge.json`. Skrip hanya mengizinkan extension ID yang diberikan, tidak semua extension. Tidak ada pendaftaran host otomatis sebelum ID pengguna diketahui.
+Host manifest disimpan di `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/io.github.lanstheprodigy.ririku.bridge.json`. Skrip hanya mengizinkan extension ID yang diberikan, tidak semua extension. Tidak ada pendaftaran host otomatis sebelum ID pengguna diketahui.
 
 Jika bundle dipindahkan, daftarkan ulang path tujuan:
 
 ```sh
-/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME --app "/path/Notch Box.app"
+/usr/bin/python3 scripts/install-host.py ID_EXTENSION_DARI_CHROME --app "/path/Ririku.app"
 ```
 
 Extension hanya berjalan pada `https://www.youtube.com/*` dan `https://music.youtube.com/*`, top frame. Tidak meminta cookies, history, Accessibility, Screen Recording, atau akses semua situs. Satu profile Chrome/native host aktif didukung dalam prototipe.
@@ -110,7 +122,7 @@ Extension hanya berjalan pada `https://www.youtube.com/*` dan `https://music.you
 - **Kembali ke hasil otomatis** melepaskan LRC impor atau kandidat yang dipilih manual untuk lagu aktif, lalu meminta ulang ke LRCLIB tanpa memakai cache lokal (hasil baru menimpa cache). Tetap menghormati jeda/cooldown penyedia. Tombol nonaktif bila pencarian otomatis mati atau mode Subtitle saja.
 - **Impor LRC…** tersedia bila lirik belum ada atau pengguna memiliki versi lebih tepat. Gunakan UTF-8 bertimestamp untuk rekaman yang benar, maksimal 1 MB. Berkas `samples/senja-demo.lrc` hanya untuk demo.
 - Offset disimpan per video/lagu (±60 detik, langkah 0,1 detik): positif menunda lirik, negatif mempercepat. Video ID yang sama di YouTube dan YouTube Music berbagi offset; offset tidak diterapkan pada caption. Key lama `lyricOffset` (offset global sebelum v0.2.2) dapat tersisa di UserDefaults tetapi tidak dibaca lagi.
-- Lirik otomatis disimpan sampai 30 hari, maksimum 300 berkas di `~/Library/Caches/local.notchbox.mac/Lyrics-v2`; hasil tidak ditemukan disimpan 30 menit. LRC manual dan kandidat pilihan manual hanya bertahan selama app terbuka. Preferensi bahasa, visual, sumber, mode pencarian, serta offset per lagu disimpan melalui UserDefaults; offset menyimpan ID video lagu yang pernah diberi offset.
+- Lirik otomatis disimpan sampai 30 hari, maksimum 300 berkas di `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`; hasil tidak ditemukan disimpan 30 menit. LRC manual dan kandidat pilihan manual hanya bertahan selama app terbuka. Preferensi bahasa, visual, sumber, mode pencarian, serta offset per lagu disimpan melalui UserDefaults; offset menyimpan ID video lagu yang pernah diberi offset.
 - Metadata judul/artis/durasi dikirim ke LRCLIB saat pencarian aktif. Thumbnail diambil dari server gambar YouTube/Google yang diizinkan. Klien tidak mengirim cookies, kredensial, atau riwayat browsing.
 
 Urutan smoke test nyata: play → pause → seek maju/mundur → next → buka tab kedua → pilih sumber di Setup → tutup tab → reload → reconnect. Ulangi pada YouTube dan YouTube Music. Cocokkan baris lirik dengan audio, jangan hanya melihat bahwa teks bergerak.
@@ -143,7 +155,7 @@ node --check extension/content.js
 node --check extension/i18n.js
 node --check extension/popup.js
 /usr/bin/python3 scripts/check-localization.py
-codesign --verify --deep --strict "build/Notch Box.app"
+codesign --verify --deep --strict "build/Ririku.app"
 ```
 
 Pemeriksaan fixture terpisah digunakan selama pengerjaan untuk parser LRC, posisi/interpolasi, frame native messaging, source routing, serta render view SwiftUI. Harness sementara bukan suite test permanen dalam repository. Hasil ini tidak menggantikan pengujian Chrome dan audio nyata, VoiceOver, resource, maupun sleep/wake.
@@ -171,9 +183,9 @@ Tambahan hasil v0.2, 17 September 2026:
 ## 7. Struktur kode
 
 ```text
-Sources/NotchCore/      Playback, parser/matching lirik, framing, Unix socket
-Sources/NotchBox/       SwiftUI/AppKit, Setup, coordinator, IPC, LRCLIB/artwork
-Sources/NotchBoxHost/   Transport stdin/stdout Chrome ↔ Unix socket
+Sources/RirikuCore/     Playback, parser/matching lirik, framing, Unix socket
+Sources/Ririku/         SwiftUI/AppKit, Setup, coordinator, IPC, LRCLIB/artwork
+Sources/RirikuHost/     Transport stdin/stdout Chrome ↔ Unix socket
 extension/             Manifest V3, worker, content script, popup status
 scripts/               Build bundle, pemeriksa lokalisasi, dan pendaftaran native host
 Localization/          Terjemahan UI id/ja (.lproj); English memakai key sumber
@@ -183,14 +195,14 @@ build/                 Bundle dan hasil render lokal, tidak masuk Git
 
 ## 8. Uninstall lokal
 
-Keluar melalui menu **Keluar Notch Box**, hapus extension dari Chrome, lalu hapus hanya manifest `local.notchbox.bridge.json` pada direktori native host di atas dan bundle `build/Notch Box.app`. Jangan menghapus seluruh folder native host karena dapat dipakai aplikasi lain.
+Keluar melalui menu **Keluar Ririku**, hapus extension dari Chrome, lalu hapus hanya manifest `io.github.lanstheprodigy.ririku.bridge.json` pada direktori native host di atas dan bundle `build/Ririku.app`. Jangan menghapus seluruh folder native host karena dapat dipakai aplikasi lain.
 
 Untuk menghapus preferensi aplikasi secara opsional:
 
 ```sh
-defaults delete local.notchbox.mac
+defaults delete io.github.lanstheprodigy.ririku
 ```
 
-Cache lirik dapat dihapus terpisah dari `~/Library/Caches/local.notchbox.mac/Lyrics-v2`. Folder `Lyrics-v1` adalah sisa versi v0.2.1 atau sebelumnya, tidak dibaca lagi, dan aman dihapus. Jangan menghapus folder cache aplikasi lain.
+Cache lirik dapat dihapus terpisah dari `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`. Folder `Lyrics-v1` adalah sisa versi v0.2.1 atau sebelumnya, tidak dibaca lagi, dan aman dihapus. Jangan menghapus folder cache aplikasi lain.
 
-Socket dibersihkan saat app keluar normal. Direktori `/tmp/notchbox-<uid>` dapat tersisa; aplikasi memakai ulang direktori miliknya dan tidak menghapus data aplikasi lain.
+Socket dibersihkan saat app keluar normal. Direktori `/tmp/ririku-<uid>` dapat tersisa; aplikasi memakai ulang direktori miliknya dan tidak menghapus data aplikasi lain.

@@ -1,5 +1,9 @@
 # Arsitektur awal
 
+## Identitas v0.3.0
+
+Nama app dan identifier diganti ke Ririku sebelum rilis open source: bundle `io.github.lanstheprodigy.ririku` (juga domain UserDefaults dan folder cache `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`), native host `io.github.lanstheprodigy.ririku.bridge`, socket `/tmp/ririku-<uid>`, target SwiftPM `Ririku`/`RirikuHost`/`RirikuCore`, User-Agent `Ririku/<versi> (https://github.com/lanstheprodigy/ririku)`, serta pesan MAIN world extension `ririku-request-metadata-v1`/`ririku-player-metadata-v1`. Tidak ada migrasi dari identifier `local.notchbox.*`; data lama tidak dibaca. Protokol bridge (`protocolVersion` 1) tidak berubah, tetapi extension v0.2.x tidak cocok dengan app v0.3.0 karena nama native host dan tipe pesan metadata berbeda.
+
 ## Lokalisasi v0.2.5
 
 Teks sumber UI ditulis dalam English dan sekaligus menjadi key. Terjemahan berada di `Localization/{en,id,ja}.lproj/Localizable.strings` (format `.strings`, karena Command Line Tools tidak menyediakan `xcstringstool` untuk String Catalog). `build-app.sh` menyalin folder `.lproj` ke `Contents/Resources` serta menulis `CFBundleDevelopmentRegion=en` dan `CFBundleLocalizations`. Resource SwiftPM/`Bundle.module` sengaja tidak dipakai: pada spike, accessor mencari bundle di root `.app` (fatal error bila tidak ada), sedangkan bundle di root membuat `codesign --strict` gagal.
@@ -60,7 +64,7 @@ Native macOS application
 
 Panel musik dan jendela Setup memiliki lifecycle terpisah. Kebijakan sumber diatur di Setup, bukan pop-up notch. Preferences store bersama memasok pilihan sumber dan tampilan ke coordinator serta views. Membuka Setup kembali mengaktifkan jendela yang sudah ada. Popup extension hanya menampilkan status/reconnect dan membuka Setup native melalui pesan `openSetup`; tidak menjadi UI musik utama.
 
-Native messaging host adalah executable terpisah di bundle aplikasi. Registrasi host dibuat melalui skrip dengan allowlist satu extension ID. Prototipe memakai framing panjang UInt32 little-endian dan JSON, batas 256 KiB, serta Unix domain socket di direktori `/tmp/notchbox-<uid>` dengan mode 0700. Socket bermode 0600; kedua sisi memeriksa UID peer. Hanya satu host/profile Chrome aktif pada satu waktu. Lock file mencegah instance server kedua mengambil socket aktif.
+Native messaging host adalah executable terpisah di bundle aplikasi. Registrasi host dibuat melalui skrip dengan allowlist satu extension ID. Prototipe memakai framing panjang UInt32 little-endian dan JSON, batas 256 KiB, serta Unix domain socket di direktori `/tmp/ririku-<uid>` dengan mode 0700. Socket bermode 0600; kedua sisi memeriksa UID peer. Hanya satu host/profile Chrome aktif pada satu waktu. Lock file mencegah instance server kedua mengambil socket aktif.
 
 Implementasi awal mencakup handshake, pembatasan framing, sumber per tab/sesi, acknowledgement perintah, pemulihan koneksi lewat heartbeat, dan penolakan snapshot dengan urutan lama. Ini bukan audit keamanan penuh.
 
@@ -112,7 +116,7 @@ LRCLIB dipakai sebagai provider v0.2. Dokumentasi API resmi diperiksa pada 17 Se
 
 Pipeline saat ini: debounce metadata 650 ms → normalisasi judul dekoratif tanpa menghapus live/remix → exact lookup judul/artis/durasi → pencarian terstruktur judul/artis (selalu dijalankan kecuali exact lookup mengembalikan record instrumental; kegagalannya diabaikan bila sudah ada kandidat) → pemilihan hasil dengan judul/artis sama setelah normalisasi dan selisih durasi maksimal 3 detik, mengutamakan bertimestamp lalu durasi terdekat → parse dan cache. Hasil tanpa durasi tidak dianggap cocok. Pencarian lanjutan diperlukan karena exact lookup kadang hanya mengembalikan plain text walaupun hasil sinkron tersedia pada record lain.
 
-Cache memakai hash SHA-256 dari query terurut di `~/Library/Caches/local.notchbox.mac/Lyrics-v2` (sejak v0.2.2; folder `Lyrics-v1` versi lama tidak dibaca atau dipangkas), maksimum 300 berkas; hasil ditemukan berlaku 30 hari, hasil kosong 30 menit. Plain text ditandai tidak sinkron dan tidak digulir mengikuti timer. Hasil instrumental ditampilkan sebagai status. Kesalahan jaringan dicoba kembali setelah 30 detik saat track masih aktif, tetap tunduk pada cooldown provider. Pergantian track/metadata membatalkan task; hasil lama tidak boleh menimpa track baru.
+Cache memakai hash SHA-256 dari query terurut di `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2` (sejak v0.2.2; folder `Lyrics-v1` versi lama tidak dibaca atau dipangkas), maksimum 300 berkas; hasil ditemukan berlaku 30 hari, hasil kosong 30 menit. Plain text ditandai tidak sinkron dan tidak digulir mengikuti timer. Hasil instrumental ditampilkan sebagai status. Kesalahan jaringan dicoba kembali setelah 30 detik saat track masih aktif, tetap tunduk pada cooldown provider. Pergantian track/metadata membatalkan task; hasil lama tidak boleh menimpa track baru.
 
 Impor LRC UTF-8 melalui Setup, maksimal 1 MB, tetap tersedia sebagai override manual selama sesi. **Kembali ke hasil otomatis** melepaskan override manual dan meminta ulang provider untuk lagu aktif dengan melewati pembacaan cache (`force`), lalu menulis hasil baru ke cache. Positive offset manual menunda lirik; offset metadata LRC diterapkan parser secara terpisah.
 
