@@ -17,7 +17,7 @@ const RIRIKU_MESSAGES = {
     waitingNative: "Waiting to connect to the native app.",
     disconnected: "Connection lost. Reconnecting automatically.",
     titleConnected: "Ririku: local bridge connected",
-    titleDisconnected: "Bridge disconnected. Open Ririku and check the native host installation."
+    titleDisconnected: "Bridge disconnected. Open Ririku and finish Setup → Chrome connection."
   },
   id: {
     checking: "Memeriksa koneksi…",
@@ -36,7 +36,7 @@ const RIRIKU_MESSAGES = {
     waitingNative: "Menunggu koneksi ke aplikasi native.",
     disconnected: "Koneksi terputus. Mencoba menyambung ulang otomatis.",
     titleConnected: "Ririku: bridge lokal terhubung",
-    titleDisconnected: "Bridge terputus. Buka Ririku dan periksa pemasangan native host."
+    titleDisconnected: "Bridge terputus. Buka Ririku dan selesaikan Setup → Koneksi Chrome."
   },
   ja: {
     checking: "接続を確認中…",
@@ -55,7 +55,7 @@ const RIRIKU_MESSAGES = {
     waitingNative: "ネイティブアプリへの接続を待っています。",
     disconnected: "接続が切れました。自動で再接続しています。",
     titleConnected: "Ririku: ローカルブリッジに接続済み",
-    titleDisconnected: "ブリッジが切断されました。Ririku を開き、ネイティブホストのインストールを確認してください。"
+    titleDisconnected: "ブリッジが切断されました。Ririku を開き、セットアップの「Chrome との接続」を完了してください。"
   }
 };
 

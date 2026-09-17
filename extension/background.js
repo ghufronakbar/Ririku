@@ -85,6 +85,7 @@ function connectHost() {
     postNative(ack);
   });
   if (pendingSetup) postNative({ protocolVersion: 1, kind: "openSetup" });
+  postNative({ protocolVersion: 1, kind: "extension", version: chrome.runtime.getManifest().version });
   for (const source of sources.values()) {
     if (Date.now() - source.updatedAt < 5000) postNative(source.snapshot);
   }
