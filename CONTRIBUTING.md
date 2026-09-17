@@ -4,7 +4,7 @@ Thank you for helping! Ririku is a small project maintained in spare time, so cl
 
 ## Ways to help
 
-- **Report a bug:** [open an issue](https://github.com/ghufronakbar/ririku/issues) with your macOS version, Mac model (Apple silicon or Intel), Chrome version, Ririku and extension versions (shown in Setup), whether you use YouTube or YouTube Music, the steps to reproduce, and what you expected. For lyrics problems, include the song title and artist and whether **Setup → Lyrics** found a version.
+- **Report a bug:** [open an issue](https://github.com/ghufronakbar/Ririku/issues) with your macOS version, Mac model (Apple silicon or Intel), Chrome version, Ririku and extension versions (shown in Setup), whether you use YouTube or YouTube Music, the steps to reproduce, and what you expected. For lyrics problems, include the song title and artist and whether **Setup → Lyrics** found a version.
 - **Suggest a feature:** open an issue first so we can agree on scope before you write code.
 - **Translate:** improve Bahasa Indonesia or Japanese text, or add a language. See [localization](docs/development/localization.md).
 - **Improve documentation:** fix unclear steps in the [user guide](docs/user-guide.md), especially from a non-technical point of view.

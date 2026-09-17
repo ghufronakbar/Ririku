@@ -80,7 +80,7 @@ With **Prefer Japanese on shared timestamps**, `LRCParser.displayLines` hides La
 4. Accept only records whose normalized title and artist match and whose duration is within 3 seconds; prefer timed lyrics, then the closest duration.
 5. Cache the result as JSON named by the SHA-256 of the query in `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`: found results for 30 days, not found for 30 minutes, at most 300 files (oldest removed). Bump the folder version when the acceptance rules change.
 
-Requests to LRCLIB are serialized with at least 350 ms between them and a `User-Agent` of `Ririku/<version> (https://github.com/ghufronakbar/ririku)`. HTTP 429 sets a cooldown from `Retry-After` (default 60 s). Network errors retry after 30 seconds while the track is still active. Results for an old track or query are discarded.
+Requests to LRCLIB are serialized with at least 350 ms between them and a `User-Agent` of `Ririku/<version> (https://github.com/ghufronakbar/Ririku)`. HTTP 429 sets a cooldown from `Retry-After` (default 60 s). Network errors retry after 30 seconds while the track is still active. Results for an old track or query are discarded.
 
 Manual **Search and choose a lyrics version** uses `GET /api/search?q=` and ranks all results by absolute duration difference (unknown durations last). A manual choice, an imported LRC file (UTF-8, ≤1 MB), or **Back to automatic result** apply only to the current track and last until the app quits.
 

@@ -7,7 +7,7 @@ body:
       value: |
         Interface text lives in `Localization/<code>.lproj/Localizable.strings` and `extension/i18n.js`;
         documentation translations are `README.<code>.md` and `docs/user-guide.<code>.md`.
-        See [localization](https://github.com/ghufronakbar/ririku/blob/main/docs/development/localization.md).
+        See [localization](https://github.com/ghufronakbar/Ririku/blob/main/docs/development/localization.md).
   - type: dropdown
     id: language
     attributes:

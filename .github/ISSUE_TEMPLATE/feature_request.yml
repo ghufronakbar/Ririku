@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Ririku focuses on music controls and synced lyrics in a native notch panel.
-        Please read the scope section in [CONTRIBUTING.md](https://github.com/ghufronakbar/ririku/blob/main/CONTRIBUTING.md#project-scope) first.
+        Please read the scope section in [CONTRIBUTING.md](https://github.com/ghufronakbar/Ririku/blob/main/CONTRIBUTING.md#project-scope) first.
   - type: textarea
     id: problem
     attributes:

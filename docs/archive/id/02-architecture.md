@@ -2,7 +2,7 @@
 
 ## Identitas v0.3.0
 
-Nama app dan identifier diganti ke Ririku sebelum rilis open source: bundle `io.github.lanstheprodigy.ririku` (juga domain UserDefaults dan folder cache `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`), native host `io.github.lanstheprodigy.ririku.bridge`, socket `/tmp/ririku-<uid>`, target SwiftPM `Ririku`/`RirikuHost`/`RirikuCore`, User-Agent `Ririku/<versi> (https://github.com/ghufronakbar/ririku)`, serta pesan MAIN world extension `ririku-request-metadata-v1`/`ririku-player-metadata-v1`. Tidak ada migrasi dari identifier `local.notchbox.*`; data lama tidak dibaca. Protokol bridge (`protocolVersion` 1) tidak berubah, tetapi extension v0.2.x tidak cocok dengan app v0.3.0 karena nama native host dan tipe pesan metadata berbeda.
+Nama app dan identifier diganti ke Ririku sebelum rilis open source: bundle `io.github.lanstheprodigy.ririku` (juga domain UserDefaults dan folder cache `~/Library/Caches/io.github.lanstheprodigy.ririku/Lyrics-v2`), native host `io.github.lanstheprodigy.ririku.bridge`, socket `/tmp/ririku-<uid>`, target SwiftPM `Ririku`/`RirikuHost`/`RirikuCore`, User-Agent `Ririku/<versi> (https://github.com/ghufronakbar/Ririku)`, serta pesan MAIN world extension `ririku-request-metadata-v1`/`ririku-player-metadata-v1`. Tidak ada migrasi dari identifier `local.notchbox.*`; data lama tidak dibaca. Protokol bridge (`protocolVersion` 1) tidak berubah, tetapi extension v0.2.x tidak cocok dengan app v0.3.0 karena nama native host dan tipe pesan metadata berbeda.
 
 ## Pemasangan Chrome tanpa Terminal v0.3.0
 

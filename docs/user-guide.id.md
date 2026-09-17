@@ -29,7 +29,7 @@ Yang dibutuhkan:
 
 ### 1. Unduh Ririku
 
-Unduh `Ririku.zip` dari [halaman Releases](https://github.com/ghufronakbar/ririku/releases), lalu klik dua kali untuk mengekstraknya. Rilis pertama belum diterbitkan; sampai saat itu, Ririku hanya bisa [di-build dari source](development/README.md).
+Unduh `Ririku.zip` dari [halaman Releases](https://github.com/ghufronakbar/Ririku/releases), lalu klik dua kali untuk mengekstraknya. Rilis pertama belum diterbitkan; sampai saat itu, Ririku hanya bisa [di-build dari source](development/README.md).
 
 Pindahkan **Ririku.app** ke folder **Applications** **sebelum membukanya**. Jika dibuka langsung dari Downloads, macOS menjalankannya dari lokasi sementara dan Ririku tidak dapat terhubung ke Chrome.
 
@@ -175,7 +175,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 
 **"Aplikasi Ririku lain sudah berjalan".** Keluar dari salinan Ririku yang lain.
 
-**YouTube berubah dan ada fitur yang berhenti bekerja.** Ririku membaca halaman YouTube yang dapat berubah sewaktu-waktu. Silakan [buat issue](https://github.com/ghufronakbar/ririku/issues).
+**YouTube berubah dan ada fitur yang berhenti bekerja.** Ririku membaca halaman YouTube yang dapat berubah sewaktu-waktu. Silakan [buat issue](https://github.com/ghufronakbar/Ririku/issues).
 
 ## Uninstall
 

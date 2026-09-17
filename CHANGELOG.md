@@ -19,7 +19,7 @@ Verified on 2026-09-18: the Chrome connection completed from Setup without Termi
 - Issue and pull request templates, and `scripts/check-version.py`, `scripts/check-docs.py`, and `scripts/release-notes.py`.
 - Automated tests: `swift test` runs 86 Swift Testing cases for the LRC parser, playback clock, lyrics matching, bridge framing, island motion, localization, Chrome setup, source selection, commands, and preferences. CI and the release workflow run them.
 - Maintainer contact links in the README.
-- Repository links point to `github.com/ghufronakbar/ririku`; app identifiers keep `io.github.lanstheprodigy.ririku` on purpose, so no re-registration is needed.
+- Repository links point to `github.com/ghufronakbar/Ririku`; app identifiers keep `io.github.lanstheprodigy.ririku` on purpose, so no re-registration is needed.
 
 ## [0.2.5] - 2026-09-17
 

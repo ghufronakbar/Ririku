@@ -29,7 +29,7 @@ Ririku(リリク、「lyric」から)は、Google Chrome の YouTube や YouTube
 
 Ririku は無料で、Apple の公証を受けていません(公証には有料のデベロッパーアカウントが必要です)。そのため初回起動時に macOS で確認が必要です。詳しい手順は[ユーザーガイド](docs/user-guide.ja.md#インストール)を参照してください。
 
-1. **アプリを入手する。** 公開後に [Releases](https://github.com/ghufronakbar/ririku/releases) から `Ririku.zip` をダウンロードして展開し、**Ririku.app** を「アプリケーション」フォルダに移動します。最初のリリースまでは[ソースからビルド](docs/development/README.md)してください。
+1. **アプリを入手する。** 公開後に [Releases](https://github.com/ghufronakbar/Ririku/releases) から `Ririku.zip` をダウンロードして展開し、**Ririku.app** を「アプリケーション」フォルダに移動します。最初のリリースまでは[ソースからビルド](docs/development/README.md)してください。
 2. **起動を許可する。** Ririku を開きます。ブロックされた場合は **システム設定 → プライバシーとセキュリティ** を開いて下にスクロールし、**このまま開く** をクリックします。
 3. **Chrome と接続する。** Ririku の **セットアップ** が開きます。**Chrome との接続** の 4 つの手順に従います: **登録**、**Finder に表示**、`chrome://extensions` で **デベロッパー モード** をオンにして **パッケージ化されていない拡張機能を読み込む** からそのフォルダを選択、最後に YouTube のタブを再読み込みします。
 
@@ -58,7 +58,7 @@ Ririku にはアカウントがなく、分析データも送信しません。�
 
 メンテナー: **lanstheprodigy** — GitHub [@ghufronakbar](https://github.com/ghufronakbar)、X [@lansProdigy](https://x.com/lansProdigy)、Instagram [@lanstheprodigy](https://instagram.com/lanstheprodigy)。
 
-バグや提案は [Issues](https://github.com/ghufronakbar/ririku/issues) へ、セキュリティに関する報告は [SECURITY.md](SECURITY.md) の方法でお願いします。
+バグや提案は [Issues](https://github.com/ghufronakbar/Ririku/issues) へ、セキュリティに関する報告は [SECURITY.md](SECURITY.md) の方法でお願いします。
 
 ## ライセンス
 
