@@ -2,6 +2,17 @@
 
 All notable changes to Ririku are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org). Versions before 0.3.0 were private prototypes named Notch Box and were never published.
 
+## [0.3.1] - Unreleased
+
+### Fixed
+- YouTube Music uses the visible song clock instead of an accumulated media timeline. Seeking maps song-relative positions through the player API and rejects stale track commands.
+- Track metadata changes reset the Setup lyric search, including metadata corrections under the same video ID.
+- LRCLIB retries temporary 502/503/504 responses with bounded backoff, respects Retry-After, and does not cache an outage as missing lyrics.
+
+### Added
+- Synced lyric rows slide upward on adjacent lines; seeks snap and Reduce Motion disables the animation.
+- Offline regression tests for browser clock/seek transitions and lyrics service recovery. Real Chrome playback and animation rendering still need manual verification.
+
 ## [0.3.0] - Unreleased
 
 Verified on 2026-09-18: the Chrome connection completed from Setup without Terminal, the app reported the connected extension version, and GitHub Actions CI passed. The Gatekeeper flow for a downloaded release is still untested.

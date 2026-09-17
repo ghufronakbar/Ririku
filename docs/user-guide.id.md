@@ -2,7 +2,7 @@
 
 [English](user-guide.md) · Bahasa Indonesia · [日本語](user-guide.ja.md)
 
-> Terjemahan dari panduan English untuk Ririku v0.3.0. Bila ada perbedaan, versi English yang berlaku.
+> Terjemahan dari panduan English untuk Ririku v0.3.1. Bila ada perbedaan, versi English yang berlaku.
 
 Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan Chrome ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau Chrome.
 
@@ -126,6 +126,8 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 **Demo lokal (tanpa audio)** menampilkan lagu contoh agar panel bisa dicoba tanpa Chrome. Matikan sebelum memakai musik sungguhan.
 
 ## Mendapatkan lirik yang lebih baik
+
+Pencarian otomatis mengikuti pergantian lagu; saran judul dan artis di Setup ikut diperbarui. Error sementara LRCLIB 502/503/504 dicoba ulang secara terbatas, tetapi gangguan layanan yang berlanjut tetap dapat menghalangi lirik. Baris lirik bertimestamp bergerak ke atas jika animasi aktif; Reduce Motion menonaktifkannya. YouTube Music menggunakan waktu lagu yang terlihat, bukan durasi media kumulatif. Setelah memperbarui extension, reload extension dan refresh tab YouTube yang sudah terbuka sekali.
 
 Ririku mencari lirik di [LRCLIB](https://lrclib.net), database komunitas gratis, berdasarkan judul, artis, dan durasi lagu. Hasil hanya dipakai otomatis bila judul dan artis cocok serta selisih durasi paling banyak 3 detik. Lirik tidak dijamin tersedia untuk setiap lagu, dan timing bergantung pada rekaman yang dikirim kontributor.
 

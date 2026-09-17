@@ -6,6 +6,7 @@ import Testing
 @MainActor
 private func makeModel() -> (AppModel, UserDefaults) {
     let defaults = MemoryDefaults()
+    defaults.set(false, forKey: "automaticLyrics")
     let cache = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-lyrics-\(UUID().uuidString)")
     let model = AppModel(lyricsService: LyricsService(cacheDirectory: cache), defaults: defaults)
     model.interfaceLanguage = .en

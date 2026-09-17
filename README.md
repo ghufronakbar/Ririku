@@ -6,7 +6,7 @@ English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
 Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in Google Chrome right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion Chrome extension, no account, and no telemetry.
 
-> **Status:** early prototype (v0.3.0). No release has been published yet, so for now Ririku must be [built from source](docs/development/README.md). Apple Music and Spotify are planned but not supported.
+> **Status:** early prototype (v0.3.1). No release has been published yet, so for now Ririku must be [built from source](docs/development/README.md). Apple Music and Spotify are planned but not supported.
 
 ## Features
 

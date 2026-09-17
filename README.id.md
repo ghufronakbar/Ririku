@@ -4,11 +4,11 @@
 
 [English](README.md) · Bahasa Indonesia · [日本語](README.ja.md)
 
-> Terjemahan dari README English untuk v0.3.0. Bila ada perbedaan, versi English yang berlaku.
+> Terjemahan dari README English untuk v0.3.1. Bila ada perbedaan, versi English yang berlaku.
 
 Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open source yang menampilkan lagu dari YouTube atau YouTube Music di Google Chrome tepat di bawah notch, lengkap dengan putar/jeda, lompat lagu, seek, dan lirik tersinkron per baris. Ririku adalah aplikasi native SwiftUI/AppKit dengan extension Chrome pendamping yang kecil, tanpa akun, dan tanpa telemetry.
 
-> **Status:** prototipe awal (v0.3.0). Rilis pertama belum diterbitkan, jadi untuk saat ini Ririku perlu [di-build dari source](docs/development/README.md). Apple Music dan Spotify direncanakan tetapi belum didukung.
+> **Status:** prototipe awal (v0.3.1). Rilis pertama belum diterbitkan, jadi untuk saat ini Ririku perlu [di-build dari source](docs/development/README.md). Apple Music dan Spotify direncanakan tetapi belum didukung.
 
 ## Fitur
 

@@ -2,7 +2,7 @@
 
 English · [Bahasa Indonesia](user-guide.id.md) · [日本語](user-guide.ja.md)
 
-This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.3.0. Button names are shown as they appear in the English interface.
+This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.3.1. Button names are shown as they appear in the English interface.
 
 - [Before you start](#before-you-start)
 - [Install](#install)
@@ -125,6 +125,8 @@ The four install steps above. Come back here after updating Ririku or moving it 
 **Local demo (no audio)** shows a sample song so you can try the panel without Chrome. Turn it off before using real music.
 
 ## Getting better lyrics
+
+Automatic lookup follows song changes; Setup also refreshes the suggested title and artist. Temporary LRCLIB 502/503/504 errors get bounded retries, but a persistent service outage can still prevent lyrics. Synced lines slide upward when animations are enabled; Reduce Motion disables scrolling. YouTube Music uses the current song's visible clock rather than a cumulative media duration. After updating the extension, reload it and refresh existing YouTube tabs once.
 
 Ririku looks up lyrics on [LRCLIB](https://lrclib.net), a free community database, using the song title, artist, and duration. It only accepts a result automatically when the title and artist match and the duration is within 3 seconds. Lyrics are not guaranteed for every song, and timing depends on the recording that was submitted.
 

@@ -4,11 +4,11 @@
 
 [English](README.md) · [Bahasa Indonesia](README.id.md) · 日本語
 
-> v0.3.0 の英語版 README を翻訳したものです。内容に違いがある場合は英語版が優先されます。
+> v0.3.1 の英語版 README を翻訳したものです。内容に違いがある場合は英語版が優先されます。
 
 Ririku(リリク、「lyric」から)は、Google Chrome の YouTube や YouTube Music で再生中の曲をノッチのすぐ下に表示する、無料のオープンソース macOS アプリです。再生/一時停止、曲送り、シーク、1 行ずつ同期する歌詞に対応しています。SwiftUI/AppKit によるネイティブアプリと小さな Chrome 拡張機能で構成され、アカウントもテレメトリもありません。
 
-> **ステータス:** 初期プロトタイプ(v0.3.0)。まだリリースは公開されていないため、現時点では[ソースからビルド](docs/development/README.md)する必要があります。Apple Music と Spotify は対応予定ですが、まだ使えません。
+> **ステータス:** 初期プロトタイプ(v0.3.1)。まだリリースは公開されていないため、現時点では[ソースからビルド](docs/development/README.md)する必要があります。Apple Music と Spotify は対応予定ですが、まだ使えません。
 
 ## 機能
 

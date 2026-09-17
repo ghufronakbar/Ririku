@@ -76,6 +76,7 @@ final class AppModel: ObservableObject {
     private var searchTask: Task<Void, Never>?
     private var searchToken = UUID()
     private var candidateTrackKey: String?
+    private var candidateSearchIdentity: String?
     private var candidateDuration: Double?
 
     var lyricOffset: Double {
@@ -159,6 +160,17 @@ final class AppModel: ObservableObject {
     var trackKey: String? {
         guard let snapshot = current?.snapshot, !snapshot.isAdvertisement else { return nil }
         return (snapshot.sourceLabel.hasPrefix("YouTube") ? "YouTube" : snapshot.sourceLabel) + ":" + snapshot.trackId
+    }
+
+    var lyricSearchIdentity: String? {
+        guard let key = trackKey, let snapshot = current?.snapshot else { return nil }
+        return [key, snapshot.title, snapshot.artist].joined(separator: "\u{1F}")
+    }
+
+    var suggestedLyricSearch: String {
+        guard let snapshot = current?.snapshot else { return "" }
+        let query = LyricsQuery(title: snapshot.title, artist: snapshot.artist, duration: snapshot.duration ?? 0)
+        return [query.title, query.artist].filter { !$0.isEmpty }.joined(separator: " ")
     }
 
     var locale: Locale { localizer.locale }
@@ -347,6 +359,7 @@ final class AppModel: ObservableObject {
         lyricSearchBusy = false
         lyricSearchStatus = nil
         candidateTrackKey = nil
+        candidateSearchIdentity = nil
     }
 
     func searchLyrics(_ text: String) {
@@ -362,6 +375,7 @@ final class AppModel: ObservableObject {
         }
         let token = searchToken
         candidateTrackKey = key
+        candidateSearchIdentity = lyricSearchIdentity
         candidateDuration = duration
         lyricSearchBusy = true
         lyricSearchStatus = UIText("Searching candidates…")
@@ -384,7 +398,7 @@ final class AppModel: ObservableObject {
     }
 
     func selectLyrics(_ record: LyricsRecord) {
-        guard let key = trackKey, candidateTrackKey == key, lyricSource != "caption",
+        guard let key = trackKey, candidateTrackKey == key, candidateSearchIdentity == lyricSearchIdentity, lyricSource != "caption",
               let duration = current?.snapshot.duration, let searchedDuration = candidateDuration,
               abs(duration - searchedDuration) <= 3 else {
             lyricSearchStatus = UIText("Song or duration changed. Search again before choosing.")
@@ -407,7 +421,7 @@ final class AppModel: ObservableObject {
             lyricNoticeText = nil
             lyricNoticeKey = nil
         }
-        if let candidateTrackKey, candidateTrackKey != trackKey { cancelLyricSearch() }
+        if let candidateTrackKey, candidateTrackKey != trackKey || candidateSearchIdentity != lyricSearchIdentity { cancelLyricSearch() }
         guard let snapshot = current?.snapshot, let key = trackKey else {
             lyricTask?.cancel()
             artworkTask?.cancel()

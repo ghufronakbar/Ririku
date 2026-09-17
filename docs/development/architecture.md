@@ -66,6 +66,10 @@ Changing the source cancels any pending command.
 
 ## Playback clock and lyric lines
 
+For YouTube Music, the MAIN-world bridge reads the player bar's song-relative clock (with matching slider/API values for precision), not the raw media timeline, which can span multiple songs. Metadata and duration must settle before publication. Missing Music clock data removes the source temporarily rather than publishing an accumulated position. Seeks validate the current song identity and map the requested song position into the player API timeline; they never directly assign `video.currentTime`. Browser selectors and timeline behavior still require real Chrome smoke tests.
+
+Setup search identity includes title and artist as well as the track key. Synced lyric rows retain their indices and animate upward for adjacent forward cues; larger jumps and Reduce Motion snap without scrolling.
+
 The latest snapshot is the source of truth. While `playing` and not an ad, the position advances from the snapshot's `position` by the elapsed time since it was received (monotonic `systemUptime`) multiplied by `playbackRate`, capped at 5 seconds; otherwise it stays still. The UI samples it every 0.25 seconds.
 
 The active lyric line is the last line whose time is at or before `position − offset` (binary search). A positive per-song offset delays lyrics. Offsets are stored per `YouTube:<videoId>`, shared between YouTube and YouTube Music, limited to ±60 seconds, and not applied to captions.
@@ -87,6 +91,8 @@ Manual **Search and choose a lyrics version** uses `GET /api/search?q=` and rank
 **Lyrics source** decides what is shown: `auto` prefers timed LRC lines and falls back to captions when CC is on; `lrclib` never shows captions; `caption` shows only captions and never queries LRCLIB. Captions are read from the visible YouTube caption elements, coalesced for 40 ms, and cleared during seeks, navigation, and ads.
 
 ## Network clients
+
+LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff. Retry-After is honored; longer waits surface the cooldown rather than holding the request indefinitely. A failed exact lookup may recover through search, but an outage is never cached as a negative match.
 
 `SafeHTTPClient` uses an ephemeral `URLSession` without cookies, credentials, or URL cache, accepts only HTTPS on port 443 to an allowlist of hosts (also enforced on redirects), times out after 15/20 seconds, and aborts responses over 2 MB. LRCLIB uses `lrclib.net`. Artwork is limited to YouTube/Google image hosts, source images up to 8192 px, downsampled to 256 px, with an in-memory cache of 40 images; failed downloads retry after 30 seconds.
 

@@ -7,6 +7,8 @@
   let stopped = false;
   let playerMetadata = null;
   let metadataReceivedAt = 0;
+  let metadataSupported = false;
+  const pendingSeeks = new Map();
   let lastIdentifier = "";
   let metadataBar = null;
   let metadataUpdate = null;
@@ -19,10 +21,19 @@
     }, 80);
   });
   window.addEventListener("message", event => {
+    if (event.source === window && event.origin === location.origin && event.data?.type === "ririku-seek-result-v1") {
+      const pending = pendingSeeks.get(event.data.requestId);
+      if (pending) { pendingSeeks.delete(event.data.requestId); pending(event.data.ok === true); }
+      return;
+    }
     if (event.source !== window || event.origin !== location.origin || event.data?.type !== "ririku-player-metadata-v1") return;
     const value = event.data.metadata;
     if (value !== null && (!value || typeof value.videoId !== "string" || !/^[A-Za-z0-9_-]{11}$/.test(value.videoId)
-      || typeof value.title !== "string" || value.title.length > 500 || typeof value.artist !== "string" || value.artist.length > 500)) return;
+      || typeof value.title !== "string" || value.title.length > 500 || typeof value.artist !== "string" || value.artist.length > 500
+      || !Number.isFinite(value.position) || value.position < 0
+      || (value.duration !== null && (!Number.isFinite(value.duration) || value.duration <= 0 || value.position > value.duration))
+      || typeof value.seekable !== "boolean")) return;
+    metadataSupported = true;
     const changed = JSON.stringify(playerMetadata) !== JSON.stringify(value);
     playerMetadata = value;
     metadataReceivedAt = performance.now();
@@ -104,19 +115,20 @@
       if (bar) metadataObserver.observe(bar, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["href", "title", "src"] });
     }
     const video = media();
+    const clock = freshMetadata();
     const identifier = trackId();
     if (identifier !== lastIdentifier) {
       if (lastIdentifier) captionSuppressed = true;
       lastIdentifier = identifier;
     }
     let packet;
-    if (!video || !identifier || video.readyState === 0) {
+    if (!video || !identifier || video.readyState === 0 || ((music || metadataSupported) && !clock)) {
       if (!hadMedia) return;
       hadMedia = false;
       packet = { protocolVersion: 1, kind: "remove", sessionId };
     } else {
       hadMedia = true;
-      const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : null;
+      const duration = clock ? clock.duration : Number.isFinite(video.duration) && video.duration > 0 ? video.duration : null;
       const isAdvertisement = advertisement();
       packet = {
         protocolVersion: 1, kind: "snapshot", sessionId, sequence: ++sequence,
@@ -126,7 +138,8 @@
         artist: freshMetadata()?.artist || (music ? text("ytmusic-player-bar .byline a") : text("ytd-watch-metadata #channel-name a")),
         artworkURL: artwork(identifier),
         ...captions(video),
-        position: Math.max(0, Number.isFinite(video.currentTime) ? video.currentTime : 0),
+        position: clock ? Math.min(duration ?? Infinity, clock.position + (video.paused || video.seeking || video.readyState < 3 ? 0 : Math.min(0.5, (performance.now() - metadataReceivedAt) / 1000) * video.playbackRate))
+          : Math.max(0, Number.isFinite(video.currentTime) ? video.currentTime : 0),
         duration, playbackRate: video.playbackRate,
         state: video.ended ? "ended" : video.paused ? "paused" : video.seeking || video.readyState < 3 ? "buffering" : "playing",
         isAdvertisement,
@@ -134,7 +147,7 @@
           playPause: !isAdvertisement,
           previous: !isAdvertisement && Boolean(button("previous")),
           next: !isAdvertisement && Boolean(button("next")),
-          seek: !isAdvertisement && duration !== null && video.seekable.length > 0
+          seek: !isAdvertisement && Boolean(clock?.seekable)
         }
       };
     }
@@ -156,8 +169,16 @@
         if (command.action === "toggle") {
           if (video.paused) await video.play(); else video.pause();
         } else if (command.action === "seek") {
-          if (!Number.isFinite(command.position) || !Number.isFinite(video.duration) || !video.seekable.length) throw new Error("Unseekable");
-          video.currentTime = Math.min(video.duration, Math.max(0, command.position));
+          const clock = freshMetadata();
+          if (!clock?.seekable || !Number.isFinite(command.position) || command.position < 0 || command.position > clock.duration) throw new Error("Unseekable");
+          const requestId = crypto.randomUUID();
+          const ok = await new Promise(resolve => {
+            const timeout = setTimeout(() => { pendingSeeks.delete(requestId); resolve(false); }, 1500);
+            pendingSeeks.set(requestId, success => { clearTimeout(timeout); resolve(success); });
+            window.postMessage({ type: "ririku-seek-request-v1", requestId, videoId: clock.videoId,
+              title: clock.title, artist: clock.artist, position: command.position }, location.origin);
+          });
+          if (!ok) throw new Error("Seek rejected");
         } else if (["previous", "next"].includes(command.action)) {
           const target = button(command.action);
           if (!target) throw new Error("Unavailable");

@@ -45,7 +45,7 @@ final class SafeHTTPClient: NSObject, URLSessionTaskDelegate, HTTPFetching, @unc
     func get(_ url: URL, limit: Int) async throws -> HTTPResult {
         guard allows(url) else { throw BridgeError.system("Media address is not allowed.") }
         var request = URLRequest(url: url)
-        request.setValue("Ririku/0.3.0 (https://github.com/ghufronakbar/Ririku)", forHTTPHeaderField: "User-Agent")
+        request.setValue("Ririku/0.3.1 (https://github.com/ghufronakbar/Ririku)", forHTTPHeaderField: "User-Agent")
         let (bytes, response) = try await session.bytes(for: request)
         guard let response = response as? HTTPURLResponse, allows(response.url), response.expectedContentLength <= limit else {
             throw BridgeError.system("Media response is invalid or too large.")
@@ -102,7 +102,7 @@ actor LyricsService {
         var candidates: [LyricsRecord] = []
         if exact.status == 200, let record = try? JSONDecoder().decode(LyricsRecord.self, from: exact.data), query.matches(record) {
             candidates.append(record)
-        } else if exact.status != 404 && exact.status != 200 {
+        } else if exact.status != 404 && exact.status != 200 && ![502, 503, 504].contains(exact.status) {
             throw BridgeError.system("Lyrics service unavailable (HTTP %@).", [String(exact.status)])
         }
         if candidates.first?.instrumental != true {
@@ -120,6 +120,9 @@ actor LyricsService {
         }
         try Task.checkCancellation()
         let result = query.bestMatch(in: candidates)
+        if result == nil && exact.status != 200 && exact.status != 404 {
+            throw BridgeError.system("Lyrics service unavailable (HTTP %@).", [String(exact.status)])
+        }
         let entry = CacheEntry(query: query, expires: Date(timeIntervalSinceNow: result == nil ? 1800 : 30 * 86400), record: result)
         if let data = try? JSONEncoder().encode(entry) {
             try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
@@ -133,24 +136,32 @@ actor LyricsService {
         while busy { try await Task.sleep(for: .milliseconds(50)) }
         busy = true
         defer { busy = false }
-        let wait = nextRequest.timeIntervalSinceNow
-        if wait > 5 { throw BridgeError.system("Lyrics service asked to pause. Try again in %@ s.", [String(format: "%.0f", ceil(wait))]) }
-        if wait > 0 { try await Task.sleep(for: .seconds(wait)) }
         defer { nextRequest = max(nextRequest, Date(timeIntervalSinceNow: 0.35)) }
-        let response = try await client.get(url, limit: 2_000_000)
-        if response.status == 429 {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(secondsFromGMT: 0)
-            formatter.dateFormat = "EEE',' dd MMM yyyy HH':'mm':'ss z"
-            let requestedDelay = response.retryAfter.flatMap(Double.init)
-                ?? response.retryAfter.flatMap { formatter.date(from: $0)?.timeIntervalSinceNow }
-                ?? 60
-            let delay = requestedDelay.isFinite ? max(1, requestedDelay) : 60
-            nextRequest = Date(timeIntervalSinceNow: delay)
-            throw BridgeError.system("Lyrics service limit reached. Try again in %@ s.", [String(format: "%.0f", ceil(delay))])
+        for attempt in 0...2 {
+            try Task.checkCancellation()
+            let wait = nextRequest.timeIntervalSinceNow
+            if wait > 5 { throw BridgeError.system("Lyrics service asked to pause. Try again in %@ s.", [String(format: "%.0f", ceil(wait))]) }
+            if wait > 0 { try await Task.sleep(for: .seconds(wait)) }
+            let response = try await client.get(url, limit: 2_000_000)
+            let transient = [502, 503, 504].contains(response.status)
+            if response.status == 429 || transient {
+                let formatter = DateFormatter()
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                formatter.timeZone = TimeZone(secondsFromGMT: 0)
+                formatter.dateFormat = "EEE',' dd MMM yyyy HH':'mm':'ss z"
+                let requestedDelay = response.retryAfter.flatMap(Double.init)
+                    ?? response.retryAfter.flatMap { formatter.date(from: $0)?.timeIntervalSinceNow }
+                    ?? (response.status == 429 ? 60 : pow(2, Double(attempt)))
+                let delay = requestedDelay.isFinite ? max(1, requestedDelay) : 60
+                nextRequest = Date(timeIntervalSinceNow: delay)
+                if response.status == 429 {
+                    throw BridgeError.system("Lyrics service limit reached. Try again in %@ s.", [String(format: "%.0f", ceil(delay))])
+                }
+                if attempt < 2 { continue }
+            }
+            return response
         }
-        return response
+        throw BridgeError.system("Lyrics service unavailable (HTTP %@).", ["503"])
     }
 
     func search(_ text: String, duration: Double) async throws -> [LyricsRecord] {

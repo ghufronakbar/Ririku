@@ -41,7 +41,9 @@ jobs:
           /usr/bin/python3 scripts/check-docs.py
 
       - name: Run tests
-        run: swift test
+        run: |
+          swift test
+          node --test Tests/Extension/*.test.cjs
 
       - name: Build and sign ad hoc
         run: |

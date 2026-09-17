@@ -84,6 +84,7 @@ Run the checks that match your change before opening a pull request:
 ```sh
 swift build
 swift test
+node --test Tests/Extension/*.test.cjs
 bash scripts/build-app.sh
 codesign --verify --deep --strict build/Ririku.app
 /usr/bin/python3 scripts/check-localization.py   # translations complete, placeholders match

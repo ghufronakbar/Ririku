@@ -98,12 +98,10 @@ struct PlayerView: View {
             if model.usesVideoCaption {
                 Text(model.lyricStatus).foregroundStyle(model.accent).lineLimit(model.lyricLineCount)
                     .help(model.t("Video captions active; previous and next lines are not available from the player."))
-            } else if model.lyricIndex() != nil, !model.currentLines.isEmpty {
-                let rows = model.displayedLyricRows()
-                ForEach(rows.indices, id: \.self) { row in
-                    Text(rows[row].text).foregroundStyle(rows[row].active ? model.accent : .white.opacity(0.45))
-                        .fontWeight(rows[row].active ? .medium : .regular)
-                }
+            } else if let index = model.lyricIndex(), !model.currentLines.isEmpty {
+                ScrollingLyricRows(lines: model.currentLines, activeIndex: index, lineCount: model.lyricLineCount,
+                                   animate: model.canAnimate, accent: model.accent)
+                    .id(model.lyricSearchIdentity)
             } else if let plain = model.currentPlainLyrics {
                 ScrollView { Text(plain).lineLimit(nil).foregroundStyle(.white.opacity(0.85)).frame(maxWidth: .infinity) }
                     .help(model.t("Text lyrics without timing; there is no active line."))
