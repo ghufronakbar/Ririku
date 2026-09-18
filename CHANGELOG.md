@@ -2,15 +2,6 @@
 
 All notable changes to Ririku are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org). Versions before 0.3.0 were private prototypes named Notch Box and were never published.
 
-## [Unreleased]
-
-### Added
-- `docs/rules.md`: binding project rules with citable IDs for contributors and AI agents, collected from the agreed decisions and the planning documents. `AGENTS.md` makes it required reading.
-- App icon and browser extension icon: an anime-style illustration generated with Gemini through Antigravity, clipped to the macOS icon grid by `scripts/make-icon.swift` during the build.
-
-### Removed
-- The Indonesian planning archive (`docs/archive/id`). Its rules that still apply are in `docs/rules.md`; the history remains in Git.
-
 ## [0.3.1] - 2026-09-18
 
 First public release. It also contains the unpublished [0.3.0 changes](https://github.com/ghufronakbar/Ririku/blob/main/CHANGELOG.md#030---not-published), including the rename from Notch Box to Ririku. Apple silicon only; signed ad hoc and not notarized.
@@ -23,6 +14,8 @@ First public release. It also contains the unpublished [0.3.0 changes](https://g
 - LRCLIB retries temporary 502/503/504 responses with bounded backoff, respects Retry-After, and does not cache an outage as missing lyrics.
 
 ### Added
+- `docs/rules.md`: binding project rules with citable IDs for contributors and AI agents, collected from the agreed decisions and the planning documents. `AGENTS.md` makes it required reading.
+- App icon and browser extension icon: an anime-style illustration generated with Gemini through Antigravity, clipped to the macOS icon grid by `scripts/make-icon.swift` during the build.
 - Opt-in Apple Music connection to the Music app, sharing the Spotify AppleScript adapter: persistent-ID–validated commands, locally read artwork, and the same source selection and LRCLIB lyrics. When LRCLIB has none, plain lyrics saved with the track in the Music app are shown unsynced. Requires macOS Automation permission; live permission/playback validation is still pending. Radio streams without a duration are not supported as songs.
 - Opt-in Spotify desktop connection using local AppleScript polling and track-validated playback commands. Shares source selection, LRCLIB lyrics, artwork, and automatic accent; requires macOS Automation permission. Browser disconnects preserve the Spotify session. Live permission/playback validation is still pending; podcasts, local files, and ads are not supported as songs.
 - **Auto — from artwork** accent color: a cached dominant-color tint with readable brightness, Neutral fallback, and a transition that respects animation and Reduce Motion settings. Existing manual color preferences are preserved.
@@ -37,6 +30,9 @@ First public release. It also contains the unpublished [0.3.0 changes](https://g
 - **The compact island now matches the physical notch.** Its width and height are stored as an addition to the measured notch instead of absolute values, so the default fits the notch exactly on any Mac and nothing shows beside the camera housing. Artwork and the spectrum sit on the left and right edges and come out from behind the notch as the island grows, **Setup → Appearance** gained **Compact island height**, and **Reset size** became **Reset to the notch size**. The notch width is measured instead of assuming at least 180 pt, and the old `compactWidth` preference is dropped.
 - While playback is paused, the compact island keeps the artwork and the spectrum but drops the lyrics, so it shrinks back to the notch; the expanded panel still shows them.
 - **Setup → Chrome connection** is now **Setup → Browser connection**, and interface text that named Chrome now names the browser. The extension is listed as **Ririku — Browser Bridge**; reload it once from `chrome://extensions` after updating.
+
+### Removed
+- The Indonesian planning archive (`docs/archive/id`). Its rules that still apply are in `docs/rules.md`; the history remains in Git.
 
 ## [0.3.0] - Not published
 
