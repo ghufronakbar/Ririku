@@ -17,6 +17,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
     private var statusItem: NSStatusItem!
     private var hoverWork: DispatchWorkItem?
+    /// Set when the menu opens the panel, so it stays open until the pointer has visited it.
+    private var pinnedOpen = false
+    private var pointerTimer: Timer?
+    private var pointerLeftAt: TimeInterval?
     private var resizeTimer: Timer?
     private var targetPanelFrame: NSRect?
 
@@ -32,7 +36,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         panel.isMovable = false
-        panel.dismissPanel = { [weak self] in self?.panel.resignKey(); self?.model.expanded = false }
+        panel.dismissPanel = { [weak self] in self?.collapse() }
         let hosting = NSHostingView(rootView: PlayerView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
         hosting.sizingOptions = []
         panel.contentView = hosting
@@ -94,7 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow?.makeKeyAndOrderFront(nil)
     }
 
-    @objc private func expandPanel() { model.expanded = true; panel.makeKeyAndOrderFront(nil) }
+    @objc private func expandPanel() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
     @objc private func screenChanged() { positionPanel(animate: false) }
     @objc private func accessibilityChanged() { model.objectWillChange.send(); positionPanel(animate: false) }
 
@@ -141,13 +145,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func hover(_ inside: Bool) {
         hoverWork?.cancel()
+        if inside { pinnedOpen = false }
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
-            if !inside && self.panel.isKeyWindow { return }
-            self.model.expanded = inside
+            if inside {
+                self.model.expanded = true
+                self.watchPointer()
+            } else if !self.pointerIsInside {
+                self.collapse()
+            }
         }
         hoverWork = work
         DispatchQueue.main.asyncAfter(deadline: .now() + (inside ? 0.15 : 0.35), execute: work)
+    }
+
+    /// Clicking a control makes the panel key and SwiftUI can miss the exit while the content changes
+    /// (for example after pausing), so the pointer position decides when a hover-opened panel closes.
+    private var pointerIsInside: Bool {
+        pinnedOpen || NSEvent.pressedMouseButtons != 0 || panel.frame.contains(NSEvent.mouseLocation)
+    }
+
+    private func watchPointer() {
+        pointerTimer?.invalidate()
+        pointerLeftAt = nil
+        let timer = Timer(timeInterval: 0.2, repeats: true) { [weak self] timer in
+            MainActor.assumeIsolated {
+                guard let self, self.model.expanded else { timer.invalidate(); return }
+                let now = ProcessInfo.processInfo.systemUptime
+                if self.pointerIsInside { self.pointerLeftAt = nil; return }
+                let leftAt = self.pointerLeftAt ?? now
+                self.pointerLeftAt = leftAt
+                if now - leftAt >= 0.35 { self.collapse() }
+            }
+        }
+        pointerTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    private func collapse() {
+        hoverWork?.cancel()
+        pointerTimer?.invalidate()
+        pointerTimer = nil
+        pinnedOpen = false
+        if panel.isKeyWindow { panel.resignKey() }
+        model.expanded = false
     }
 
     func applicationWillTerminate(_ notification: Notification) { resizeTimer?.invalidate(); bridge.stop() }

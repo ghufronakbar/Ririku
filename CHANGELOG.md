@@ -5,6 +5,7 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 ## [0.3.1] - Unreleased
 
 ### Fixed
+- The expanded panel closes once the pointer leaves it, even after clicking a control such as pause. Closing now follows the pointer position instead of a hover exit that SwiftUI could miss, and a panel opened from the menu stays open until the pointer has visited it.
 - YouTube Music artwork is keyed to the playing video rather than an unverified player-bar image that can retain the previous album.
 - YouTube Music uses the visible song clock instead of an accumulated media timeline. Seeking maps song-relative positions through the player API and rejects stale track commands.
 - Track metadata changes reset the Setup lyric search, including metadata corrections under the same video ID.

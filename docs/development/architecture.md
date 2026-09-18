@@ -107,7 +107,7 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 - The compact island is stored as `compactExtraWidth`/`compactExtraHeight`, the amount added to the measured notch, so 0 fits the notch on any Mac and is the default. Artwork and the spectrum are pinned to the leading and trailing edges with a 6 pt inset, so they hide behind the camera housing at the notch size and appear as the island grows (fully visible from about 240 pt); `compactIconSize` shrinks them if the island is shorter than 32 pt. The expanded panel keeps its own absolute width and stays at least the notch plus 120 pt.
 - Lyrics leave the compact island while playback is paused (`islandLyricHeight` requires `isPlayingNow`), so a paused island shrinks back to the notch, while the expanded panel keeps them.
 - Frame changes use `IslandMotion`: 0.32 s smoothstep interpolation driven by a 60 Hz timer that runs only during the resize and keeps the top edge fixed. Reduce Motion or the animation setting disables it.
-- Hover opens after 150 ms and closes after 350 ms unless the panel has keyboard focus. Track changes do not expand the panel.
+- Hover opens after 150 ms. The panel closes once the pointer has been outside it for 350 ms, checked against the pointer position rather than only SwiftUI hover exits, and not while a mouse button is held (seeking). A panel opened from the menu stays open until the pointer has visited it or Escape is pressed. Track changes do not expand the panel.
 - `DecorativeSpectrum` animates five synthetic bars at up to 24 Hz only while playing; it never captures audio.
 
 ## Localization
