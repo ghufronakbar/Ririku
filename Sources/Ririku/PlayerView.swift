@@ -8,19 +8,20 @@ struct PlayerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                if model.current != nil { artwork(size: 24) }
-                Spacer(minLength: model.notchWidth)
+            HStack(spacing: 0) {
+                if model.current != nil { artwork(size: model.compactIconSize) }
+                Spacer(minLength: 0)
                 if model.current != nil {
-                    DecorativeSpectrum(playing: model.current?.snapshot.state == "playing" && model.current?.snapshot.isAdvertisement == false,
+                    DecorativeSpectrum(size: model.compactIconSize,
+                                        playing: model.isPlayingNow,
                                         animate: model.canAnimate, color: model.accent,
                                         playingLabel: model.t("Music playing · decorative spectrum"),
                                         pausedLabel: model.t("Music paused or stopped"),
                                         helpText: model.t("Decorative spectrum, not audio analysis"))
                 }
             }
-            .padding(.horizontal, 14)
-            .frame(height: model.topHeight)
+            .padding(.horizontal, model.expanded ? 14 : 6)
+            .frame(height: model.islandHeight)
             .fixedSize(horizontal: false, vertical: true)
             if model.expanded {
                 expandedContent.padding(.horizontal, 22).padding(.top, 12).padding(.bottom, 20)

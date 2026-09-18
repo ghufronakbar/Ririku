@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DecorativeSpectrum: View {
+    var size: Double = 24
     let playing: Bool
     let animate: Bool
     let color: Color
@@ -20,7 +21,7 @@ struct DecorativeSpectrum: View {
                         .frame(width: 2, height: height(band: band, time: context.date.timeIntervalSinceReferenceDate))
                 }
             }
-            .frame(width: 24, height: 24)
+            .frame(width: size, height: size)
             .animation(animate && !reduceMotion ? .easeOut(duration: 0.28) : nil, value: running)
         }
         .accessibilityLabel(playing ? playingLabel : pausedLabel)
@@ -31,6 +32,6 @@ struct DecorativeSpectrum: View {
         guard running else { return 2 }
         let phase = time.truncatingRemainder(dividingBy: 120)
         let wave = (sin(phase * (3 + Double(band) * 0.37) + Double(band) * 1.3) + 1) / 2
-        return 4 + wave * (band == 2 ? 18 : 13)
+        return (4 + wave * (band == 2 ? 18 : 13)) * size / 24
     }
 }

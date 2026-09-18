@@ -205,27 +205,57 @@ struct PreferenceTests {
         let (model, defaults) = makeModel()
         model.interfaceLanguage = .ja
         model.lyricLineCount = 2
-        model.compactWidth = 420
+        model.compactExtraWidth = 120
+        model.compactExtraHeight = 8
         let restored = AppModel(defaults: defaults)
         #expect(restored.interfaceLanguage == .ja)
         #expect(restored.lyricLineCount == 2)
-        #expect(restored.compactWidth == 420)
+        #expect(restored.compactExtraWidth == 120)
+        #expect(restored.compactExtraHeight == 8)
     }
 
-    @Test("Keeps the panel within the notch and the screen")
+    @Test("Sizes the compact island from the notch and keeps it on the screen")
     func computesPanelSize() {
         let (model, _) = makeModel()
         model.notchWidth = 200
         model.topHeight = 34
         #expect(model.panelSize(screenWidth: 1512).width == 200, "idle matches the notch")
+        #expect(model.panelSize(screenWidth: 1512).height == 34)
         model.receive(snapshotData())
-        #expect(model.panelSize(screenWidth: 1512).width == 360)
-        model.compactWidth = 280
-        #expect(model.panelSize(screenWidth: 1512).width == 300, "never narrower than the notch plus 100 pt")
+        #expect(model.panelSize(screenWidth: 1512).width == 200, "playing still matches the notch by default")
+        #expect(model.panelSize(screenWidth: 1512).height == 34, "and lyrics are the only thing that adds height")
+        model.compactExtraWidth = 80
+        model.compactExtraHeight = 6
+        #expect(model.panelSize(screenWidth: 1512).width == 280)
+        #expect(model.panelSize(screenWidth: 1512).height == 40)
+        #expect(model.compactIconSize == 24, "a 40 pt island still fits the full artwork")
+        model.compactExtraHeight = 0
+        model.topHeight = 20
+        #expect(model.compactIconSize == 14, "a short island shrinks the artwork instead of overflowing")
+        model.topHeight = 34
+        model.resetIslandSize()
+        #expect(model.panelSize(screenWidth: 1512).width == 200)
         model.expanded = true
         #expect(model.panelSize(screenWidth: 1512).width == 442)
         #expect(model.panelSize(screenWidth: 400).width == 376, "never wider than the screen minus 24 pt")
         #expect(model.panelSize(screenWidth: 1512).height > 34)
+    }
+
+    @Test("Keeps artwork and spectrum while paused but hides the lyrics")
+    func hidesLyricsWhilePaused() {
+        let (model, _) = makeModel()
+        model.receive(snapshotData(position: 10))
+        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        #expect(model.isPlayingNow)
+        #expect(model.islandLyricHeight > 0)
+        let playingHeight = model.panelSize(screenWidth: 1512).height
+        model.receive(snapshotData(sequence: 2, state: "paused", position: 10))
+        #expect(!model.isPlayingNow)
+        #expect(model.current != nil, "the artwork and the spectrum stay")
+        #expect(model.islandLyricHeight == 0)
+        #expect(model.panelSize(screenWidth: 1512).height < playingHeight)
+        model.expanded = true
+        #expect(model.islandLyricHeight > 0, "the expanded panel keeps showing lyrics while paused")
     }
 
     @Test("Shows the configured number of lyric lines around the active one")

@@ -71,10 +71,11 @@ Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension ya
 
 ## Memakai panel
 
-- **Island ringkas:** saat musik diputar, notch menampilkan artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawahnya bila lirik tersedia. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
+- **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar.
 - **Kontrol:** judul, artis, dan sumber; tombol gear membuka **Setup**; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer atau tekan **Esc**.
+- **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
 - **Iklan:** saat YouTube menampilkan iklan, kontrol dinonaktifkan dan lirik dijeda.
 - **Tanpa lirik:** island tetap ringkas dan sebentar menampilkan **Lirik belum ditemukan**. Detailnya ada di **Setup → Lirik**.
 
@@ -103,7 +104,9 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 
 ### Tampilan
 
-- **Lebar island ringkas** (280–620 pt, default 360) dan **Lebar island terbuka** (360–720 pt, default 442). Panel tidak pernah lebih sempit dari notch. **Reset ukuran** mengembalikan default.
+- **Lebar island ringkas** dan **Tinggi island ringkas** dimulai seukuran notch Mac Anda — itu nilai default sekaligus ukuran terkecilnya — dan dapat ditambah hingga 440 pt dan 40 pt. Setup menyebutkan ukuran notch Anda (misalnya 179 × 32 pt). Artwork dan spectrum menempel di sisi kiri dan kanan, jadi keduanya muncul dari balik housing kamera saat island diperlebar; sekitar 240 pt keduanya terlihat penuh.
+- **Lebar island terbuka** (360–720 pt, default 442), dipakai saat panel disentuh pointer atau dibuka.
+- **Kembalikan ke ukuran notch** mengembalikan ketiganya.
 - **Warna aksen:** Peach, Lavender, atau Netral.
 - **Transisi panel halus:** matikan agar ukuran panel berubah seketika. **Reduce Motion** macOS juga mematikan animasi dan spectrum.
 - **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya), atau 3 (sebelum + saat ini + berikutnya).

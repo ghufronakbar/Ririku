@@ -47,7 +47,9 @@ final class AppModel: ObservableObject {
     private(set) var localizer: Localizer
     @Published var expanded = false { didSet { geometryChanged?() } }
     @Published var panelWidth: Double { didSet { save(); geometryChanged?() } }
-    @Published var compactWidth: Double { didSet { save(); geometryChanged?() } }
+    /// Compact island size is stored as the amount added to the physical notch, so 0 fits the notch on any Mac.
+    @Published var compactExtraWidth: Double { didSet { save(); geometryChanged?() } }
+    @Published var compactExtraHeight: Double { didSet { save(); geometryChanged?() } }
     @Published var lyricLineCount: Int { didSet { save(); geometryChanged?() } }
     @Published var accentName: String { didSet { save() } }
     @Published var animations: Bool { didSet { save(); geometryChanged?() } }
@@ -136,8 +138,12 @@ final class AppModel: ObservableObject {
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
-        let storedCompactWidth = defaults.double(forKey: "compactWidth")
-        compactWidth = storedCompactWidth.isFinite && (280...620).contains(storedCompactWidth) ? storedCompactWidth : 360
+        let storedExtraWidth = defaults.double(forKey: "compactExtraWidth")
+        compactExtraWidth = storedExtraWidth.isFinite && (0...Self.compactWidthRange).contains(storedExtraWidth) ? storedExtraWidth : 0
+        let storedExtraHeight = defaults.double(forKey: "compactExtraHeight")
+        compactExtraHeight = storedExtraHeight.isFinite && (0...Self.compactHeightRange).contains(storedExtraHeight) ? storedExtraHeight : 0
+        // The old absolute width was always wider than the notch, which is what this replaces.
+        defaults.removeObject(forKey: "compactWidth")
         let storedLineCount = defaults.integer(forKey: "lyricLineCount")
         lyricLineCount = (1...3).contains(storedLineCount) ? storedLineCount : 3
         accentName = defaults.string(forKey: "accentName") ?? "Peach"
@@ -197,6 +203,22 @@ final class AppModel: ObservableObject {
     }
 
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
+    /// How far the compact island may grow past the notch, on each axis.
+    static let compactWidthRange: Double = 440
+    static let compactHeightRange: Double = 40
+
+    /// Total compact size, which the sliders in Setup show and set.
+    var compactWidth: Double { notchWidth + compactExtraWidth }
+    var islandHeight: Double { topHeight + (current == nil ? 0 : compactExtraHeight) }
+    /// Artwork and spectrum shrink with a short island so they never spill out of it.
+    var compactIconSize: Double { max(14, min(24, islandHeight - 8)) }
+    func resetIslandSize() {
+        compactExtraWidth = 0
+        compactExtraHeight = 0
+        panelWidth = 442
+    }
+    var isPlayingNow: Bool { current?.snapshot.state == "playing" && current?.snapshot.isAdvertisement == false }
     var popupDuration: Double { 0.32 }
     var lyricBlockHeight: Double { Double(min(3, max(1, lyricLineCount)) * 20 + 14) }
     var hasIslandLyrics: Bool {
@@ -206,14 +228,17 @@ final class AppModel: ObservableObject {
         guard showLyrics, !hasIslandLyrics, lyricNoticeKey == trackKey, let lyricNoticeText else { return nil }
         return t(lyricNoticeText)
     }
-    var islandLyricHeight: Double { hasIslandLyrics ? lyricBlockHeight : lyricNotice != nil ? 34 : 0 }
+    var islandLyricHeight: Double {
+        guard expanded || isPlayingNow else { return 0 }
+        return hasIslandLyrics ? lyricBlockHeight : lyricNotice != nil ? 34 : 0
+    }
 
     func panelSize(screenWidth: Double) -> CGSize {
         let active = current != nil
-        let width = expanded ? max(panelWidth, notchWidth + 120) : active ? max(compactWidth, notchWidth + 100) : notchWidth
+        let width = expanded ? max(panelWidth, notchWidth + 120) : active ? compactWidth : notchWidth
         let extraHeight = expanded ? 200 + (islandLyricHeight > 0 ? islandLyricHeight + 12 : 0) + (commandError == nil ? 0 : 30)
             : active ? islandLyricHeight : 0
-        return CGSize(width: min(max(0, screenWidth - 24), width), height: topHeight + extraHeight)
+        return CGSize(width: min(max(0, screenWidth - 24), width), height: islandHeight + extraHeight)
     }
 
     func displayedLyricRows() -> [(text: String, active: Bool)] {
@@ -624,7 +649,8 @@ final class AppModel: ObservableObject {
     private func save() {
         defaults.set(interfaceLanguage.rawValue, forKey: "interfaceLanguage")
         defaults.set(panelWidth, forKey: "panelWidth")
-        defaults.set(compactWidth, forKey: "compactWidth")
+        defaults.set(compactExtraWidth, forKey: "compactExtraWidth")
+        defaults.set(compactExtraHeight, forKey: "compactExtraHeight")
         defaults.set(lyricLineCount, forKey: "lyricLineCount")
         defaults.set(accentName, forKey: "accentName")
         defaults.set(animations, forKey: "animations")

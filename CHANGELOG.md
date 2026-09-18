@@ -16,6 +16,8 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - **Other Chromium browsers:** Setup registers the native host for every installed browser it knows (Chrome, Brave, Edge, Vivaldi, Opera, Chromium, Arc) in one click, names them under step 1, and offers each browser's own extensions address. The native host reports which browser launched it, so the panel and step 4 name it. One browser profile is connected at a time, and only Chrome is verified so far.
 
 ### Changed
+- **The compact island now matches the physical notch.** Its width and height are stored as an addition to the measured notch instead of absolute values, so the default fits the notch exactly on any Mac and nothing shows beside the camera housing. Artwork and the spectrum sit on the left and right edges and come out from behind the notch as the island grows, **Setup → Appearance** gained **Compact island height**, and **Reset size** became **Reset to the notch size**. The notch width is measured instead of assuming at least 180 pt, and the old `compactWidth` preference is dropped.
+- While playback is paused, the compact island keeps the artwork and the spectrum but drops the lyrics, so it shrinks back to the notch; the expanded panel still shows them.
 - **Setup → Chrome connection** is now **Setup → Browser connection**, and interface text that named Chrome now names the browser. The extension is listed as **Ririku — Browser Bridge**; reload it once from `chrome://extensions` after updating.
 
 ## [0.3.0] - Unreleased

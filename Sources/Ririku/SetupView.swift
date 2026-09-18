@@ -81,17 +81,27 @@ struct SetupView: View {
             Section(model.t("Appearance")) {
                 HStack {
                     Text(model.t("Compact island width"))
-                    Slider(value: $model.compactWidth, in: 280...620, step: 2)
+                    Slider(value: Binding(get: { model.compactWidth },
+                                          set: { model.compactExtraWidth = max(0, $0 - model.notchWidth) }),
+                           in: model.notchWidth...(model.notchWidth + AppModel.compactWidthRange), step: 2)
                     Text(verbatim: "\(Int(model.compactWidth)) pt").monospacedDigit().frame(width: 60)
+                }
+                HStack {
+                    Text(model.t("Compact island height"))
+                    Slider(value: Binding(get: { model.topHeight + model.compactExtraHeight },
+                                          set: { model.compactExtraHeight = max(0, $0 - model.topHeight) }),
+                           in: model.topHeight...(model.topHeight + AppModel.compactHeightRange), step: 1)
+                    Text(verbatim: "\(Int(model.topHeight + model.compactExtraHeight)) pt").monospacedDigit().frame(width: 60)
                 }
                 HStack {
                     Text(model.t("Expanded island width"))
                     Slider(value: $model.panelWidth, in: 360...720, step: 2)
                     Text(verbatim: "\(Int(model.panelWidth)) pt").monospacedDigit().frame(width: 60)
                 }
-                Text(model.t("Minimum size follows the physical notch. Height adapts to content and line count."))
+                Text(model.t("The compact island starts at the size of the physical notch (%1$@ × %2$@ pt here), so nothing shows beside the camera housing. Widen or heighten it to bring the artwork and the spectrum out from behind the notch; they stay on the left and right edges. Lyrics add their own height below.",
+                             "\(Int(model.notchWidth))", "\(Int(model.topHeight))"))
                     .font(.caption).foregroundStyle(.secondary)
-                Button(model.t("Reset size")) { model.compactWidth = 360; model.panelWidth = 442 }
+                Button(model.t("Reset to the notch size")) { model.resetIslandSize() }
                 Picker(model.t("Accent color"), selection: $model.accentName) {
                     Text(model.t("Peach")).tag("Peach")
                     Text(model.t("Lavender")).tag("Lavender")

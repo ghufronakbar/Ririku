@@ -70,10 +70,11 @@ Keep **Developer mode** on; browsers need it for extensions that are not from th
 
 ## Using the panel
 
-- **Compact island:** while music plays, the notch shows the artwork on the left and a decorative spectrum on the right. Lyric lines appear below when lyrics are available. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
+- **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon.
 - **Controls:** title, artist, and source; the gear button opens **Setup**; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away or press **Esc**.
+- **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
 - **Ads:** while YouTube shows an ad, controls are disabled and lyrics pause.
 - **No lyrics:** the island stays compact and briefly shows **Lyrics not found**. Details are in **Setup → Lyrics**.
 
@@ -102,7 +103,9 @@ The four install steps above. Come back here after updating Ririku, installing a
 
 ### Appearance
 
-- **Compact island width** (280–620 pt, default 360) and **Expanded island width** (360–720 pt, default 442). The panel is never narrower than the notch. **Reset size** restores the defaults.
+- **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
+- **Expanded island width** (360–720 pt, default 442), used when the panel is hovered or opened.
+- **Reset to the notch size** restores all three.
 - **Accent color:** Peach, Lavender, or Neutral.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
 - **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next).

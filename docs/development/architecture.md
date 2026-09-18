@@ -99,8 +99,10 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 
 ## Panel and motion
 
-- The panel is a borderless, non-activating `NSPanel` at status bar level on all Spaces, placed at the top center of the first screen with a top safe-area inset (the notch), otherwise the main screen. The notch width comes from `auxiliaryTopLeftArea`/`auxiliaryTopRightArea` (minimum 180 pt).
-- `AppModel.panelSize` computes the frame from the expanded state, width preferences (never narrower than the notch plus 100/120 pt, never wider than the screen minus 24 pt), lyric lines, notices, and errors.
+- The panel is a borderless, non-activating `NSPanel` at status bar level on all Spaces, placed at the top center of the first screen with a top safe-area inset (the notch), otherwise the main screen. The notch width comes from `auxiliaryTopLeftArea`/`auxiliaryTopRightArea`, and 180 pt is only a fallback when a screen does not report them; its height is the top safe-area inset (32 pt on a MacBook Air M2, which measures 179 × 32 pt).
+- `AppModel.panelSize` computes the frame from the expanded state, size preferences, lyric lines, notices, and errors, and never exceeds the screen minus 24 pt.
+- The compact island is stored as `compactExtraWidth`/`compactExtraHeight`, the amount added to the measured notch, so 0 fits the notch on any Mac and is the default. Artwork and the spectrum are pinned to the leading and trailing edges with a 6 pt inset, so they hide behind the camera housing at the notch size and appear as the island grows (fully visible from about 240 pt); `compactIconSize` shrinks them if the island is shorter than 32 pt. The expanded panel keeps its own absolute width and stays at least the notch plus 120 pt.
+- Lyrics leave the compact island while playback is paused (`islandLyricHeight` requires `isPlayingNow`), so a paused island shrinks back to the notch, while the expanded panel keeps them.
 - Frame changes use `IslandMotion`: 0.32 s smoothstep interpolation driven by a 60 Hz timer that runs only during the resize and keeps the top edge fixed. Reduce Motion or the animation setting disables it.
 - Hover opens after 150 ms and closes after 350 ms unless the panel has keyboard focus. Track changes do not expand the panel.
 - `DecorativeSpectrum` animates five synthetic bars at up to 24 Hz only while playing; it never captures audio.

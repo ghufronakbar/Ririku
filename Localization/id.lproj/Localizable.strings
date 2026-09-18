@@ -26,6 +26,7 @@
 "Check the connection" = "Periksa koneksi";
 "Choose a player tab" = "Pilih tab pemutar";
 "Choose an LRC for the current song. Make sure the recording version matches." = "Pilih LRC untuk lagu aktif. Pastikan versi rekamannya cocok.";
+"Compact island height" = "Tinggi island compact";
 "Compact island width" = "Lebar island ringkas";
 "Connected · %1$@ · extension %2$@" = "Terhubung · %1$@ · extension %2$@";
 "Connected · extension %@" = "Terhubung · extension %@";
@@ -81,7 +82,6 @@
 "Media address is not allowed." = "Alamat media tidak diizinkan.";
 "Media response exceeds the size limit." = "Respons media melebihi batas ukuran.";
 "Media response is invalid or too large." = "Respons media tidak valid atau terlalu besar.";
-"Minimum size follows the physical notch. Height adapts to content and line count." = "Ukuran minimum mengikuti notch fisik. Tinggi menyesuaikan isi dan jumlah baris.";
 "Move Ririku to the Applications folder and open it again before connecting a browser." = "Pindahkan Ririku ke folder Applications lalu buka kembali sebelum menghubungkan browser.";
 "Move Ririku to the Applications folder and open it again before opening it at login." = "Pindahkan Ririku ke folder Applications lalu buka kembali sebelum mengaturnya terbuka saat login.";
 "Music paused or stopped" = "Musik dijeda atau berhenti";
@@ -127,7 +127,7 @@
 "Registered for %@. Not registered: %@." = "Terdaftar untuk %@. Belum terdaftar: %@.";
 "Registered for another copy of Ririku. Register again." = "Terdaftar untuk salinan Ririku lain. Daftarkan ulang.";
 "Reset" = "Reset";
-"Reset size" = "Reset ukuran";
+"Reset to the notch size" = "Kembalikan ke ukuran notch";
 "Ririku follows YouTube and YouTube Music through a companion extension in a Chromium browser: Chrome, Brave, Edge, Vivaldi, Opera, Chromium, or Arc. Complete these steps once." = "Ririku mengikuti YouTube dan YouTube Music melalui extension pendamping di browser berbasis Chromium: Chrome, Brave, Edge, Vivaldi, Opera, Chromium, atau Arc. Selesaikan langkah berikut sekali saja.";
 "Ririku opens in the background after you log in." = "Ririku terbuka di latar belakang setelah login.";
 "Ririku stays closed until you open it yourself." = "Ririku tidak terbuka sampai dibuka sendiri.";
@@ -150,6 +150,7 @@
 "Text lyrics without timing; there is no active line." = "Lirik teks tanpa timing; tidak memiliki baris aktif.";
 "Text lyrics · not synced" = "Lirik teks · belum tersinkron";
 "Text only" = "Teks saja";
+"The compact island starts at the size of the physical notch (%1$@ × %2$@ pt here), so nothing shows beside the camera housing. Widen or heighten it to bring the artwork and the spectrum out from behind the notch; they stay on the left and right edges. Lyrics add their own height below." = "Island compact dimulai seukuran notch fisik (di Mac ini %1$@ × %2$@ pt), jadi tidak ada bagian yang muncul di samping housing kamera. Perlebar atau pertinggi untuk memunculkan artwork dan spectrum dari balik notch; keduanya tetap menempel di sisi kiri dan kanan. Lirik menambah tingginya sendiri di bawah.";
 "The local bridge could not be started." = "Bridge lokal tidak dapat dimulai.";
 "The song changed while choosing lyrics. Please try again." = "Lagu berubah saat memilih lirik. Silakan ulangi.";
 "Timestamped" = "Bertimestamp";

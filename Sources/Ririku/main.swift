@@ -101,8 +101,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard panel != nil, let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main else { return }
         let top = max(32, screen.safeAreaInsets.top)
         let notch: CGFloat
-        if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea {
-            notch = max(180, right.minX - left.maxX)
+        if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea, right.minX > left.maxX {
+            notch = right.minX - left.maxX
         } else { notch = 180 }
         if model.notchWidth != notch { model.notchWidth = notch }
         if model.topHeight != top { model.topHeight = top }
