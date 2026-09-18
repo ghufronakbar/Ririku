@@ -57,7 +57,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; main-screen fallback not fully tested |
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
 | Universal (Intel) builds | Open |
-| GitHub repository settings (issues, labels, private vulnerability reporting) and whether a separate code of conduct with a contact address is needed | Open; basic conduct expectations are in CONTRIBUTING.md |
+| GitHub repository settings: private vulnerability reporting (referenced by SECURITY.md) and the `translation` label used by the issue template | Open; changed by the maintainer in the repository settings |
 | Test coverage for SwiftUI views, the browser extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and the browser setup helpers |
 | Whether Brave, Edge, Vivaldi, Opera, Chromium, and Arc really accept the shared extension ID and native host | Needs validation on a real install; Arc's `NativeMessagingHosts` folder is unconfirmed |
 | Two browsers connected at the same time | Open; the bridge accepts one host connection, which would need per-connection command routing and `sourceId` prefixes |
@@ -72,3 +72,7 @@ Use Spotify's local scripting interface for the requested desktop integration, w
 Connect the Music app through its local scripting interface, sharing one AppleScript adapter with Spotify: opt-in, macOS Automation permission, no MusicKit developer token or account. Tracks are identified by their persistent ID and commands recheck it. Artwork is read from the track's embedded data instead of an image server, so no new network host is added. Radio stations and streams without a duration are not treated as songs.
 
 Lyrics stay on LRCLIB. Synced lyrics in Spotify and Apple Music are only reachable through private endpoints that need the user's account token, so they are not used. As a local fallback, the Music app's plain `lyrics` track property is shown when LRCLIB has nothing (2026-09-18).
+
+### Code of conduct — 2026-09-18
+
+No separate code of conduct. The basic conduct expectations in CONTRIBUTING.md are enough for a small spare-time project, and a standalone document such as the Contributor Covenant would need a dedicated contact address for reports.
