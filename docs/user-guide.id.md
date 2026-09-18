@@ -71,6 +71,8 @@ Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension ya
 
 ## Memakai panel
 
+Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga bisa berbeda dari sampul album di YouTube Music. Ini mencegah gambar lagu sebelumnya dari player bar tetap ditampilkan.
+
 - **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar.
 - **Kontrol:** judul, artis, dan sumber; tombol gear membuka **Setup**; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.

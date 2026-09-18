@@ -70,6 +70,8 @@ Keep **Developer mode** on; browsers need it for extensions that are not from th
 
 ## Using the panel
 
+Artwork uses the current video's YouTube thumbnail, which may differ from the album cover shown in YouTube Music. This avoids retaining an earlier song's player-bar image.
+
 - **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon.
 - **Controls:** title, artist, and source; the gear button opens **Setup**; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.

@@ -43,6 +43,7 @@ function fixture(music = true, relativeAPI = false) {
       if (selector === '#movie_player') return player;
       if (selector === 'ytmusic-player') return { playerApi: player };
       if (selector === 'ytmusic-player-bar') return bar;
+      if (selector === 'ytmusic-player-bar img') return { currentSrc: 'https://lh3.googleusercontent.com/previous-album', src: 'https://lh3.googleusercontent.com/previous-album' };
       if (selector === '#movie_player video' || selector === 'video') return video;
       if (selector === 'ytd-watch-metadata h1') return { textContent: current.title };
       if (selector === 'ytd-watch-metadata #channel-name a') return { textContent: current.artist };
@@ -108,6 +109,18 @@ test('Missing Music UI clock fails closed rather than publishing accumulated dur
   page.current.ready = false;
   page.tick();
   assert.equal(page.packets.at(-1).kind, 'remove');
+});
+
+test('Artwork follows the playing video even when the player bar retains the previous album', () => {
+  const page = fixture();
+  assert.equal(page.latest().artworkURL, 'https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg');
+  Object.assign(page.current, { id: 'bbbbbbbbbbb', title: 'Sparkle', artist: 'RADWIMPS', position: 0, duration: 538 });
+  page.tick();
+  page.tick();
+  assert.equal(page.latest().trackId, 'bbbbbbbbbbb');
+  assert.equal(page.latest().artworkURL, 'https://i.ytimg.com/vi/bbbbbbbbbbb/hqdefault.jpg');
+  page.tick(500);
+  assert.equal(page.latest().artworkURL, 'https://i.ytimg.com/vi/bbbbbbbbbbb/hqdefault.jpg');
 });
 
 test('Autoplay screenshot regression: color stays at 0:23 / 3:13 and 0:56 / 3:13', () => {

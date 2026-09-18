@@ -86,17 +86,7 @@
     return new URL(location.href).searchParams.get("v") || "";
   };
   const advertisement = () => Boolean(document.querySelector("#movie_player.ad-showing, #movie_player.ad-interrupting"));
-  const artwork = identifier => {
-    if (music) {
-      const image = document.querySelector("ytmusic-player-bar img");
-      const candidate = image?.currentSrc || image?.src;
-      try {
-        const url = new URL(candidate);
-        if (url.protocol === "https:" && ["lh3.googleusercontent.com", "lh4.googleusercontent.com", "lh3.ggpht.com", "i.ytimg.com"].includes(url.hostname)) return url.href;
-      } catch {}
-    }
-    return "https://i.ytimg.com/vi/" + encodeURIComponent(identifier) + "/hqdefault.jpg";
-  };
+  const artwork = identifier => "https://i.ytimg.com/vi/" + encodeURIComponent(identifier) + "/hqdefault.jpg";
   const button = action => {
     const selector = music
       ? action === "previous" ? "ytmusic-player-bar .previous-button" : "ytmusic-player-bar .next-button"

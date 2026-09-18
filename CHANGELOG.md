@@ -5,6 +5,7 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 ## [0.3.1] - Unreleased
 
 ### Fixed
+- YouTube Music artwork is keyed to the playing video rather than an unverified player-bar image that can retain the previous album.
 - YouTube Music uses the visible song clock instead of an accumulated media timeline. Seeking maps song-relative positions through the player API and rejects stale track commands.
 - Track metadata changes reset the Setup lyric search, including metadata corrections under the same video ID.
 - LRCLIB retries temporary 502/503/504 responses with bounded backoff, respects Retry-After, and does not cache an outage as missing lyrics.
