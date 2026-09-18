@@ -32,7 +32,7 @@ Do not change the bundle identifier, native host name, extension `key`, or socke
 
    The release workflow checks that the tag matches the version in `scripts/build-app.sh`, runs the checks, builds and ad-hoc signs the bundle, packages `Ririku-<version>.zip` with `ditto -c -k --keepParent`, writes `SHA256SUMS.txt`, generates notes with `scripts/release-notes.py` (the changelog section plus install instructions), and creates a **draft** release with both files attached.
 
-4. Download the zip from the draft and test it as a user would: unzip in another folder, move the app to Applications, open it (confirm the Gatekeeper steps in the user guide still match), and complete **Setup → Chrome connection**, ideally with a fresh Chrome profile.
+4. Download the zip from the draft and test it as a user would: unzip in another folder, move the app to Applications, open it (confirm the Gatekeeper steps in the user guide still match), and complete **Setup → Browser connection**, ideally with a fresh Chrome profile.
 5. Edit the notes if needed, then publish the release.
 
 To rebuild an existing tag, run the **Release** workflow manually with the tag name. Packaging locally works too:

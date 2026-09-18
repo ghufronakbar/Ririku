@@ -8,7 +8,7 @@
 
 Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open source yang menampilkan lagu dari YouTube atau YouTube Music di browser Chromium tepat di bawah notch, lengkap dengan putar/jeda, lompat lagu, seek, dan lirik tersinkron per baris. Ririku adalah aplikasi native SwiftUI/AppKit dengan extension browser pendamping yang kecil, tanpa akun, dan tanpa telemetry.
 
-> **Status:** prototipe awal (v0.3.1). Rilis pertama belum diterbitkan, jadi untuk saat ini Ririku perlu [di-build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
+> **Status:** prototipe awal (v0.3.1). Unduh dari [Releases](https://github.com/ghufronakbar/Ririku/releases) atau [build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
 
 ## Fitur
 
@@ -30,7 +30,7 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 
 Ririku gratis dan tidak di-notarize Apple (notarisasi memerlukan akun developer berbayar), sehingga macOS meminta konfirmasi saat pertama dibuka. [Panduan pengguna](docs/user-guide.id.md#instalasi) menjelaskan setiap langkah secara rinci.
 
-1. **Unduh app.** Unduh `Ririku.zip` dari [Releases](https://github.com/ghufronakbar/Ririku/releases) setelah tersedia, ekstrak, lalu pindahkan **Ririku.app** ke folder **Applications**. Sebelum rilis pertama, [build dari source](docs/development/README.md).
+1. **Unduh app.** Unduh `Ririku-<versi>.zip` dari [Releases](https://github.com/ghufronakbar/Ririku/releases), ekstrak, lalu pindahkan **Ririku.app** ke folder **Applications**.
 2. **Izinkan dibuka.** Buka Ririku. Jika macOS memblokirnya, buka **System Settings → Privacy & Security**, gulir ke bawah, lalu klik **Open Anyway**.
 3. **Hubungkan browser.** Ririku membuka **Setup**. Di **Koneksi browser**, ikuti empat langkah: **Daftarkan**, **Tampilkan di Finder**, muat folder tersebut dari halaman extension browser dengan **Developer mode** dan **Load unpacked**, lalu refresh tab YouTube.
 

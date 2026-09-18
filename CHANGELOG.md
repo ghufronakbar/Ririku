@@ -2,7 +2,9 @@
 
 All notable changes to Ririku are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org). Versions before 0.3.0 were private prototypes named Notch Box and were never published.
 
-## [0.3.1] - Unreleased
+## [0.3.1] - 2026-09-18
+
+First public release. It also contains the unpublished [0.3.0 changes](https://github.com/ghufronakbar/Ririku/blob/main/CHANGELOG.md#030---not-published), including the rename from Notch Box to Ririku. Apple silicon only; signed ad hoc and not notarized.
 
 ### Fixed
 - The expanded panel closes once the pointer leaves it, even after clicking a control such as pause. Closing now follows the pointer position instead of a hover exit that SwiftUI could miss, and a panel opened from the menu stays open until the pointer has visited it.
@@ -27,7 +29,9 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - While playback is paused, the compact island keeps the artwork and the spectrum but drops the lyrics, so it shrinks back to the notch; the expanded panel still shows them.
 - **Setup → Chrome connection** is now **Setup → Browser connection**, and interface text that named Chrome now names the browser. The extension is listed as **Ririku — Browser Bridge**; reload it once from `chrome://extensions` after updating.
 
-## [0.3.0] - Unreleased
+## [0.3.0] - Not published
+
+Included in 0.3.1.
 
 Verified on 2026-09-18: the Chrome connection completed from Setup without Terminal, the app reported the connected extension version, and GitHub Actions CI passed. The Gatekeeper flow for a downloaded release is still untested.
 

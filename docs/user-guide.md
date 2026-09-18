@@ -27,7 +27,7 @@ You need:
 
 ### 1. Get Ririku
 
-Download `Ririku.zip` from the [Releases page](https://github.com/ghufronakbar/Ririku/releases) and double-click it to unzip. No release has been published yet; until then, Ririku can only be [built from source](development/README.md).
+Download `Ririku-<version>.zip` from the [Releases page](https://github.com/ghufronakbar/Ririku/releases) and double-click it to unzip. You can also [build it from source](development/README.md).
 
 Move **Ririku.app** into your **Applications** folder **before opening it**. If you open it straight from Downloads, macOS runs it from a temporary location and Ririku cannot connect to your browser.
 

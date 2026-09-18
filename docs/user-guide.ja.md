@@ -29,7 +29,7 @@
 
 ### 1. Ririku をダウンロードする
 
-[Releases ページ](https://github.com/ghufronakbar/Ririku/releases)から `Ririku.zip` をダウンロードし、ダブルクリックして展開します。まだ最初のリリースは公開されていません。それまでは[ソースからビルド](development/README.md)する必要があります。
+[Releases ページ](https://github.com/ghufronakbar/Ririku/releases)から `Ririku-<バージョン>.zip` をダウンロードし、ダブルクリックして展開します。[ソースからビルド](development/README.md)することもできます。
 
 **開く前に** **Ririku.app** を「アプリケーション」フォルダに移動してください。「ダウンロード」から直接開くと、macOS が一時的な場所から実行するため、ブラウザと接続できません。
 

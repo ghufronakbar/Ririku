@@ -8,7 +8,7 @@
 
 Ririku(リリク、「lyric」から)は、Chromium 系ブラウザの YouTube や YouTube Music で再生中の曲をノッチのすぐ下に表示する、無料のオープンソース macOS アプリです。再生/一時停止、曲送り、シーク、1 行ずつ同期する歌詞に対応しています。SwiftUI/AppKit によるネイティブアプリと小さなブラウザ拡張機能で構成され、アカウントもテレメトリもありません。
 
-> **ステータス:** 初期プロトタイプ(v0.3.1)。まだリリースは公開されていないため、現時点では[ソースからビルド](docs/development/README.md)する必要があります。Spotify デスクトップと Apple Music（ミュージック App）はセットアップで有効にできます（実機検証は未完了）。
+> **ステータス:** 初期プロトタイプ(v0.3.1)。[Releases](https://github.com/ghufronakbar/Ririku/releases) からダウンロードするか、[ソースからビルド](docs/development/README.md)できます。Spotify デスクトップと Apple Music（ミュージック App）はセットアップで有効にできます（実機検証は未完了）。
 
 ## 機能
 
@@ -30,7 +30,7 @@ Ririku(リリク、「lyric」から)は、Chromium 系ブラウザの YouTube �
 
 Ririku は無料で、Apple の公証を受けていません(公証には有料のデベロッパーアカウントが必要です)。そのため初回起動時に macOS で確認が必要です。詳しい手順は[ユーザーガイド](docs/user-guide.ja.md#インストール)を参照してください。
 
-1. **アプリを入手する。** 公開後に [Releases](https://github.com/ghufronakbar/Ririku/releases) から `Ririku.zip` をダウンロードして展開し、**Ririku.app** を「アプリケーション」フォルダに移動します。最初のリリースまでは[ソースからビルド](docs/development/README.md)してください。
+1. **アプリを入手する。** [Releases](https://github.com/ghufronakbar/Ririku/releases) から `Ririku-<バージョン>.zip` をダウンロードして展開し、**Ririku.app** を「アプリケーション」フォルダに移動します。
 2. **起動を許可する。** Ririku を開きます。ブロックされた場合は **システム設定 → プライバシーとセキュリティ** を開いて下にスクロールし、**このまま開く** をクリックします。
 3. **ブラウザと接続する。** Ririku の **セットアップ** が開きます。**ブラウザとの接続** の 4 つの手順に従います: **登録**、**Finder に表示**、ブラウザの拡張機能ページで **デベロッパー モード** をオンにして **パッケージ化されていない拡張機能を読み込む** からそのフォルダを選択、最後に YouTube のタブを再読み込みします。
 

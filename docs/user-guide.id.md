@@ -29,7 +29,7 @@ Yang dibutuhkan:
 
 ### 1. Unduh Ririku
 
-Unduh `Ririku.zip` dari [halaman Releases](https://github.com/ghufronakbar/Ririku/releases), lalu klik dua kali untuk mengekstraknya. Rilis pertama belum diterbitkan; sampai saat itu, Ririku hanya bisa [di-build dari source](development/README.md).
+Unduh `Ririku-<versi>.zip` dari [halaman Releases](https://github.com/ghufronakbar/Ririku/releases), lalu klik dua kali untuk mengekstraknya. Anda juga bisa [build dari source](development/README.md).
 
 Pindahkan **Ririku.app** ke folder **Applications** **sebelum membukanya**. Jika dibuka langsung dari Downloads, macOS menjalankannya dari lokasi sementara dan Ririku tidak dapat terhubung ke browser.
 

@@ -6,7 +6,7 @@ English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
 Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in a Chromium browser right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion browser extension, no account, and no telemetry.
 
-> **Status:** early prototype (v0.3.1). No release has been published yet, so for now Ririku must be [built from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
+> **Status:** early prototype (v0.3.1). Download it from [Releases](https://github.com/ghufronakbar/Ririku/releases) or [build it from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
 
 ## Features
 
@@ -28,7 +28,7 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 
 Ririku is free and is not notarized by Apple (notarization requires a paid developer account), so macOS asks you to confirm the first launch. The [user guide](docs/user-guide.md#install) covers every step in detail.
 
-1. **Get the app.** Download `Ririku.zip` from [Releases](https://github.com/ghufronakbar/Ririku/releases) once available, unzip it, and move **Ririku.app** to your **Applications** folder. Until the first release, [build it from source](docs/development/README.md).
+1. **Get the app.** Download `Ririku-<version>.zip` from [Releases](https://github.com/ghufronakbar/Ririku/releases), unzip it, and move **Ririku.app** to your **Applications** folder.
 2. **Allow it to open.** Open Ririku. If macOS blocks it, go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
 3. **Connect your browser.** Ririku opens **Setup**. In **Browser connection**, follow the four steps: **Register**, **Show in Finder**, load that folder from your browser's extensions page with **Developer mode** and **Load unpacked**, then refresh your YouTube tab.
 
