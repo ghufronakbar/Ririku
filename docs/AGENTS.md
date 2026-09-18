@@ -1,10 +1,18 @@
 # Agent guide
 
-This guide applies to the whole repository through the `AGENTS.md` symlink at the root. Edit the source in `docs/AGENTS.md` and keep the symlink relative.
+This guide applies to the whole repository through the `AGENTS.md` symlink at the root (`CLAUDE.md` includes it). Edit the source in `docs/AGENTS.md` and keep the symlink relative.
+
+## Rules come first
+
+`docs/rules.md` is binding. Read it before every change and follow it over any habit or default of your own:
+
+- If a request conflicts with a rule, do not work around it. Stop, name the rule ID, and ask the project owner.
+- Only the project owner can change a rule. When they do, update `docs/rules.md`, add a dated entry with the reason to `docs/decisions.md`, and update the affected documents in the same change.
+- Cite the rule IDs a change touches in the commit body or pull request when it is not obvious.
 
 ## Required context
 
-Before changing the project, read `README.md` and the documents relevant to the change (paths relative to the repository root):
+Read `README.md`, `docs/rules.md`, and the documents relevant to the change (paths relative to the repository root):
 
 - `docs/user-guide.md`: user-facing behavior, settings, installation, and privacy.
 - `docs/development/README.md`: layout, build, browser setup for development, and verification.
@@ -12,24 +20,19 @@ Before changing the project, read `README.md` and the documents relevant to the 
 - `docs/development/localization.md`: interface text and translations.
 - `docs/development/releasing.md`: versioning and releases.
 - `docs/decisions.md`: agreed decisions, technical choices, and open questions.
-- `CONTRIBUTING.md`: scope, pull request, and commit conventions.
+- `CONTRIBUTING.md`: pull request and commit conventions.
 
-`docs/archive/id/` holds the original Indonesian planning documents. Use them only for history; do not update them.
+The planning history before v0.3.0 is in Git history, not in the working tree. Do not restore or cite it as a current requirement; its rules that still apply are in `docs/rules.md`.
 
-## Working rules
+## Working method
 
-- Distinguish agreed decisions, technical choices, proposals, and things that still need validation. Do not treat a design, mockup, or proposal as implemented, or an implementation as an agreed decision.
-- Keep the app native (Swift, SwiftUI, AppKit); do not replace the main UI with Electron or a WebView.
-- Prioritize YouTube and YouTube Music in Chromium browsers (Chrome first) before Apple Music and Spotify desktop adapters.
-- Keep the notch panel focused on music and lyrics. Source selection and visual settings belong in the separate Setup window.
-- Avoid out-of-scope features, new dependencies, paid distribution requirements, and unnecessary permissions or data access (see `CONTRIBUTING.md`).
-- Do not change the bundle identifier, native host name, extension `key`, or socket and cache paths without an explicit decision and migration notes.
-- Write interface text in English in code and keep `Localization/id.lproj` and `Localization/ja.lproj` complete (`scripts/check-localization.py`).
-- Documentation and commit messages are written in English; commit subjects use `type (area): short description`. When user-facing behavior changes, update `docs/user-guide.md`, and update `docs/user-guide.id.md`, `docs/user-guide.ja.md`, and the translated READMEs, or state clearly that they still need updating. Record changes in `CHANGELOG.md` instead of adding per-version notes to other documents.
-- When a decision changes, update the affected documents and add a dated entry with the reason to `docs/decisions.md`.
+- Ask before hard-to-reverse or outward-facing actions: pushing, tagging, publishing a release, or changing repository settings.
+- Match the surrounding code: naming, comment density, and structure. Keep changes focused on the request.
+- For interface text, write English in code and update `Localization/id.lproj` and `Localization/ja.lproj` (R-DOC-1).
+- Record changes in `CHANGELOG.md` under the unreleased version (R-DOC-4), and update the user guide and its translations when behavior changes (R-DOC-3).
 
 ## Validation
 
-- Run the verification commands in `docs/development/README.md` that apply to the change, including `swift test`, and the manual smoke test when behavior with the browser changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
-- Do not claim that a build, test, integration, or performance result succeeded without evidence. Report what was run and its limits. `swift test` covers core logic, the app model, localization, and the browser setup and launch-at-login helpers with fixtures only; UI rendering, real browser behavior, registering a login item, and audio timing still need manual checks.
+- Run the verification commands in `docs/development/README.md` that apply to the change, including `swift test`, and the manual smoke test when behavior with a browser or desktop player changes. `scripts/check-localization.py`, `scripts/check-version.py`, and `scripts/check-docs.py` also run in CI.
+- Report what was run and its limits, following R-HONEST: never claim a build, test, integration, or performance result without evidence, and name the manual checks that were not done.
 - For documentation changes, check consistency between documents, that claims match the code, and that relative links work.

@@ -1,6 +1,6 @@
 # Decision log
 
-This log records product decisions and notable technical choices. It replaces the Indonesian [05-decisions.md](archive/id/05-decisions.md), which keeps the full history up to v0.3.0.
+This log records product decisions and notable technical choices. The rules that follow from them are in [rules.md](rules.md). The Indonesian planning history up to v0.3.0 was removed from the working tree on 2026-09-19 and remains in Git history.
 
 - **Decisions** (D-numbers) were agreed by the project owner.
 - **Technical choices** were made while implementing and can be revisited in an issue or pull request.
@@ -29,7 +29,7 @@ When a decision changes, add a dated entry here, update the affected documents, 
 | D-015 | Ririku can open itself at login, as an option that is off by default. | 2026-09-18. Owner request after the open-source preparation. Implemented with `SMAppService`; macOS keeps the state and can ask the user for approval. |
 | D-016 | Support the other Chromium browsers (Brave, Edge, Vivaldi, Opera, Chromium, Arc) with the same extension, one connected browser at a time. | 2026-09-18. Owner request. Only the host manifest folder and the extensions address differ per browser, so the cost is small; simultaneous browsers would need per-connection routing in the bridge and was deliberately left out. |
 
-Earlier approved requirements recorded in the archive include: selectable lyrics source with per-song offset and duration-based version picking (v0.2.2); lyric visibility, 1/2/3 lines, adjustable width, and smoother transitions (v0.2.3); top-anchored resizing, no auto-expand on track change, short "not found" notice, decorative spectrum, and Japanese line preference (v0.2.4).
+Earlier approved requirements from the planning phase: selectable lyrics source with per-song offset and duration-based version picking (v0.2.2); lyric visibility, 1/2/3 lines, adjustable width, and smoother transitions (v0.2.3); top-anchored resizing, no auto-expand on track change, short "not found" notice, decorative spectrum, and Japanese line preference (v0.2.4). Their lasting constraints are in [rules.md](rules.md).
 
 ## Technical choices
 
@@ -44,7 +44,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Localization | `.strings` with English keys, `.lproj` copied by the build script, live lookup through `.lproj` sub-bundles | String Catalogs need Xcode; SwiftPM `Bundle.module` breaks inside the signed app. |
 | Identifiers | `io.github.lanstheprodigy.ririku` and related names, version 0.3.0 | Changed from `local.notchbox.*` without migration. Kept unchanged when the repository moved to the `ghufronakbar` account (2026-09-18), so installations do not need to re-register Chrome again; only links were updated. |
 | Browser setup | Fixed extension ID through the manifest `key`, which every Chromium browser derives the same way; Setup registers the host for each installed browser (found by bundle identifier) and `RirikuHost` names its browser from its parent process; the app registers the native host and copies the extension only when the user clicks Setup buttons; blocked under App Translocation. Confirmed working in Chrome on 2026-09-18: all four Setup steps completed and the app reported extension 0.3.0 | Setup copies the extensions address to the clipboard instead of opening it, because opening a browser's internal pages from an app is unvalidated. `install-host.py --browser` remains for development. |
-| Documentation | English README, user guide, and developer docs; Indonesian and Japanese README and user guide; original Indonesian planning docs archived; community files added | Translations name the English version they follow. |
+| Documentation | English README, user guide, developer docs, and binding project rules; Indonesian and Japanese README and user guide; community files added | Translations name the English version they follow. |
 | CI and releases | GitHub Actions on macOS runners: checks, `swift test`, and a bundle build on every push, plus tag-driven draft releases with a zip and checksum | Uses only first-party actions (`actions/checkout`, `actions/upload-artifact`) and `gh`. |
 | Launch at login | `SMAppService.mainApp` registers the app bundle itself; the state is read from macOS instead of being stored in the preferences; unavailable outside the `.app` and while translocated | No helper tool or launch agent. Registration by an ad-hoc signed build still needs validation on a downloaded release. |
 | Tests | Swift Testing suites in `Tests/RirikuCoreTests` and `Tests/RirikuTests`, fixtures only | Executable targets can be tested with SwiftPM, so the app model and the browser setup are covered without a UI. |
@@ -76,3 +76,7 @@ Lyrics stay on LRCLIB. Synced lyrics in Spotify and Apple Music are only reachab
 ### Code of conduct — 2026-09-18
 
 No separate code of conduct. The basic conduct expectations in CONTRIBUTING.md are enough for a small spare-time project, and a standalone document such as the Contributor Covenant would need a dedicated contact address for reports.
+
+### Project rules replace the planning archive — 2026-09-19
+
+The owner asked for documentation that other developers and AI agents can follow as rules. The rules that still applied in the Indonesian planning documents (`docs/archive/id/`) were collected with the agreed decisions into [rules.md](rules.md), with IDs that pull requests can cite, and the archive was removed. It mixed proposals that were later changed with agreed requirements, so an agent could mistake an outdated proposal for a rule. The history remains in Git. `AGENTS.md` now makes `rules.md` required reading and tells agents to stop and ask when a request conflicts with a rule.

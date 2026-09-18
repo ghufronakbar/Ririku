@@ -5,7 +5,11 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Added
+- `docs/rules.md`: binding project rules with citable IDs for contributors and AI agents, collected from the agreed decisions and the planning documents. `AGENTS.md` makes it required reading.
 - App icon and browser extension icon: an anime-style illustration generated with Gemini through Antigravity, clipped to the macOS icon grid by `scripts/make-icon.swift` during the build.
+
+### Removed
+- The Indonesian planning archive (`docs/archive/id`). Its rules that still apply are in `docs/rules.md`; the history remains in Git.
 
 ## [0.3.1] - 2026-09-18
 

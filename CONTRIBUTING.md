@@ -14,7 +14,7 @@ Security vulnerabilities must not be reported in public issues; follow [SECURITY
 
 ## Project scope
 
-Ririku focuses on music controls and synced lyrics in a native notch panel. Please keep these principles in mind:
+Ririku focuses on music controls and synced lyrics in a native notch panel. The binding rules are in [docs/rules.md](docs/rules.md); please read them before writing code. In short:
 
 - **Native macOS:** Swift, SwiftUI, and AppKit. The main UI must not move to Electron or a WebView.
 - **Focused panel:** the notch panel is for music and lyrics. Source selection and visual customization belong in the Setup window.
@@ -35,7 +35,7 @@ Follow the [developer documentation](docs/development/README.md) to build the ap
 3. For interface text, write English in code and update the translations (see [localization](docs/development/localization.md)).
 4. If behavior, installation, or settings change, update the user guide (and its translations when you can) and `CHANGELOG.md` under the unreleased version. If a product decision changes, add an entry to [docs/decisions.md](docs/decisions.md).
 5. Run the checks in the [developer documentation](docs/development/README.md#verification) that apply to your change. GitHub Actions runs them again on your pull request.
-6. In the pull request, describe what changed and why, what you tested (commands and manual steps), and what you could not test. Add screenshots for visible UI changes. Do not claim something works if you did not run it.
+6. In the pull request, describe what changed and why, which rules in [docs/rules.md](docs/rules.md) it touches, what you tested (commands and manual steps), and what you could not test. Add screenshots for visible UI changes. Do not claim something works if you did not run it.
 
 Write commit messages in English, in the style `type (area): short description`, for example `fix (lyrics): ignore results for a previous track` or `docs (guide): clarify Chrome setup`. Common types are `feat`, `fix`, `docs`, `test`, `refactor`, and `chore`; areas include `native`, `extension`, `lyrics`, `bridge`, `i18n`, `guide`, and `spec`.
 
