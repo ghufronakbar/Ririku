@@ -238,7 +238,26 @@ struct PreferenceTests {
         model.expanded = true
         #expect(model.panelSize(screenWidth: 1512).width == 442)
         #expect(model.panelSize(screenWidth: 400).width == 376, "never wider than the screen minus 24 pt")
-        #expect(model.panelSize(screenWidth: 1512).height > 34)
+        #expect(model.panelSize(screenWidth: 1512).height == 199, "the expanded panel is as tall as its rows")
+    }
+
+    @Test("The expanded panel adds height only for the rows it draws")
+    func measuresExpandedContent() {
+        let (model, _) = makeModel()
+        model.topHeight = 34
+        model.expanded = true
+        model.receive(snapshotData())
+        let bare = model.panelSize(screenWidth: 1512).height
+        #expect(bare == 199, "12 + 48 + 12 + 20 + 2 + 13 + 12 + 32 + 14 rows plus the 34 pt strip")
+        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        model.lyricLineCount = 3
+        #expect(model.islandLyricHeight == 74)
+        #expect(model.panelSize(screenWidth: 1512).height == bare + 86)
+        model.lyricLineCount = 1
+        #expect(model.panelSize(screenWidth: 1512).height == bare + 46, "fewer lyric lines shorten the panel")
+        model.showLyrics = false
+        model.commandError = UIText("Control failed. Try again from the player tab.")
+        #expect(model.panelSize(screenWidth: 1512).height == bare + 38, "an error gets its own row instead of borrowing slack")
     }
 
     @Test("Keeps artwork and spectrum while paused but hides the lyrics")

@@ -3,6 +3,23 @@ import SwiftUI
 import UniformTypeIdentifiers
 import RirikuCore
 
+/// Row sizes of the expanded panel. `PlayerView` lays out with the same values, so the window is
+/// exactly as tall as the rows it draws instead of a guessed constant.
+enum ExpandedLayout {
+    static let spacing: Double = 12
+    static let topPadding: Double = 12
+    static let bottomPadding: Double = 14
+    static let horizontalPadding: Double = 22
+    static let artworkSize: Double = 48
+    static let seekBarHeight: Double = 20
+    static let seekLabelSpacing: Double = 2
+    static let timeRowHeight: Double = 13
+    static let transportHeight: Double = 32
+    static let transportSpacing: Double = 24
+    /// Two lines of `caption2`, the limit on the command error.
+    static let errorHeight: Double = 26
+}
+
 struct PlaybackSession {
     var snapshot: PlaybackSnapshot
     var receivedAt: TimeInterval
@@ -233,11 +250,20 @@ final class AppModel: ObservableObject {
         return hasIslandLyrics ? lyricBlockHeight : lyricNotice != nil ? 34 : 0
     }
 
+    var expandedContentHeight: Double {
+        var height = ExpandedLayout.topPadding + ExpandedLayout.artworkSize
+            + ExpandedLayout.spacing + ExpandedLayout.seekBarHeight + ExpandedLayout.seekLabelSpacing + ExpandedLayout.timeRowHeight
+            + ExpandedLayout.spacing + ExpandedLayout.transportHeight
+            + ExpandedLayout.bottomPadding
+        if islandLyricHeight > 0 { height += islandLyricHeight + ExpandedLayout.spacing }
+        if commandError != nil { height += ExpandedLayout.errorHeight + ExpandedLayout.spacing }
+        return height
+    }
+
     func panelSize(screenWidth: Double) -> CGSize {
         let active = current != nil
         let width = expanded ? max(panelWidth, notchWidth + 120) : active ? compactWidth : notchWidth
-        let extraHeight = expanded ? 200 + (islandLyricHeight > 0 ? islandLyricHeight + 12 : 0) + (commandError == nil ? 0 : 30)
-            : active ? islandLyricHeight : 0
+        let extraHeight = expanded ? expandedContentHeight : active ? islandLyricHeight : 0
         return CGSize(width: min(max(0, screenWidth - 24), width), height: islandHeight + extraHeight)
     }
 

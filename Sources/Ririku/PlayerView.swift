@@ -24,7 +24,8 @@ struct PlayerView: View {
             .frame(height: model.islandHeight)
             .fixedSize(horizontal: false, vertical: true)
             if model.expanded {
-                expandedContent.padding(.horizontal, 22).padding(.top, 12).padding(.bottom, 20)
+                expandedContent.padding(.horizontal, ExpandedLayout.horizontalPadding)
+                    .padding(.top, ExpandedLayout.topPadding).padding(.bottom, ExpandedLayout.bottomPadding)
             } else if model.islandLyricHeight > 0 && model.current != nil {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                     islandLyrics.padding(.horizontal, 18).frame(height: model.islandLyricHeight)
@@ -44,9 +45,9 @@ struct PlayerView: View {
     }
 
     private var expandedContent: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: ExpandedLayout.spacing) {
             HStack(spacing: 12) {
-                artwork(size: 48)
+                artwork(size: ExpandedLayout.artworkSize)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(model.current?.snapshot.title ?? "Ririku").font(.headline).lineLimit(1)
                     Text(model.current?.snapshot.artist ?? model.t("Waiting for the browser player")).font(.caption).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
@@ -57,9 +58,9 @@ struct PlayerView: View {
                     .buttonStyle(.plain).help(model.t("Open Setup")).accessibilityLabel(model.t("Open Setup window"))
             }
             TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                VStack(spacing: 12) {
+                VStack(spacing: ExpandedLayout.spacing) {
                     if model.islandLyricHeight > 0 { islandLyrics.frame(height: model.islandLyricHeight) }
-                    VStack(spacing: 2) {
+                    VStack(spacing: ExpandedLayout.seekLabelSpacing) {
                         Slider(value: Binding(get: { scrubbing ? seekPosition : model.position() }, set: { seekPosition = $0 }),
                                in: 0...max(1, model.current?.snapshot.duration ?? 1), onEditingChanged: { editing in
                             scrubbing = editing
@@ -76,7 +77,7 @@ struct PlayerView: View {
                     }
                 }
             }
-            HStack(spacing: 28) {
+            HStack(spacing: ExpandedLayout.transportSpacing) {
                 transport("backward.end.fill", label: model.t("Previous track"), action: "previous", enabled: model.current?.snapshot.capabilities.previous == true)
                 transport(model.current?.snapshot.state == "playing" ? "pause.fill" : "play.fill", label: model.t("Play or pause"), action: "toggle", enabled: model.current?.snapshot.capabilities.playPause == true)
                 transport("forward.end.fill", label: model.t("Next track"), action: "next", enabled: model.current?.snapshot.capabilities.next == true)
@@ -112,7 +113,7 @@ struct PlayerView: View {
 
     private func transport(_ icon: String, label: String, action: String, enabled: Bool) -> some View {
         Button { model.command(action) } label: {
-            Image(systemName: icon).font(.system(size: 18)).frame(width: 40, height: 36)
+            Image(systemName: icon).font(.system(size: 18)).frame(width: 40, height: ExpandedLayout.transportHeight)
         }.buttonStyle(.plain).disabled(!model.canControl || !enabled).accessibilityLabel(label)
     }
 
