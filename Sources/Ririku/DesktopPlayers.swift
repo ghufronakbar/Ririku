@@ -16,6 +16,8 @@ struct DesktopPlayer: Sendable {
     let durationScale: Double
     let readScript: String
     let supportsArtworkData: Bool
+    /// Whether the app exposes lyrics stored with the track (plain text, never timed).
+    let supportsEmbeddedLyrics: Bool
     let idleStatus: UIText
     let connectedStatus: UIText
     let failedStatus: @Sendable (Int) -> UIText
@@ -45,6 +47,7 @@ struct DesktopPlayer: Sendable {
         end timeout
         """,
         supportsArtworkData: false,
+        supportsEmbeddedLyrics: false,
         idleStatus: UIText("Open Spotify and play a song."),
         connectedStatus: UIText("Spotify connected"),
         failedStatus: { UIText("Spotify unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect.", String($0)) })
@@ -77,6 +80,7 @@ struct DesktopPlayer: Sendable {
         end timeout
         """,
         supportsArtworkData: true,
+        supportsEmbeddedLyrics: true,
         idleStatus: UIText("Open Music and play a song."),
         connectedStatus: UIText("Apple Music connected"),
         failedStatus: { UIText("Apple Music unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect.", String($0)) })
@@ -116,6 +120,11 @@ struct DesktopPlayer: Sendable {
             if (count of artworks of current track) is 0 then return missing value
             return raw data of artwork 1 of current track
             """, otherwise: "missing value")
+    }
+
+    func lyricsScript(trackID: String) -> String? {
+        guard supportsEmbeddedLyrics, isSong(trackID) else { return nil }
+        return script(checking: trackID, then: "return lyrics of current track", otherwise: "\"\"")
     }
 
     /// Wraps an instruction so it only runs while the app is open and still on the expected track.
@@ -235,6 +244,16 @@ final class DesktopPlayerAdapter {
         let (result, _) = await run(source)
         guard let data = result?.data, !data.isEmpty, data.count <= 10_000_000 else { return nil }
         return ArtworkService.thumbnail(from: data)
+    }
+
+    /// Lyrics stored with the track in the app, trimmed; nil when there are none.
+    func embeddedLyrics(for trackID: String) async -> String? {
+        guard task != nil, let source = player.lyricsScript(trackID: trackID) else { return nil }
+        let (result, _) = await run(source)
+        let text = (result?.stringValue ?? "").replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, text.count <= 20_000 else { return nil }
+        return text
     }
 
     func send(_ data: Data) {

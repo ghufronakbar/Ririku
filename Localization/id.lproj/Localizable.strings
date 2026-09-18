@@ -16,6 +16,7 @@
 "Reconnect Apple Music" = "Sambungkan ulang Apple Music";
 "Open Music and play a song." = "Buka Music dan putar lagu.";
 "Apple Music connected" = "Apple Music terhubung";
+"Lyrics saved in %@" = "Lirik tersimpan di %@";
 "Apple Music unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Apple Music tidak tersedia (%@). Izinkan Ririku di System Settings → Privacy & Security → Automation, lalu sambungkan ulang.";
 "Spotify and Apple Music need macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only." = "Spotify dan Apple Music membutuhkan izin Automation macOS. Lirik menggunakan LRCLIB; pilih Auto atau LRCLIB, bukan hanya subtitle.";
 "Spotify unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Spotify tidak tersedia (%@). Izinkan Ririku di System Settings → Privacy & Security → Automation, lalu sambungkan ulang.";

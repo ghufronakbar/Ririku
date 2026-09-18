@@ -108,6 +108,10 @@ struct DesktopPlayerTests {
             .contains("set player position to 12.500") == true)
         #expect(DesktopPlayer.spotify.artworkScript(trackID: identifier) == nil)
         #expect(DesktopPlayer.appleMusic.artworkScript(trackID: "\"quit") == nil)
+        #expect(DesktopPlayer.spotify.lyricsScript(trackID: identifier) == nil)
+        #expect(DesktopPlayer.appleMusic.lyricsScript(trackID: "\"quit") == nil)
+        #expect(DesktopPlayer.appleMusic.lyricsScript(trackID: musicIdentifier)?
+            .contains("if persistent ID of current track is not \"\(musicIdentifier)\"") == true)
     }
 
     @Test func desktopSessionsSurviveBrowserDisconnectAndUseOwnLabel() throws {
@@ -131,7 +135,8 @@ struct DesktopPlayerTests {
     @Test func scriptsCompileWhenAppIsInstalled() throws {
         for (player, trackID) in [(DesktopPlayer.spotify, identifier), (.appleMusic, musicIdentifier)] {
             guard NSWorkspace.shared.urlForApplication(withBundleIdentifier: player.bundleIdentifier) != nil else { continue }
-            let scripts = [player.readScript] + [player.artworkScript(trackID: trackID)].compactMap { $0 }
+            let scripts = [player.readScript]
+                + [player.artworkScript(trackID: trackID), player.lyricsScript(trackID: trackID)].compactMap { $0 }
                 + ["toggle", "next", "previous", "seek"].compactMap { player.commandScript(trackID: trackID, action: $0, position: 30) }
             for source in scripts {
                 var error: NSDictionary?

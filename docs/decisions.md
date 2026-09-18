@@ -70,3 +70,5 @@ Use Spotify's local scripting interface for the requested desktop integration, w
 ### Apple Music desktop connection — 2026-09-18
 
 Connect the Music app through its local scripting interface, sharing one AppleScript adapter with Spotify: opt-in, macOS Automation permission, no MusicKit developer token or account. Tracks are identified by their persistent ID and commands recheck it. Artwork is read from the track's embedded data instead of an image server, so no new network host is added. Radio stations and streams without a duration are not treated as songs.
+
+Lyrics stay on LRCLIB. Synced lyrics in Spotify and Apple Music are only reachable through private endpoints that need the user's account token, so they are not used. As a local fallback, the Music app's plain `lyrics` track property is shown when LRCLIB has nothing (2026-09-18).

@@ -611,6 +611,7 @@ final class AppModel: ObservableObject {
                 self.lyrics[key] = nil
                 self.plainLyrics[key] = nil
                 guard let record else {
+                    if await self.applyEmbeddedLyrics(for: key, signature: signature) { return }
                     self.lyricMessages[key] = UIText("No matching lyrics found yet")
                     self.showMissingLyricsNotice(for: key)
                     return
@@ -623,6 +624,8 @@ final class AppModel: ObservableObject {
                 } else if let plain = record.plainLyrics, !plain.isEmpty {
                     self.plainLyrics[key] = plain
                     self.lyricMessages[key] = UIText("Text lyrics · not synced")
+                } else if await self.applyEmbeddedLyrics(for: key, signature: signature) {
+                    return
                 } else {
                     self.lyricMessages[key] = UIText("Lyrics not available yet")
                     self.showMissingLyricsNotice(for: key)
@@ -634,6 +637,17 @@ final class AppModel: ObservableObject {
                 self.lyricRetryAfter = Date(timeIntervalSinceNow: 30)
             }
         }
+    }
+
+    /// Plain lyrics stored with the track in a desktop app (the Music app), used only when LRCLIB has none.
+    private func applyEmbeddedLyrics(for key: String, signature: String) async -> Bool {
+        guard let current, let adapter = desktopAdapters[current.id],
+              let text = await adapter.embeddedLyrics(for: current.snapshot.trackId),
+              !Task.isCancelled, lyricRequestID == signature, trackKey == key else { return false }
+        plainLyrics[key] = text
+        lyricNames[key] = UIText("Lyrics saved in %@", adapter.player.label)
+        lyricMessages[key] = UIText("Text lyrics · not synced")
+        return true
     }
 
     private func showMissingLyricsNotice(for key: String) {
