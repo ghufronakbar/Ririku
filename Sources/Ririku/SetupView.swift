@@ -80,7 +80,12 @@ struct SetupView: View {
                     Text(model.t(model.spotifyStatus)).font(.caption).foregroundStyle(.secondary)
                     Button(model.t("Reconnect Spotify")) { model.reconnectSpotify() }
                 }
-                Text(model.t("Spotify needs macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only. Apple Music is not supported yet.")).font(.caption).foregroundStyle(.secondary)
+                Toggle(model.t("Connect Apple Music"), isOn: $model.appleMusicEnabled)
+                if model.appleMusicEnabled {
+                    Text(model.t(model.appleMusicStatus)).font(.caption).foregroundStyle(.secondary)
+                    Button(model.t("Reconnect Apple Music")) { model.reconnectAppleMusic() }
+                }
+                Text(model.t("Spotify and Apple Music need macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only.")).font(.caption).foregroundStyle(.secondary)
                 if let error = model.bridgeError { Text(model.t(error)).foregroundStyle(.red) }
             }
             Section(model.t("Appearance")) {

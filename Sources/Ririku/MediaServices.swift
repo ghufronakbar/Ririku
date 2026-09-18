@@ -197,7 +197,14 @@ final class ArtworkService {
         if let image = cache.object(forKey: address as NSString) { return image }
         guard let url = URL(string: address) else { return nil }
         let result = try await client.get(url, limit: 2_000_000)
-        guard result.status == 200, let source = CGImageSourceCreateWithData(result.data as CFData, nil),
+        guard result.status == 200, let image = Self.thumbnail(from: result.data) else { return nil }
+        cache.setObject(image, forKey: address as NSString)
+        return image
+    }
+
+    /// Decodes untrusted image data into a small thumbnail, rejecting oversized images.
+    nonisolated static func thumbnail(from data: Data) -> NSImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
               let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
               let width = properties[kCGImagePropertyPixelWidth] as? Int,
               let height = properties[kCGImagePropertyPixelHeight] as? Int,
@@ -206,8 +213,6 @@ final class ArtworkService {
                                       kCGImageSourceThumbnailMaxPixelSize: 256,
                                       kCGImageSourceCreateThumbnailWithTransform: true]
         guard let thumbnail = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
-        let image = NSImage(cgImage: thumbnail, size: .zero)
-        cache.setObject(image, forKey: address as NSString)
-        return image
+        return NSImage(cgImage: thumbnail, size: .zero)
     }
 }

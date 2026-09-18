@@ -12,8 +12,13 @@
 "Reconnect Spotify" = "Spotify に再接続";
 "Open Spotify and play a song." = "Spotify を開いて曲を再生してください。";
 "Spotify connected" = "Spotify に接続済み";
+"Connect Apple Music" = "Apple Music に接続";
+"Reconnect Apple Music" = "Apple Music に再接続";
+"Open Music and play a song." = "ミュージックを開いて曲を再生してください。";
+"Apple Music connected" = "Apple Music に接続済み";
+"Apple Music unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Apple Music を利用できません（%@）。システム設定 → プライバシーとセキュリティ → オートメーションで Ririku を許可し、再接続してください。";
+"Spotify and Apple Music need macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only." = "Spotify と Apple Music には macOS のオートメーション許可が必要です。歌詞には LRCLIB を使うため、字幕のみではなく Auto または LRCLIB を選んでください。";
 "Spotify unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Spotify を利用できません（%@）。システム設定 → プライバシーとセキュリティ → オートメーションで Ririku を許可し、再接続してください。";
-"Spotify needs macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only. Apple Music is not supported yet." = "Spotify には macOS のオートメーション許可が必要です。歌詞には LRCLIB を使うため、字幕のみではなく Auto または LRCLIB を選んでください。Apple Music はまだ未対応です。";
 "Applies to compact and expanded islands. The spectrum is decorative, not audio analysis, and settles when paused or stopped. The animation toggle and Reduce Motion also control it." = "コンパクト表示と展開表示の両方に適用されます。スペクトラムは装飾用で、音声解析ではありません。一時停止・停止中は平らになります。アニメーション設定と「視差効果を減らす」の設定にも従います。";
 "Automatic lyrics off" = "歌詞の自動検索はオフ";
 "Automatic mode follows the tab that starts playing and restores the connection. Turn it off to lock one tab manually." = "自動モードでは再生を始めたタブに追従し、接続も復元します。オフにすると 1 つのタブを手動で固定できます。";

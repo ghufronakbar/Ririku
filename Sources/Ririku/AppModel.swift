@@ -223,7 +223,7 @@ final class AppModel: ObservableObject {
 
     /// The demo label is translated; labels from the extension are service names and stay as they are.
     func sourceLabel(for snapshot: PlaybackSnapshot) -> String {
-        if snapshot.sessionId == "spotify" && snapshot.sourceId == "desktop" { return "Spotify" }
+        if snapshot.sourceId == "desktop", let adapter = desktopAdapters[snapshot.sessionId + ":desktop"] { return adapter.player.label }
         if snapshot.sessionId == "demo" && snapshot.sourceId == "demo" { return t("Local demo") }
         guard let browser = connectedBrowser else { return snapshot.sourceLabel }
         // The extension labels the website; the browser part is replaced with the one that connected.
@@ -245,16 +245,28 @@ final class AppModel: ObservableObject {
     @Published var spotifyEnabled = false {
         didSet { defaults.set(spotifyEnabled, forKey: "spotifyEnabled"); spotify.setEnabled(spotifyEnabled) }
     }
-    @Published var spotifyStatus = UIText("Open Spotify and play a song.")
-    private lazy var spotify: SpotifyAdapter = {
-        let adapter = SpotifyAdapter()
-        adapter.onPacket = { [weak self] data in self?.receive(data) }
-        adapter.onStatus = { [weak self] status in self?.spotifyStatus = status }
-        return adapter
-    }()
+    @Published var spotifyStatus = DesktopPlayer.spotify.idleStatus
+    @Published var appleMusicEnabled = false {
+        didSet { defaults.set(appleMusicEnabled, forKey: "appleMusicEnabled"); appleMusic.setEnabled(appleMusicEnabled) }
+    }
+    @Published var appleMusicStatus = DesktopPlayer.appleMusic.idleStatus
+    private lazy var spotify = makeDesktopAdapter(.spotify) { [weak self] in self?.spotifyStatus = $0 }
+    private lazy var appleMusic = makeDesktopAdapter(.appleMusic) { [weak self] in self?.appleMusicStatus = $0 }
+    private var desktopAdapters: [String: DesktopPlayerAdapter] { [spotify.player.id: spotify, appleMusic.player.id: appleMusic] }
 
-    func startSpotify() { spotifyEnabled = defaults.bool(forKey: "spotifyEnabled") }
+    private func makeDesktopAdapter(_ player: DesktopPlayer, status: @escaping (UIText) -> Void) -> DesktopPlayerAdapter {
+        let adapter = DesktopPlayerAdapter(player: player)
+        adapter.onPacket = { [weak self] data in self?.receive(data) }
+        adapter.onStatus = status
+        return adapter
+    }
+
+    func startDesktopPlayers() {
+        spotifyEnabled = defaults.bool(forKey: "spotifyEnabled")
+        appleMusicEnabled = defaults.bool(forKey: "appleMusicEnabled")
+    }
     func reconnectSpotify() { spotify.setEnabled(spotifyEnabled) }
+    func reconnectAppleMusic() { appleMusic.setEnabled(appleMusicEnabled) }
 
     /// How far the compact island may grow past the notch, on each axis.
     static let compactWidthRange: Double = 440
@@ -428,7 +440,7 @@ final class AppModel: ObservableObject {
     func disconnect() {
         connectedExtensionVersion = nil
         connectedBrowser = nil
-        sessions = sessions.filter { $0.key == "demo:demo" || $0.key == "spotify:desktop" }
+        sessions = sessions.filter { $0.key == "demo:demo" || desktopAdapters[$0.key] != nil }
         pendingCommand = nil
         refreshMedia()
         geometryChanged?()
@@ -560,11 +572,13 @@ final class AppModel: ObservableObject {
             artworkRequestID = imageID
             artworkRetryAfter = .distantFuture
             artwork = nil
-            if let address = imageAddress {
+            let desktop = imageAddress == nil ? desktopAdapters[current?.id ?? ""] : nil
+            if imageAddress != nil || desktop != nil {
                 artworkTask = Task { [weak self] in
                     guard let self else { return }
                     do {
-                        let image = try await self.artworkService.image(for: address)
+                        let image = if let address = imageAddress { try await self.artworkService.image(for: address) }
+                            else { await desktop?.artwork(for: snapshot.trackId) }
                         guard !Task.isCancelled, self.artworkRequestID == imageID, self.trackKey == key else { return }
                         self.artwork = image
                         if image == nil { self.artworkRetryAfter = Date(timeIntervalSinceNow: 30) }
@@ -658,7 +672,7 @@ final class AppModel: ObservableObject {
         guard let encoded = try? JSONSerialization.data(withJSONObject: packet) else { return }
         commandError = nil
         pendingCommand = identifier
-        if current.id == "spotify:desktop" { spotify.send(encoded) }
+        if let adapter = desktopAdapters[current.id] { adapter.send(encoded) }
         else { sendPacket?(encoded) }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self, self.pendingCommand == identifier else { return }

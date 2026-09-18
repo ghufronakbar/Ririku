@@ -21,7 +21,7 @@ You need:
 
 - A Mac with **macOS 14 Sonoma or later**. Ririku is developed on Apple silicon; Intel Macs are untested.
 - Ideally a MacBook with a **notch**. On other displays the panel appears at the top of the main screen, which is not fully tested.
-- A **Chromium browser** — Chrome, Brave, Edge, Vivaldi, Opera, Chromium, or Arc — playing music on **YouTube** or **YouTube Music**. Chrome is the one Ririku is tested with; the others use the same extension but are still unverified. Alternatively, use the Spotify desktop app with macOS Automation permission. Safari, Firefox, and Apple Music are not supported.
+- A **Chromium browser** — Chrome, Brave, Edge, Vivaldi, Opera, Chromium, or Arc — playing music on **YouTube** or **YouTube Music**. Chrome is the one Ririku is tested with; the others use the same extension but are still unverified. Alternatively, use the Spotify desktop app or the Music app (Apple Music) with macOS Automation permission. Safari and Firefox are not supported.
 
 ## Install
 
@@ -101,6 +101,8 @@ The four install steps above. Come back here after updating Ririku, installing a
 ### Music source
 
 **Spotify desktop:** open Spotify and play a song, then enable **Connect Spotify desktop** here. Approve the macOS Automation prompt. No extension or API key is required. Automatic source selection follows whichever player starts playing; disable it to select Spotify manually. Use Auto or LRCLIB lyrics, not subtitles-only. For denied permission, allow Ririku under **System Settings → Privacy & Security → Automation**, then click **Reconnect Spotify**. Turning the toggle off stops polling; the preference survives app restarts. Artwork comes from Spotify’s `i.scdn.co` servers, and song metadata is sent to LRCLIB when automatic lyrics are enabled. Desktop playback and permission approval still need real-device validation.
+
+**Apple Music:** open the Music app and play a song, then enable **Connect Apple Music** here and approve the macOS Automation prompt. It works for songs in your library and Apple Music streaming; radio stations and live streams without a duration are not shown. Artwork is read locally from the Music app, so no image server is contacted. Source selection, lyrics, permission recovery (**Reconnect Apple Music**), and the saved preference work as for Spotify. Playback and permission approval still need real-device validation.
 
 - **Automatically follow the active player** (on by default): Ririku follows the browser tab that starts playing.
 - **Active player:** turn automatic mode off to lock one tab. Ririku reconnects to the same tab after a page refresh.
@@ -204,13 +206,13 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 
 - **No account, no analytics.** Ririku does not collect usage data.
 - **LRCLIB:** when automatic search is on, the song title, artist, and duration are sent to `lrclib.net`. **Search** sends the text you type. **YouTube subtitles only** mode does not contact LRCLIB.
-- **Artwork:** thumbnails are downloaded from YouTube/Google image servers or Spotify’s `i.scdn.co`. Spotify Automation reads playback metadata locally and sends controls only when requested.
+- **Artwork:** thumbnails are downloaded from YouTube/Google image servers or Spotify’s `i.scdn.co`; Apple Music artwork is read locally from the Music app. Spotify and Music Automation read playback metadata locally and send controls only when requested.
 - **Browser extension:** runs only on `www.youtube.com` and `music.youtube.com` and uses only the `nativeMessaging` permission. It reads the player state, title, artist, artwork address, and visible captions on the page, and sends them only to the Ririku app on your Mac. It does not read cookies, passwords, or browsing history.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
 
 ## Known limitations
 
-- YouTube and YouTube Music in one Chromium browser at a time, plus opt-in Spotify desktop. Spotify podcasts, local files, and ads are not supported as songs. Apple Music, Safari, and Firefox are not supported yet.
+- YouTube and YouTube Music in one Chromium browser at a time, plus opt-in Spotify desktop and Apple Music. Spotify podcasts, local files, and ads, and Apple Music radio streams without a duration, are not supported as songs. Safari and Firefox are not supported yet.
 - Only Chrome is verified. Brave, Edge, Vivaldi, Opera, Chromium, and Arc use the same extension and host, but have not been tested yet; Arc's folder in particular still needs confirmation.
 - The extension is installed with **Load unpacked** and does not update itself.
 - Not notarized by Apple, so the first launch needs confirmation.

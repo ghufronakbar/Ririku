@@ -106,7 +106,7 @@ The tests use fixtures only: no network requests, no browser, and no access to a
 
 ### Manual smoke test
 
-For Spotify desktop, enable **Setup → Music source → Connect Spotify desktop** in the built app, approve Automation, and test play/pause, previous/next, seek, automatic/manual source switching with a browser, track/artwork/lyric changes, quit/reopen Spotify, and denied permission followed by reconnect. Confirm the duration matches Spotify; no scripted live playback is part of unit tests. Test scripts only compile against the installed dictionary when Spotify is present.
+For Spotify desktop, enable **Setup → Music source → Connect Spotify desktop** in the built app, approve Automation, and test play/pause, previous/next, seek, automatic/manual source switching with a browser, track/artwork/lyric changes, quit/reopen Spotify, and denied permission followed by reconnect. Confirm the duration matches Spotify; no scripted live playback is part of unit tests. Test scripts only compile against the installed dictionary when Spotify is present. Repeat the same checks for Apple Music with **Connect Apple Music**, using a library song and an Apple Music streaming song, and confirm artwork appears and that a radio station is not shown as a song.
 
 On both YouTube and YouTube Music:
 

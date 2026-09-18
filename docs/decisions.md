@@ -53,8 +53,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 
 | Question | Status |
 | --- | --- |
-| Apple Music desktop integration | Open |
-| Spotify desktop Automation approval, playback timing, and controls | Implemented with AppleScript; real playback validation pending |
+| Spotify desktop and Apple Music Automation approval, playback timing, and controls | Implemented with AppleScript; real playback validation pending |
 | Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; main-screen fallback not fully tested |
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
 | Universal (Intel) builds | Open |
@@ -67,3 +66,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 ### Spotify desktop connection — 2026-09-18
 
 Use Spotify's local scripting interface for the requested desktop integration, without a Web API account, OAuth flow, or browser extension. Connection is opt-in and requires macOS Automation permission. Reuse the existing source-selection and LRCLIB pipeline. Limit this first adapter to standard music track URIs; ads, local files, and podcasts are not supported as songs. This adds `i.scdn.co` solely for Spotify artwork and no audio capture.
+
+### Apple Music desktop connection — 2026-09-18
+
+Connect the Music app through its local scripting interface, sharing one AppleScript adapter with Spotify: opt-in, macOS Automation permission, no MusicKit developer token or account. Tracks are identified by their persistent ID and commands recheck it. Artwork is read from the track's embedded data instead of an image server, so no new network host is added. Radio stations and streams without a duration are not treated as songs.

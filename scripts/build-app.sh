@@ -31,7 +31,7 @@ metadata = {
     "LSMinimumSystemVersion": "14.0",
     "LSUIElement": True,
     "NSHighResolutionCapable": True,
-    "NSAppleEventsUsageDescription": "Ririku reads the current Spotify song and controls playback when you enable Spotify in Setup.",
+    "NSAppleEventsUsageDescription": "Ririku reads the current song and controls playback in Spotify or Music when you enable them in Setup.",
 }
 with (app / "Contents/Info.plist").open("wb") as output:
     plistlib.dump(metadata, output)

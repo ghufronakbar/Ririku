@@ -23,7 +23,7 @@ Yang dibutuhkan:
 
 - Mac dengan **macOS 14 Sonoma atau lebih baru**. Ririku dikembangkan di Apple silicon; Mac Intel belum diuji.
 - Idealnya MacBook dengan **notch**. Di layar lain panel muncul di bagian atas layar utama, dan ini belum diuji penuh.
-- **Browser Chromium** — Chrome, Brave, Edge, Vivaldi, Opera, Chromium, atau Arc — yang memutar musik di **YouTube** atau **YouTube Music**. Baru Chrome yang diuji; yang lain memakai extension yang sama tetapi belum terverifikasi. Alternatifnya, gunakan Spotify desktop dengan izin Automation macOS. Safari, Firefox, dan Apple Music belum didukung.
+- **Browser Chromium** — Chrome, Brave, Edge, Vivaldi, Opera, Chromium, atau Arc — yang memutar musik di **YouTube** atau **YouTube Music**. Baru Chrome yang diuji; yang lain memakai extension yang sama tetapi belum terverifikasi. Alternatifnya, gunakan Spotify desktop atau app Music (Apple Music) dengan izin Automation macOS. Safari dan Firefox belum didukung.
 
 ## Instalasi
 
@@ -102,6 +102,8 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 ### Sumber musik
 
 **Spotify desktop:** buka Spotify dan putar lagu, lalu aktifkan **Hubungkan Spotify desktop**. Setujui izin Automation macOS. Tidak perlu extension atau API key. Mode otomatis mengikuti pemutar yang mulai bermain; matikan untuk memilih Spotify secara manual. Pilih lirik Auto atau LRCLIB, bukan hanya subtitle. Jika izin ditolak, izinkan Ririku di **System Settings → Privacy & Security → Automation**, lalu klik **Sambungkan ulang Spotify**. Mematikan opsi ini menghentikan polling; pilihannya tersimpan saat restart. Artwork berasal dari `i.scdn.co`; metadata lagu dikirim ke LRCLIB jika lirik otomatis aktif. Playback dan izin masih perlu diuji langsung.
+
+**Apple Music:** buka app Music dan putar lagu, lalu aktifkan **Hubungkan Apple Music** dan setujui izin Automation macOS. Berlaku untuk lagu di library dan streaming Apple Music; stasiun radio dan siaran langsung tanpa durasi tidak ditampilkan. Artwork dibaca secara lokal dari app Music, sehingga tidak ada server gambar yang dihubungi. Pemilihan sumber, lirik, pemulihan izin (**Sambungkan ulang Apple Music**), dan pilihan yang tersimpan bekerja sama seperti Spotify. Playback dan izin masih perlu diuji langsung.
 
 - **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab browser yang mulai memutar.
 - **Pemutar aktif:** matikan mode otomatis untuk mengunci satu tab. Ririku tersambung kembali ke tab yang sama setelah halaman di-refresh.
@@ -205,13 +207,13 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 
 - **Tanpa akun dan tanpa analitik.** Ririku tidak mengumpulkan data penggunaan.
 - **LRCLIB:** saat pencarian otomatis aktif, judul, artis, dan durasi lagu dikirim ke `lrclib.net`. **Cari** mengirim teks yang Anda ketik. Mode **Subtitle YouTube saja** tidak menghubungi LRCLIB.
-- **Artwork:** thumbnail diunduh dari server gambar YouTube/Google atau `i.scdn.co` milik Spotify. Automation Spotify membaca metadata secara lokal dan mengirim kontrol saat diminta.
+- **Artwork:** thumbnail diunduh dari server gambar YouTube/Google atau `i.scdn.co` milik Spotify; artwork Apple Music dibaca secara lokal dari app Music. Automation Spotify dan Music membaca metadata secara lokal dan mengirim kontrol saat diminta.
 - **Extension browser:** hanya berjalan di `www.youtube.com` dan `music.youtube.com` dan hanya memakai izin `nativeMessaging`. Extension membaca status pemutar, judul, artis, alamat artwork, dan caption yang terlihat di halaman, lalu mengirimkannya hanya ke app Ririku di Mac Anda. Extension tidak membaca cookies, kata sandi, atau riwayat browsing.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
 
 ## Keterbatasan
 
-- YouTube dan YouTube Music di satu browser Chromium, serta Spotify desktop yang diaktifkan di Setup. Podcast, file lokal, dan iklan Spotify belum didukung sebagai lagu. Apple Music, Safari, dan Firefox belum didukung.
+- YouTube dan YouTube Music di satu browser Chromium, serta Spotify desktop dan Apple Music yang diaktifkan di Setup. Podcast, file lokal, dan iklan Spotify, serta siaran radio Apple Music tanpa durasi, belum didukung sebagai lagu. Safari dan Firefox belum didukung.
 - Baru Chrome yang terverifikasi. Brave, Edge, Vivaldi, Opera, Chromium, dan Arc memakai extension dan host yang sama, tetapi belum diuji; khususnya folder Arc masih perlu dipastikan.
 - Extension dipasang dengan **Load unpacked** dan tidak memperbarui dirinya sendiri.
 - Tidak di-notarize Apple, sehingga peluncuran pertama perlu konfirmasi.
