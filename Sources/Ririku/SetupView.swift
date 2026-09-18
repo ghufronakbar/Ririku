@@ -103,6 +103,7 @@ struct SetupView: View {
                     .font(.caption).foregroundStyle(.secondary)
                 Button(model.t("Reset to the notch size")) { model.resetIslandSize() }
                 Picker(model.t("Accent color"), selection: $model.accentName) {
+                    Text(model.t("Auto — from artwork")).tag("Auto")
                     Text(model.t("Peach")).tag("Peach")
                     Text(model.t("Lavender")).tag("Lavender")
                     Text(model.t("Neutral")).tag("Netral")

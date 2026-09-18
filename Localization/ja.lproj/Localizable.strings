@@ -112,6 +112,7 @@
 "Open the extensions page, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder." = "拡張機能のページを開き、「デベロッパー モード」をオンにして「パッケージ化されていない拡張機能を読み込む」をクリックし、「Chrome Extension」フォルダを選択してください。";
 "Open the Ririku app first." = "先に Ririku アプリを開いてください。";
 "Peach" = "ピーチ";
+"Auto — from artwork" = "自動 — アートワークから";
 "Play or pause" = "再生または一時停止";
 "Playback position" = "再生位置";
 "Player duration: %@ · results sorted by smallest duration difference." = "プレーヤーの再生時間: %@ · 再生時間の差が小さい順に表示します。";

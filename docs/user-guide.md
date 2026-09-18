@@ -108,7 +108,7 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
 - **Expanded island width** (360–720 pt, default 442), used when the panel is hovered or opened.
 - **Reset to the notch size** restores all three.
-- **Accent color:** Peach, Lavender, or Neutral.
+- **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
 - **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
 

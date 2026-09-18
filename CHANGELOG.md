@@ -11,6 +11,7 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - LRCLIB retries temporary 502/503/504 responses with bounded backoff, respects Retry-After, and does not cache an outage as missing lyrics.
 
 ### Added
+- **Auto — from artwork** accent color: a cached dominant-color tint with readable brightness, Neutral fallback, and a transition that respects animation and Reduce Motion settings. Existing manual color preferences are preserved.
 - Synced lyric rows slide upward on adjacent lines; seeks snap and Reduce Motion disables the animation.
 - Offline regression tests for browser clock/seek transitions and lyrics service recovery. Real Chrome playback and animation rendering still need manual verification.
 - **Setup → Startup:** **Open Ririku at login**, off by default. It registers the app bundle with `SMAppService`, so no helper tool or Terminal command is needed, and it stays unavailable while the app runs from a temporary location.

@@ -14,7 +14,7 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Synced lyrics:** found automatically from [LRCLIB](https://lrclib.net) by title, artist, and duration, and cached on your Mac. You can also use the video's captions, pick another lyrics version, adjust timing per song, or import your own `.lrc` file.
 - **Japanese-friendly lyrics:** when a lyrics file has Japanese and romaji on the same timestamp, Ririku can show only the Japanese line.
 - **Follows the active player:** switches to the browser tab that starts playing, or lock one tab manually.
-- **Customizable:** island width, number of lyric lines, accent color, animations, and Reduce Motion support.
+- **Customizable:** island width, number of lyric lines, manual or artwork-based accent color, animations, and Reduce Motion support.
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
 - **Opens at login (optional):** a single toggle in Setup, off by default.
 

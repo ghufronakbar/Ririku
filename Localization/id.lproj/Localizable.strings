@@ -112,6 +112,7 @@
 "Open the extensions page, turn on Developer mode, click Load unpacked, and choose the “Chrome Extension” folder." = "Buka halaman extension, aktifkan Developer mode, klik Load unpacked, lalu pilih folder “Chrome Extension”. Nama tombol mengikuti bahasa browser.";
 "Open the Ririku app first." = "Buka aplikasi Ririku terlebih dahulu.";
 "Peach" = "Peach";
+"Auto — from artwork" = "Otomatis — dari artwork";
 "Play or pause" = "Putar atau jeda";
 "Playback position" = "Posisi pemutaran";
 "Player duration: %@ · results sorted by smallest duration difference." = "Durasi pemutar: %@ · hasil diurutkan menurut selisih durasi terkecil.";

@@ -122,7 +122,15 @@ final class AppModel: ObservableObject {
     @Published var lyricNames: [String: UIText] = [:]
     @Published var lyricMessages: [String: UIText] = [:]
     @Published var plainLyrics: [String: String] = [:] { didSet { geometryChanged?() } }
-    @Published var artwork: NSImage?
+    @Published var artwork: NSImage? {
+        didSet {
+            let extracted = artworkAccent.color(for: artwork)
+            let color: Color = extracted == .white ? .white : Color(nsColor: extracted)
+            withAnimation(canAnimate ? .easeInOut(duration: 0.45) : nil) { automaticAccent = color }
+        }
+    }
+    @Published private(set) var automaticAccent: Color = .white
+    private let artworkAccent = ArtworkAccent()
     @Published var commandError: UIText? { didSet { geometryChanged?() } }
     @Published var bridgeError: UIText?
     @Published var connectedExtensionVersion: String?
@@ -224,6 +232,7 @@ final class AppModel: ObservableObject {
 
     var accent: Color {
         switch accentName {
+        case "Auto": return automaticAccent
         case "Lavender": return Color(red: 0.78, green: 0.75, blue: 1)
         case "Netral": return .white
         default: return Color(red: 0.96, green: 0.78, blue: 0.7)

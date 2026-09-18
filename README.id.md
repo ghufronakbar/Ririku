@@ -16,7 +16,7 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 - **Lirik tersinkron:** dicari otomatis dari [LRCLIB](https://lrclib.net) berdasarkan judul, artis, dan durasi, lalu disimpan di cache Mac Anda. Anda juga bisa memakai caption video, memilih versi lirik lain, mengatur timing per lagu, atau mengimpor berkas `.lrc` sendiri.
 - **Ramah lirik Jepang:** bila berkas lirik berisi baris Jepang dan romaji dengan timestamp sama, Ririku dapat menampilkan baris Jepangnya saja.
 - **Mengikuti pemutar aktif:** berpindah ke tab browser yang mulai memutar, atau kunci satu tab secara manual.
-- **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen, animasi, dan dukungan Reduce Motion.
+- **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen manual atau dari artwork, animasi, dan dukungan Reduce Motion.
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
 - **Buka saat login (opsional):** satu sakelar di Setup, nonaktif secara default.
 
