@@ -120,3 +120,25 @@ struct JapaneseDisplayTests {
         #expect(display.count == 2)
     }
 }
+
+@Suite("Lyric row fitting")
+struct LyricLayoutTests {
+    /// A stand-in font: every character is 7 pt wide.
+    private func measure(_ text: String) -> Double { Double(text.count) * 7 }
+
+    @Test("Reserves a second row only when a line is wider than one row")
+    func detectsOverflow() {
+        let short = ["Ah ah", "Oh oh"]
+        let long = ["Ah ah", "I have been searching for a long time now"]
+        #expect(!LyricLayout.needsTwoRows(short, width: 143, measure: measure))
+        #expect(LyricLayout.needsTwoRows(long, width: 143, measure: measure))
+        #expect(!LyricLayout.needsTwoRows(long, width: 583, measure: measure), "a wide island fits the same line")
+    }
+
+    @Test("Ignores empty lines and an unknown width")
+    func ignoresEmptyInput() {
+        #expect(!LyricLayout.needsTwoRows([], width: 143, measure: measure))
+        #expect(!LyricLayout.needsTwoRows([""], width: 1, measure: measure), "an empty line never overflows")
+        #expect(!LyricLayout.needsTwoRows(["Ah ah"], width: 0, measure: measure), "no width yet means no reservation")
+    }
+}

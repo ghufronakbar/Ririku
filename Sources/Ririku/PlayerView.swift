@@ -28,7 +28,7 @@ struct PlayerView: View {
                     .padding(.top, ExpandedLayout.topPadding).padding(.bottom, ExpandedLayout.bottomPadding)
             } else if model.islandLyricHeight > 0 && model.current != nil {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                    islandLyrics.padding(.horizontal, 18).frame(height: model.islandLyricHeight)
+                    islandLyrics.padding(.horizontal, LyricRowLayout.compactPadding).frame(height: model.islandLyricHeight)
                 }
             }
         }
@@ -102,7 +102,7 @@ struct PlayerView: View {
                     .help(model.t("Video captions active; previous and next lines are not available from the player."))
             } else if let index = model.lyricIndex(), !model.currentLines.isEmpty {
                 ScrollingLyricRows(lines: model.currentLines, activeIndex: index, lineCount: model.lyricLineCount,
-                                   animate: model.canAnimate, accent: model.accent)
+                                   animate: model.canAnimate, accent: model.accent, twoRows: model.reservesTwoLyricRows)
                     .id(model.lyricSearchIdentity)
             } else if let plain = model.currentPlainLyrics {
                 ScrollView { Text(plain).lineLimit(nil).foregroundStyle(.white.opacity(0.85)).frame(maxWidth: .infinity) }

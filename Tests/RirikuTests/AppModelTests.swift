@@ -318,3 +318,32 @@ struct PreferenceTests {
         #expect(model.sourceLabel(for: real) == "YouTube · Chrome")
     }
 }
+
+@MainActor
+@Suite("Lyric rows in the island")
+struct LyricRowTests {
+    @Test("Reserves a second row for the active line only when a line does not fit")
+    func reservesSecondRow() {
+        let (model, _) = makeModel()
+        model.receive(snapshotData(position: 10))
+        model.lyricLineCount = 3
+        model.lyrics["YouTube:abc"] = LRCParser.parse(
+            "[00:00]Ah ah\n[00:10]I have been searching for a long time and I am looking back now\n")
+        #expect(model.lyricTextWidth == 144, "the notch-sized island minus the lyric padding")
+        #expect(model.reservesTwoLyricRows)
+        #expect(model.lyricBlockHeight == 94)
+        model.compactExtraWidth = 440
+        #expect(!model.reservesTwoLyricRows, "a wide island fits the line in one row")
+        #expect(model.lyricBlockHeight == 74)
+    }
+
+    @Test("Leaves captions and songs without lyrics on one row")
+    func skipsOtherSources() {
+        let (model, _) = makeModel()
+        model.receive(snapshotData(position: 10, extra: ["captionEnabled": true, "captionText": "a caption line"]))
+        #expect(model.usesVideoCaption)
+        #expect(!model.reservesTwoLyricRows, "captions wrap on their own")
+        model.showLyrics = false
+        #expect(!model.reservesTwoLyricRows)
+    }
+}

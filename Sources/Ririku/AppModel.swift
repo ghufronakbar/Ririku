@@ -20,6 +20,15 @@ enum ExpandedLayout {
     static let errorHeight: Double = 26
 }
 
+/// Lyric row sizes, shared by `AppModel` and the views that draw them.
+enum LyricRowLayout {
+    /// One row of 13 pt text plus the gap below it.
+    static let step: Double = 20
+    static let textHeight: Double = 16
+    /// Side padding of the lyric block inside the compact island.
+    static let compactPadding: Double = 18
+}
+
 struct PlaybackSession {
     var snapshot: PlaybackSnapshot
     var receivedAt: TimeInterval
@@ -72,6 +81,8 @@ final class AppModel: ObservableObject {
     @Published var animations: Bool { didSet { save(); geometryChanged?() } }
     @Published var preferJapaneseLyrics: Bool { didSet { displayLineCache.removeAll(); save() } }
     private var displayLineCache: [String: [LyricLine]] = [:]
+    /// Measured once per song and island width, because measuring every line on each render is wasteful.
+    private var twoRowCache: [String: Bool] = [:]
     @Published private var lyricNoticeText: UIText?
     private var lyricNoticeKey: String?
     private var lyricNoticeTask: Task<Void, Never>?
@@ -107,7 +118,7 @@ final class AppModel: ObservableObject {
         }
     }
     @Published var demo = false { didSet { configureDemo() } }
-    @Published var lyrics: [String: [LyricLine]] = [:] { didSet { displayLineCache.removeAll(); geometryChanged?() } }
+    @Published var lyrics: [String: [LyricLine]] = [:] { didSet { displayLineCache.removeAll(); twoRowCache.removeAll(); geometryChanged?() } }
     @Published var lyricNames: [String: UIText] = [:]
     @Published var lyricMessages: [String: UIText] = [:]
     @Published var plainLyrics: [String: String] = [:] { didSet { geometryChanged?() } }
@@ -237,7 +248,29 @@ final class AppModel: ObservableObject {
     }
     var isPlayingNow: Bool { current?.snapshot.state == "playing" && current?.snapshot.isAdvertisement == false }
     var popupDuration: Double { 0.32 }
-    var lyricBlockHeight: Double { Double(min(3, max(1, lyricLineCount)) * 20 + 14) }
+    var lyricBlockHeight: Double {
+        Double(min(3, max(1, lyricLineCount))) * LyricRowLayout.step + 14 + (reservesTwoLyricRows ? LyricRowLayout.step : 0)
+    }
+
+    /// Width one lyric row has for text, which decides whether a second row is reserved.
+    var lyricTextWidth: Double {
+        expanded ? panelWidth - 2 * ExpandedLayout.horizontalPadding : compactWidth - 2 * LyricRowLayout.compactPadding
+    }
+
+    /// True when a line of this song does not fit one row, so the active line is given two.
+    var reservesTwoLyricRows: Bool {
+        guard showLyrics, !usesVideoCaption, let key = trackKey, !currentLines.isEmpty else { return false }
+        let width = lyricTextWidth
+        let cacheKey = "\(key)|\(Int(width.rounded()))"
+        if let cached = twoRowCache[cacheKey] { return cached }
+        // The active line is the widest of the rows, so it sets the limit.
+        let font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        let value = LyricLayout.needsTwoRows(currentLines.map(\.text), width: width) { text in
+            (text as NSString).size(withAttributes: [.font: font]).width
+        }
+        twoRowCache[cacheKey] = value
+        return value
+    }
     var hasIslandLyrics: Bool {
         showLyrics && (usesVideoCaption || !currentLines.isEmpty || !(currentPlainLyrics?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true))
     }

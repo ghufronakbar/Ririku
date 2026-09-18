@@ -109,7 +109,7 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 - **Kembalikan ke ukuran notch** mengembalikan ketiganya.
 - **Warna aksen:** Peach, Lavender, atau Netral.
 - **Transisi panel halus:** matikan agar ukuran panel berubah seketika. **Reduce Motion** macOS juga mematikan animasi dan spectrum.
-- **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya), atau 3 (sebelum + saat ini + berikutnya).
+- **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya), atau 3 (sebelum + saat ini + berikutnya). Bila sebuah lagu punya baris yang terlalu panjang untuk island, baris yang sedang berjalan memakai dua baris selama lagu itu, jadi tingginya tidak berubah-ubah; baris sebelum dan sesudahnya tetap satu baris dan diakhiri “…”. Jadi island yang sempit pun tetap menampilkan baris yang Anda baca secara utuh — perlebar island kalau ingin baris sekitarnya juga terlihat penuh.
 
 ### Lirik
 

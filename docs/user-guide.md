@@ -108,7 +108,7 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Reset to the notch size** restores all three.
 - **Accent color:** Peach, Lavender, or Neutral.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
-- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next).
+- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
 
 ### Lyrics
 
