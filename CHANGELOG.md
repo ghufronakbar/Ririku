@@ -2,6 +2,11 @@
 
 All notable changes to Ririku are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org). Versions before 0.3.0 were private prototypes named Notch Box and were never published.
 
+## [Unreleased]
+
+### Added
+- App icon and browser extension icon: an anime-style illustration generated with Gemini through Antigravity, clipped to the macOS icon grid by `scripts/make-icon.swift` during the build.
+
 ## [0.3.1] - 2026-09-18
 
 First public release. It also contains the unpublished [0.3.0 changes](https://github.com/ghufronakbar/Ririku/blob/main/CHANGELOG.md#030---not-published), including the rename from Notch Box to Ririku. Apple silicon only; signed ad hoc and not notarized.

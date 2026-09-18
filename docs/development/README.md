@@ -30,11 +30,12 @@ Sources/RirikuCore/        Shared, UI-free code: playback snapshot and clock, LR
 Sources/Ririku/            macOS app: AppKit panel and menu bar, SwiftUI views, AppModel,
                            bridge server, LRCLIB/artwork clients, Chrome setup, localization
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
-extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup
+extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup, icons
+Resources/                 AppIcon.png: square source artwork for the app and extension icons
 Localization/              App interface translations (<code>.lproj/Localizable.strings)
 Tests/                     Swift Testing suites for RirikuCore and the app target
-scripts/                   build-app.sh, check-localization.py, check-version.py, check-docs.py,
-                           release-notes.py, install-host.py
+scripts/                   build-app.sh, make-icon.swift, check-localization.py, check-version.py,
+                           check-docs.py, release-notes.py, install-host.py
 samples/                   Original LRC file used by the local demo
 docs/                      User guide, developer docs, decision log, archive
 .github/                   CI and release workflows, issue and pull request templates
@@ -48,7 +49,7 @@ bash scripts/build-app.sh
 open build/Ririku.app
 ```
 
-`build-app.sh` runs the localization check, builds a release configuration with SwiftPM, assembles `build/Ririku.app` (app executable, `RirikuHost`, `.lproj` folders, and a copy of `extension/` as `ChromeExtension`), writes `Info.plist`, and signs the bundle ad hoc. Quit a running Ririku before rebuilding.
+`build-app.sh` runs the localization check, builds a release configuration with SwiftPM, assembles `build/Ririku.app` (app executable, `RirikuHost`, `.lproj` folders, and a copy of `extension/` as `ChromeExtension`), writes `Info.plist`, and signs the bundle ad hoc. When `Resources/AppIcon.png` exists, `scripts/make-icon.swift` clips it to a rounded square on the macOS icon grid and writes `AppIcon.icns`. The extension icons in `extension/icons/` come from the same artwork and are committed; after changing the artwork, regenerate them with `for n in 16 32 48 128; do swift scripts/make-icon.swift Resources/AppIcon.png --png $n extension/icons/icon-$n.png; done`. Quit a running Ririku before rebuilding.
 
 `swift build` alone is enough to check that the code compiles, but a bare executable has no bundle resources: it shows English text and cannot register the browser connection.
 
