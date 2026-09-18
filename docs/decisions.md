@@ -55,7 +55,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | --- | --- |
 | Spotify desktop and Apple Music Automation approval, playback timing, and controls | Implemented with AppleScript; real playback validation pending |
 | Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; main-screen fallback not fully tested |
-| Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
+| Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Validated on 2026-09-18 with the 0.3.1 release zip on macOS 15.7.2: the "Not Opened" dialog, **Done**, then **Open Anyway** in Privacy & Security worked as the user guide describes. macOS 14 and confirming again after an update are still untested |
 | Universal (Intel) builds | Open |
 | GitHub repository settings: private vulnerability reporting (referenced by SECURITY.md) and the `translation` label used by the issue template | Open; changed by the maintainer in the repository settings |
 | Test coverage for SwiftUI views, the browser extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and the browser setup helpers |
