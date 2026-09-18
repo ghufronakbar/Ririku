@@ -8,7 +8,7 @@ function fixture(music = true, relativeAPI = false) {
   const packets = [], messages = [], listeners = [], intervals = [], timers = new Map(), events = {}, seeks = [];
   let now = 1000, serial = 0, commandListener;
   const video = { readyState: 4, duration: 556, playbackRate: 1, paused: false, seeking: false, seekable: { length: 1 },
-    get currentTime() { return 447 + current.position; },
+    get currentTime() { return (current.mediaOffset ?? 447) + current.position; },
     set currentTime(value) { throw new Error('Must not seek the raw media element'); }
   };
   const player = {
@@ -108,6 +108,26 @@ test('Missing Music UI clock fails closed rather than publishing accumulated dur
   page.current.ready = false;
   page.tick();
   assert.equal(page.packets.at(-1).kind, 'remove');
+});
+
+test('Autoplay screenshot regression: color stays at 0:23 / 3:13 and 0:56 / 3:13', () => {
+  const page = fixture();
+  Object.assign(page.current, { id: 'bbbbbbbbbbb', title: '色彩 - color', artist: 'yama',
+    position: 23, duration: 193, mediaOffset: 213 });
+  page.video.duration = 293;
+  page.tick();
+  assert.equal(page.packets.at(-1).kind, 'remove');
+  page.tick();
+  assert.equal(page.video.currentTime, 236);
+  assert.equal(page.latest().trackId, 'bbbbbbbbbbb');
+  assert.equal(page.latest().position, 23);
+  assert.equal(page.latest().duration, 193);
+  page.current.position = 56;
+  page.video.duration = 352;
+  page.tick(500);
+  assert.equal(page.video.currentTime, 269);
+  assert.equal(page.latest().position, 56);
+  assert.equal(page.latest().duration, 193);
 });
 
 test('Seek is translated to the current song segment, never assigned to video.currentTime', async () => {
