@@ -189,7 +189,7 @@ actor LyricsService {
 @MainActor
 final class ArtworkService {
     private let cache = NSCache<NSString, NSImage>()
-    private let client = SafeHTTPClient(hosts: ["i.ytimg.com", "img.youtube.com", "lh3.googleusercontent.com", "lh4.googleusercontent.com", "lh3.ggpht.com"])
+    private let client = SafeHTTPClient(hosts: ["i.ytimg.com", "img.youtube.com", "lh3.googleusercontent.com", "lh4.googleusercontent.com", "lh3.ggpht.com", "i.scdn.co"])
 
     init() { cache.countLimit = 40 }
 

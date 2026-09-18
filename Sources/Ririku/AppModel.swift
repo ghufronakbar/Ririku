@@ -223,6 +223,7 @@ final class AppModel: ObservableObject {
 
     /// The demo label is translated; labels from the extension are service names and stay as they are.
     func sourceLabel(for snapshot: PlaybackSnapshot) -> String {
+        if snapshot.sessionId == "spotify" && snapshot.sourceId == "desktop" { return "Spotify" }
         if snapshot.sessionId == "demo" && snapshot.sourceId == "demo" { return t("Local demo") }
         guard let browser = connectedBrowser else { return snapshot.sourceLabel }
         // The extension labels the website; the browser part is replaced with the one that connected.
@@ -240,6 +241,20 @@ final class AppModel: ObservableObject {
     }
 
     var canAnimate: Bool { animations && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
+    @Published var spotifyEnabled = false {
+        didSet { defaults.set(spotifyEnabled, forKey: "spotifyEnabled"); spotify.setEnabled(spotifyEnabled) }
+    }
+    @Published var spotifyStatus = UIText("Open Spotify and play a song.")
+    private lazy var spotify: SpotifyAdapter = {
+        let adapter = SpotifyAdapter()
+        adapter.onPacket = { [weak self] data in self?.receive(data) }
+        adapter.onStatus = { [weak self] status in self?.spotifyStatus = status }
+        return adapter
+    }()
+
+    func startSpotify() { spotifyEnabled = defaults.bool(forKey: "spotifyEnabled") }
+    func reconnectSpotify() { spotify.setEnabled(spotifyEnabled) }
 
     /// How far the compact island may grow past the notch, on each axis.
     static let compactWidthRange: Double = 440
@@ -413,7 +428,7 @@ final class AppModel: ObservableObject {
     func disconnect() {
         connectedExtensionVersion = nil
         connectedBrowser = nil
-        sessions = sessions.filter { $0.key == "demo:demo" }
+        sessions = sessions.filter { $0.key == "demo:demo" || $0.key == "spotify:desktop" }
         pendingCommand = nil
         refreshMedia()
         geometryChanged?()
@@ -643,7 +658,8 @@ final class AppModel: ObservableObject {
         guard let encoded = try? JSONSerialization.data(withJSONObject: packet) else { return }
         commandError = nil
         pendingCommand = identifier
-        sendPacket?(encoded)
+        if current.id == "spotify:desktop" { spotify.send(encoded) }
+        else { sendPacket?(encoded) }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self, self.pendingCommand == identifier else { return }
             self.pendingCommand = nil

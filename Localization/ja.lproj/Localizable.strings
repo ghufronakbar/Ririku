@@ -8,7 +8,12 @@
 "Ad · lyrics paused" = "広告 · 歌詞を停止中";
 "Another Ririku instance is already running." = "別の Ririku がすでに起動しています。";
 "Appearance" = "外観";
-"Apple Music and Spotify: not implemented yet." = "Apple Music と Spotify: まだ実装されていません。";
+"Connect Spotify desktop" = "Spotify デスクトップに接続";
+"Reconnect Spotify" = "Spotify に再接続";
+"Open Spotify and play a song." = "Spotify を開いて曲を再生してください。";
+"Spotify connected" = "Spotify に接続済み";
+"Spotify unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Spotify を利用できません（%@）。システム設定 → プライバシーとセキュリティ → オートメーションで Ririku を許可し、再接続してください。";
+"Spotify needs macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only. Apple Music is not supported yet." = "Spotify には macOS のオートメーション許可が必要です。歌詞には LRCLIB を使うため、字幕のみではなく Auto または LRCLIB を選んでください。Apple Music はまだ未対応です。";
 "Applies to compact and expanded islands. The spectrum is decorative, not audio analysis, and settles when paused or stopped. The animation toggle and Reduce Motion also control it." = "コンパクト表示と展開表示の両方に適用されます。スペクトラムは装飾用で、音声解析ではありません。一時停止・停止中は平らになります。アニメーション設定と「視差効果を減らす」の設定にも従います。";
 "Automatic lyrics off" = "歌詞の自動検索はオフ";
 "Automatic mode follows the tab that starts playing and restores the connection. Turn it off to lock one tab manually." = "自動モードでは再生を始めたタブに追従し、接続も復元します。オフにすると 1 つのタブを手動で固定できます。";
@@ -93,7 +98,7 @@
 "No matching lyrics found yet" = "一致する歌詞はまだ見つかりません";
 "No results. Try another title or alias." = "結果がありません。別の曲名や別名でお試しください。";
 "No supported browser found. Ririku works with Chrome, Brave, Edge, Vivaldi, Opera, Chromium, and Arc." = "対応ブラウザが見つかりません。Ririku は Chrome、Brave、Edge、Vivaldi、Opera、Chromium、Arc に対応しています。";
-"No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers." = "テレメトリや Cookie は使用しません。自動検索がオンのときは曲のメタデータを LRCLIB に送信し、検索ボタンは入力した語句を送信します。字幕のみモードでは LRCLIB を検索しません。サムネイルは YouTube/Google の画像サーバーから取得します。";
+"No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google or Spotify image servers." = "テレメトリや Cookie は使用しません。自動検索がオンのときは曲のメタデータを LRCLIB に送信し、検索ボタンは入力した語句を送信します。字幕のみモードでは LRCLIB を検索しません。サムネイルは YouTube/Google または Spotify の画像サーバーから取得します。";
 "No valid LRC timestamps found." = "有効な LRC タイムスタンプが見つかりません。";
 "Not connected" = "未接続";
 "Not connected. After loading the extension, refresh an open YouTube or YouTube Music tab." = "未接続です。拡張機能を読み込んだ後、開いている YouTube または YouTube Music のタブを再読み込みしてください。";

@@ -58,6 +58,8 @@ Metadata from `player-state.js` (MAIN world) is treated as untrusted page data: 
 
 ## Source selection
 
+The opt-in `SpotifyAdapter` polls the installed Spotify desktop app once per second on a serial worker queue with a two-second Apple event timeout. It does not open Spotify or request permission until enabled and Spotify is running. A denied Automation request stops polling until explicit reconnect. The adapter converts Spotify track duration from milliseconds and player position from seconds, rechecks track identity, then emits the same snapshot format under `spotify:desktop`. Commands route locally, validate a canonical Spotify track URI, recheck the current track inside the script, and acknowledge completion. Browser disconnects leave this session intact. Artwork uses the explicitly allowed `i.scdn.co` host; lyrics still use LRCLIB. Real playback and Automation approval require manual validation.
+
 A session is fresh while its last snapshot is under 5 seconds old; stale sessions are removed.
 
 - **Automatic** (default): switch to a session that just began playing (state changed to `playing`, an ad ended, or the track changed). A heartbeat from a tab that was already playing does not steal the selection. If the selected session disappears, pick a fresh playing session, otherwise the most recent one.

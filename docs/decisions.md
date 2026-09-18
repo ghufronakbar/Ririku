@@ -53,7 +53,8 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 
 | Question | Status |
 | --- | --- |
-| Apple Music and Spotify desktop integration (scripting capabilities, permissions) | Open |
+| Apple Music desktop integration | Open |
+| Spotify desktop Automation approval, playback timing, and controls | Implemented with AppleScript; real playback validation pending |
 | Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; main-screen fallback not fully tested |
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Needs validation with a real release |
 | Universal (Intel) builds | Open |
@@ -62,3 +63,7 @@ Earlier approved requirements recorded in the archive include: selectable lyrics
 | Whether Brave, Edge, Vivaldi, Opera, Chromium, and Arc really accept the shared extension ID and native host | Needs validation on a real install; Arc's `NativeMessagingHosts` folder is unconfirmed |
 | Two browsers connected at the same time | Open; the bridge accepts one host connection, which would need per-connection command routing and `sourceId` prefixes |
 | Launch at login registered by an ad-hoc signed, non-notarized build | Needs validation, including the approval prompt in System Settings |
+
+### Spotify desktop connection — 2026-09-18
+
+Use Spotify's local scripting interface for the requested desktop integration, without a Web API account, OAuth flow, or browser extension. Connection is opt-in and requires macOS Automation permission. Reuse the existing source-selection and LRCLIB pipeline. Limit this first adapter to standard music track URIs; ads, local files, and podcasts are not supported as songs. This adds `i.scdn.co` solely for Spotify artwork and no audio capture.

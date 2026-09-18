@@ -11,6 +11,7 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 - LRCLIB retries temporary 502/503/504 responses with bounded backoff, respects Retry-After, and does not cache an outage as missing lyrics.
 
 ### Added
+- Opt-in Spotify desktop connection using local AppleScript polling and track-validated playback commands. Shares source selection, LRCLIB lyrics, artwork, and automatic accent; requires macOS Automation permission. Browser disconnects preserve the Spotify session. Live permission/playback validation is still pending; podcasts, local files, and ads are not supported as songs.
 - **Auto — from artwork** accent color: a cached dominant-color tint with readable brightness, Neutral fallback, and a transition that respects animation and Reduce Motion settings. Existing manual color preferences are preserved.
 - Synced lyric rows slide upward on adjacent lines; seeks snap and Reduce Motion disables the animation.
 - Offline regression tests for browser clock/seek transitions and lyrics service recovery. Real Chrome playback and animation rendering still need manual verification.

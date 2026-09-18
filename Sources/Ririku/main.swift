@@ -39,6 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.geometryChanged = { [weak self] in self?.positionPanel() }
         model.openSetup = { [weak self] in self?.showSetup() }
         model.sendPacket = { [weak self] data in self?.bridge.send(data) }
+        model.startSpotify()
         model.languageChanged = { [weak self] in self?.applyLanguage() }
         bridge.setLanguage(model.localizer.code)
         bridge.onPacket = { [weak self] data in self?.model.receive(data) }

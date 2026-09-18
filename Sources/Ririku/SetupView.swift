@@ -75,7 +75,12 @@ struct SetupView: View {
                 }.disabled(model.demo || model.automaticSource)
                 Text(model.t("Automatic mode follows the tab that starts playing and restores the connection. Turn it off to lock one tab manually."))
                     .font(.caption).foregroundStyle(.secondary)
-                Text(model.t("Apple Music and Spotify: not implemented yet.")).font(.caption).foregroundStyle(.secondary)
+                Toggle(model.t("Connect Spotify desktop"), isOn: $model.spotifyEnabled)
+                if model.spotifyEnabled {
+                    Text(model.t(model.spotifyStatus)).font(.caption).foregroundStyle(.secondary)
+                    Button(model.t("Reconnect Spotify")) { model.reconnectSpotify() }
+                }
+                Text(model.t("Spotify needs macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only. Apple Music is not supported yet.")).font(.caption).foregroundStyle(.secondary)
                 if let error = model.bridgeError { Text(model.t(error)).foregroundStyle(.red) }
             }
             Section(model.t("Appearance")) {
@@ -179,7 +184,7 @@ struct SetupView: View {
             Section(model.t("Prototype")) {
                 Text(verbatim: "Ririku 0.3.1 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle(model.t("Local demo (no audio)"), isOn: $model.demo)
-                Text(model.t("No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers."))
+                Text(model.t("No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google or Spotify image servers."))
                     .font(.caption).foregroundStyle(.secondary)
             }
         }

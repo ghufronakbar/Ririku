@@ -8,7 +8,12 @@
 "Ad · lyrics paused" = "Iklan · lirik dihentikan";
 "Another Ririku instance is already running." = "Aplikasi Ririku lain sudah berjalan.";
 "Appearance" = "Tampilan";
-"Apple Music and Spotify: not implemented yet." = "Apple Music dan Spotify: belum diimplementasikan.";
+"Connect Spotify desktop" = "Hubungkan Spotify desktop";
+"Reconnect Spotify" = "Sambungkan ulang Spotify";
+"Open Spotify and play a song." = "Buka Spotify dan putar lagu.";
+"Spotify connected" = "Spotify terhubung";
+"Spotify unavailable (%@). Allow Ririku in System Settings → Privacy & Security → Automation, then reconnect." = "Spotify tidak tersedia (%@). Izinkan Ririku di System Settings → Privacy & Security → Automation, lalu sambungkan ulang.";
+"Spotify needs macOS Automation permission. Lyrics use LRCLIB; choose Auto or LRCLIB, not subtitles-only. Apple Music is not supported yet." = "Spotify membutuhkan izin Automation macOS. Lirik menggunakan LRCLIB; pilih Auto atau LRCLIB, bukan hanya subtitle. Apple Music belum didukung.";
 "Applies to compact and expanded islands. The spectrum is decorative, not audio analysis, and settles when paused or stopped. The animation toggle and Reduce Motion also control it." = "Berlaku pada island ringkas dan terbuka. Spectrum bersifat dekoratif, bukan analisis audio; mereda saat pause/stop. Toggle animasi dan Reduce Motion juga mengatur spectrum.";
 "Automatic lyrics off" = "Lirik otomatis nonaktif";
 "Automatic mode follows the tab that starts playing and restores the connection. Turn it off to lock one tab manually." = "Mode otomatis mengikuti tab yang mulai memutar dan memulihkan koneksi. Matikan untuk mengunci satu tab secara manual.";
@@ -93,7 +98,7 @@
 "No matching lyrics found yet" = "Lirik yang cocok belum ditemukan";
 "No results. Try another title or alias." = "Tidak ada hasil. Coba judul/alias lain.";
 "No supported browser found. Ririku works with Chrome, Brave, Edge, Vivaldi, Opera, Chromium, and Arc." = "Tidak ada browser yang didukung. Ririku bekerja dengan Chrome, Brave, Edge, Vivaldi, Opera, Chromium, dan Arc.";
-"No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google image servers." = "Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google.";
+"No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google or Spotify image servers." = "Tanpa telemetry/cookies. Metadata lagu dikirim ke LRCLIB saat pencarian otomatis aktif; tombol Cari mengirim kata pencarian. Mode subtitle saja tidak mencari LRCLIB. Thumbnail diambil dari server gambar YouTube/Google atau Spotify.";
 "No valid LRC timestamps found." = "Tidak ada timestamp LRC yang valid.";
 "Not connected" = "Belum terhubung";
 "Not connected. After loading the extension, refresh an open YouTube or YouTube Music tab." = "Belum terhubung. Setelah extension dimuat, refresh tab YouTube atau YouTube Music yang terbuka.";
