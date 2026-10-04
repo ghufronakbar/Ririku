@@ -8,6 +8,8 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 
 > **Status:** early prototype (v0.3.1). Download it from [Releases](https://github.com/ghufronakbar/Ririku/releases) or [build it from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
 
+> **Coming next:** Ririku is growing into a multipurpose notch app, with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, and on-device translation. None of these are in a release yet; see the [roadmap](docs/roadmap.md).
+
 ## Features
 
 - **Notch panel:** artwork, a decorative spectrum, and up to three lyric lines in a compact island; hover or click to expand for track info, a seek bar, and controls.

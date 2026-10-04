@@ -12,14 +12,14 @@ When a decision changes, add a dated entry here, update the affected documents, 
 
 | ID | Decision | Date and reason |
 | --- | --- | --- |
-| D-001 | Ririku is a simple, native macOS app. | 2026-09-17. Personal use first; no complex utility suite. |
-| D-002 | Focus on music controls, synced lyrics, and a polished notch UI with smooth animation. | 2026-09-17. Core need. Out of scope: word-by-word karaoke, audio downloads, DRM bypass, file shelf, clipboard, calendar, weather, cloud accounts. |
+| D-001 | Ririku is a simple, native macOS app. | 2026-09-17. Personal use first; no complex utility suite. The "no utility suite" part was replaced by D-017 on 2026-10-05; the app stays native. |
+| D-002 | Focus on music controls, synced lyrics, and a polished notch UI with smooth animation. | 2026-09-17. Core need. Out of scope: word-by-word karaoke, audio downloads, DRM bypass, file shelf, clipboard, calendar, weather, cloud accounts. On 2026-10-05, D-017 brought the file shelf, clipboard, and calendar into scope; the rest stays out. |
 | D-003 | Target players: YouTube and YouTube Music in Chrome, Apple Music, and Spotify desktop apps. | 2026-09-17. Requested player coverage; desktop adapters still need validation. |
 | D-004 | Chrome is the first priority. | 2026-09-17. The owner's daily player. |
 | D-005 | A companion Chrome extension is allowed. | 2026-09-17. Needed to read and control the web player. |
 | D-006 | Documentation came before mockups and implementation. | 2026-09-17. Planning phase. |
 | D-007 | Visual settings are adjustable in a separate Setup window. | 2026-09-17. Owner direction. |
-| D-008 | The source picker lives in Setup, not in the notch panel. | 2026-09-17. Keeps the panel focused on music and lyrics. |
+| D-008 | The source picker lives in Setup, not in the notch panel. | 2026-09-17. Keeps the panel focused on music and lyrics. Still applies after D-017: every setting stays in Setup. |
 | D-009 | Move from mockup review to a native prototype. | 2026-09-17. Not an approval of every later technical detail. |
 | D-010 | Automatic lyrics, real artwork, automatic source selection and recovery, and an extension popup with status. LRC import is a fallback. | 2026-09-17. After first user testing. |
 | D-011 | Interface in English, Bahasa Indonesia, and 日本語; follow the system language with English fallback, plus a live language picker in Setup. | 2026-09-17. Chosen after a feasibility study. |
@@ -28,6 +28,14 @@ When a decision changes, add a dated entry here, update the affected documents, 
 | D-014 | English is the primary documentation language; user-facing documentation is also available in other languages. | 2026-09-17. Open-source audience. |
 | D-015 | Ririku can open itself at login, as an option that is off by default. | 2026-09-18. Owner request after the open-source preparation. Implemented with `SMAppService`; macOS keeps the state and can ask the user for approval. |
 | D-016 | Support the other Chromium browsers (Brave, Edge, Vivaldi, Opera, Chromium, Arc) with the same extension, one connected browser at a time. | 2026-09-18. Owner request. Only the host manifest folder and the extensions address differ per browser, so the cost is small; simultaneous browsers would need per-connection routing in the bridge and was deliberately left out. |
+| D-017 | Ririku becomes a multipurpose notch app. Music controls and synced lyrics stay the core, and the panel gains tabs with widgets and tools: system stats, network speed, battery, clock and date, Pomodoro, countdown, stopwatch, notes, counter, days left, water, apps, shortcuts, bookmarks, a file tray with AirDrop, clipboard history, a calendar, a camera mirror, and translation. | 2026-10-05. Owner request: NotchBox, the reference app, charges for several of these features, and Ririku should offer them free and open source. The earlier limits were an initial guard against feature creep. Still out of scope: word-by-word karaoke, downloads, DRM bypass, an embedded web browser, weather, and paywalls. See [Multipurpose notch app](#multipurpose-notch-app--2026-10-05). |
+| D-018 | The panel layout is customizable and has a default: a Home tab (Music, wide, and System) and a Tray tab; Clipboard and Translate become tabs when turned on; other widgets start off. A layout is a list of tabs, each a page of small or wide widgets or a single tool. It is edited in Setup with a live preview and can be reset. Editing directly in the panel is a future plan. | 2026-10-05. The owner asked for a customizable layout that still has a sensible default. Editing in Setup keeps settings out of the panel (D-007). |
+| D-019 | Translate uses Apple's on-device Translation framework on macOS 15 and later. The minimum system stays macOS 14, where Translate is disabled. A display-only lyric translation follows the Translate tab. An AI assistant is a future plan that needs its own decision; a Web View tab is not planned. | 2026-10-05. On-device translation needs no API key, no new network destination, and no dependency. `TranslationSession` requires macOS 15 (checked in the macOS 15.5 SDK); macOS 14.4 only offers the system translation popover. |
+| D-020 | Widgets that need a permission or keep personal data are opt-in and start off. Calendar (read-only, EventKit) and Camera (AVFoundation) ask for permission only when turned on. Clipboard history keeps text and images, at most 50 items, on this Mac across restarts, and skips items marked as concealed, such as copied passwords. | 2026-10-05. Privacy by default, the same pattern as the Spotify and Apple Music connections. |
+| D-021 | The Tray keeps references to files instead of copies, so an item disappears when its file is deleted. Bookmarks open in the default browser. Widget notices (a finished timer, charging started) appear briefly in the compact island and never expand the panel. | 2026-10-05. Keeps the user's files where they are, avoids an embedded browser, and keeps the panel from opening by itself (R-UI-3). |
+| D-022 | Setup gains general settings: the display for the panel (automatic or a chosen display), hover and close delays, Dock and menu bar icons, haptic feedback, a keyboard shortcut to open the panel (off by default), a tutorial, and an About page. Not taken: a logo in the notch, and upgrade or premium pages. | 2026-10-05. Owner request from the NotchBox comparison. A logo would sit under the notch (R-UI-5), and Ririku has no paid plan (R-SCOPE-3). |
+| D-023 | The name stays **Ririku**. When the widgets ship (0.4.0), the tagline becomes "Music, lyrics, and handy widgets in your Mac's notch." | 2026-10-05. The name is established (D-012). Changing the tagline before the widgets exist would describe features the app does not have. |
+| D-024 | The work follows the staged plan in the [roadmap](roadmap.md): rules first, then a refactor that changes no behavior, then general settings, the widget framework, local widgets, the Tray and clipboard, and finally the calendar, camera, and translation. | 2026-10-05. Keeps each pull request reviewable and lets the existing tests guard the refactor. |
 
 Earlier approved requirements from the planning phase: selectable lyrics source with per-song offset and duration-based version picking (v0.2.2); lyric visibility, 1/2/3 lines, adjustable width, and smoother transitions (v0.2.3); top-anchored resizing, no auto-expand on track change, short "not found" notice, decorative spectrum, and Japanese line preference (v0.2.4). Their lasting constraints are in [rules.md](rules.md).
 
@@ -62,6 +70,9 @@ Earlier approved requirements from the planning phase: selectable lyrics source 
 | Whether Brave, Edge, Vivaldi, Opera, Chromium, and Arc really accept the shared extension ID and native host | Needs validation on a real install; Arc's `NativeMessagingHosts` folder is unconfirmed |
 | Two browsers connected at the same time | Open; the bridge accepts one host connection, which would need per-connection command routing and `sourceId` prefixes |
 | Launch at login registered by an ad-hoc signed, non-notarized build | Needs validation, including the approval prompt in System Settings |
+| Whether watching the pasteboard for clipboard history shows a privacy alert on macOS 26 and later | Open; to check before the clipboard ships (roadmap stage 5). No alert is expected on macOS 15 |
+| Whether the system prompt to download translation languages appears correctly from the non-activating notch panel | Open; to check in roadmap stage 6 |
+| CPU, memory, and wakeups of the widgets on a real Mac | Open; to measure before any efficiency claim (R-HONEST-3) |
 
 ### Spotify desktop connection — 2026-09-18
 
@@ -80,3 +91,18 @@ No separate code of conduct. The basic conduct expectations in CONTRIBUTING.md a
 ### Project rules replace the planning archive — 2026-09-19
 
 The owner asked for documentation that other developers and AI agents can follow as rules. The rules that still applied in the Indonesian planning documents (`docs/archive/id/`) were collected with the agreed decisions into [rules.md](rules.md), with IDs that pull requests can cite, and the archive was removed. It mixed proposals that were later changed with agreed requirements, so an agent could mistake an outdated proposal for a rule. The history remains in Git. `AGENTS.md` now makes `rules.md` required reading and tells agents to stop and ask when a request conflicts with a rule.
+
+### Multipurpose notch app — 2026-10-05
+
+The owner compared Ririku with NotchBox, a commercial notch app installed on their Mac. Its panel has Home, Tray, and Web View tabs, and its settings offer widgets (waveform, date, Pomodoro, countdown, stopwatch, camera, network, calendar, apps, water, bookmarks, notes, days left, counter, shortcuts, system) and pages for clipboard, translation, an AI assistant, battery, and keyboard, several of them behind a paid plan. The scope limits in D-001 and D-002 were the initial guard against feature creep, and the owner decided to lift them so that Ririku offers these features for free and as open source (D-017). Music controls and synced lyrics stay the core and the default.
+
+The rules changed with it:
+
+- R-SCOPE-2 lists what stays out: karaoke, downloads, DRM bypass, an embedded web browser, weather, and new online services without a decision. R-SCOPE-7 forbids copying another app's code, icons, artwork, or text.
+- R-UI-1 lets the panel hold widgets and tools while every setting stays in Setup.
+- R-UI-3 and R-UI-6 cover widget notices.
+- R-UI-16 and R-UI-17 cover hidden icons and the keyboard shortcut.
+- The new R-WID section covers the default layout, opt-in permissions, background work, the camera, clipboard, Tray, calendar, shortcuts, translation, and bookmarks.
+- R-SEC-1, R-SEC-3, R-SEC-6, R-SEC-8, R-COMPAT-3, and R-HONEST-2 were extended.
+
+Not taken from NotchBox: the Web View (not wanted), the AI assistant (a future plan that needs its own decision about a provider), the upgrade and premium pages (R-SCOPE-3), and the logo in the notch (R-UI-5). Some NotchBox pages (Clipboard, Translate, AI Assistant, Battery, Keyboard) were only seen by name in its sidebar, so Ririku's versions are designed from the feature names rather than from NotchBox's screens.

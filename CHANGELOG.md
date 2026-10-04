@@ -2,6 +2,11 @@
 
 All notable changes to Ririku are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org). Versions before 0.3.0 were private prototypes named Notch Box and were never published.
 
+## [Unreleased]
+
+### Changed
+- **Project scope:** Ririku is becoming a multipurpose notch app. Music controls and synced lyrics stay its core, and the panel will gain tabs with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, a camera mirror, and on-device translation (decisions D-017 to D-024). `docs/rules.md` replaces the old scope limits with rules for widgets and tools (R-WID), and the new `docs/roadmap.md` lists the stages. The app itself does not change yet.
+
 ## [0.3.1] - 2026-09-18
 
 First public release. It also contains the unpublished [0.3.0 changes](https://github.com/ghufronakbar/Ririku/blob/main/CHANGELOG.md#030---not-published), including the rename from Notch Box to Ririku. Apple silicon only; signed ad hoc and not notarized.

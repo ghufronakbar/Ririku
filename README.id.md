@@ -10,6 +10,8 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 
 > **Status:** prototipe awal (v0.3.1). Unduh dari [Releases](https://github.com/ghufronakbar/Ririku/releases) atau [build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
 
+> **Berikutnya:** Ririku sedang dikembangkan menjadi aplikasi notch serbaguna, dengan widget dan alat seperti statistik sistem, timer, tray file dengan AirDrop, riwayat clipboard, kalender, dan terjemahan di perangkat. Belum ada yang masuk rilis; lihat [roadmap](docs/roadmap.md) (dalam bahasa Inggris).
+
 ## Fitur
 
 - **Panel notch:** artwork, spectrum dekoratif, dan hingga tiga baris lirik di island ringkas; arahkan pointer atau klik untuk membuka info lagu, bar posisi, dan kontrol.

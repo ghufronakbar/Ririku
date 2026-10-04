@@ -5,7 +5,7 @@ Thank you for helping! Ririku is a small project maintained in spare time, so cl
 ## Ways to help
 
 - **Report a bug:** [open an issue](https://github.com/ghufronakbar/Ririku/issues) with your macOS version, Mac model (Apple silicon or Intel), browser and its version, Ririku and extension versions (shown in Setup), whether you use YouTube or YouTube Music, the steps to reproduce, and what you expected. For lyrics problems, include the song title and artist and whether **Setup → Lyrics** found a version.
-- **Suggest a feature:** open an issue first so we can agree on scope before you write code.
+- **Suggest a feature:** check the [roadmap](docs/roadmap.md), then open an issue so we can agree on scope before you write code.
 - **Translate:** improve Bahasa Indonesia or Japanese text, or add a language. See [localization](docs/development/localization.md).
 - **Improve documentation:** fix unclear steps in the [user guide](docs/user-guide.md), especially from a non-technical point of view.
 - **Write code:** fix bugs or pick an issue labeled `good first issue` or `help wanted`. Tests for existing behavior are welcome too.
@@ -14,12 +14,13 @@ Security vulnerabilities must not be reported in public issues; follow [SECURITY
 
 ## Project scope
 
-Ririku focuses on music controls and synced lyrics in a native notch panel. The binding rules are in [docs/rules.md](docs/rules.md); please read them before writing code. In short:
+Ririku is a multipurpose notch app: music controls and synced lyrics are its core, and the panel also holds widgets and tools. The binding rules are in [docs/rules.md](docs/rules.md) and the planned work is in [docs/roadmap.md](docs/roadmap.md); please read them before writing code. In short:
 
 - **Native macOS:** Swift, SwiftUI, and AppKit. The main UI must not move to Electron or a WebView.
-- **Focused panel:** the notch panel is for music and lyrics. Source selection and visual customization belong in the Setup window.
+- **Settings live in Setup:** the notch panel holds widgets and tools; source selection, the panel layout, and visual and widget settings belong in the Setup window.
 - **Player priority:** YouTube and YouTube Music in Chromium browsers come first (Chrome before the others), then Apple Music and Spotify desktop apps.
-- **Out of scope:** word-by-word karaoke, downloading audio or video, bypassing DRM or premium features, and general utilities such as file shelves, clipboard, calendar, or weather.
+- **Opt-in for anything personal:** widgets that need a macOS permission or keep personal data (calendar, camera, clipboard history) start off and ask only when turned on.
+- **Out of scope:** word-by-word karaoke, downloading audio or video, bypassing DRM or premium features, an embedded web browser, weather, and features that need a new online service without a decision. Do not copy code, icons, or text from other notch apps.
 - **Privacy:** no telemetry, and no new permissions, network destinations, or data access without a clear need explained in the pull request.
 - **No new dependencies** without discussing them in an issue first.
 - **Free distribution:** changes must not require paid services to build or install.

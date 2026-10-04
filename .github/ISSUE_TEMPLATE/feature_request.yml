@@ -5,8 +5,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Ririku focuses on music controls and synced lyrics in a native notch panel.
-        Please read the scope section in [CONTRIBUTING.md](https://github.com/ghufronakbar/Ririku/blob/main/CONTRIBUTING.md#project-scope) first.
+        Ririku is a multipurpose notch app built around music controls and synced lyrics.
+        Please read the scope section in [CONTRIBUTING.md](https://github.com/ghufronakbar/Ririku/blob/main/CONTRIBUTING.md#project-scope) and the [roadmap](https://github.com/ghufronakbar/Ririku/blob/main/docs/roadmap.md) first.
   - type: textarea
     id: problem
     attributes:
@@ -29,5 +29,5 @@ body:
     attributes:
       label: Scope
       options:
-        - label: This stays within the project scope (no downloads, DRM bypass, or general desktop utilities) and needs no paid service
+        - label: This stays within the project scope (no downloads, DRM bypass, embedded web browser, or new online service) and needs no paid service
           required: true
