@@ -8,7 +8,7 @@ Ririku's interface is available in English, Bahasa Indonesia (`id`), and Japanes
 - **Translations** live in `Localization/<code>.lproj/Localizable.strings`. `en.lproj` only contains a comment so macOS lists English as supported.
 - **Placeholders** use `%@` for every argument (arguments are passed as strings). Use positional placeholders such as `%1$@` and `%2$@` when a translation needs a different order. Never use Swift string interpolation inside a key.
 - **Runtime:** `InterfaceLanguage` stores the choice (`system`, `en`, `id`, `ja`). `Localizer` loads `<code>.lproj` from the app bundle directly, so switching language in Setup updates the UI without restarting. System mode picks the first supported language from macOS preferences, otherwise English.
-- **Stored messages:** statuses and errors kept in `AppModel` are `UIText` values (key plus arguments) and are translated when displayed. `BridgeError.system("…", [arguments])` works the same way; its `errorDescription` stays English for logs.
+- **Stored messages:** statuses and errors kept in `AppModel` and `MusicModel` are `UIText` values (key plus arguments) and are translated when displayed. `BridgeError.system("…", [arguments])` works the same way; its `errorDescription` stays English for logs.
 - **Numbers:** format decimals with the interface `Locale` (`model.locale`) so Indonesian shows `0,1` and Japanese `0.1`.
 - **Not translated:** song titles, artists, lyrics, captions, service names from the extension, and messages from macOS frameworks.
 - **Extension:** popup and toolbar text live in `extension/i18n.js` (`RIRIKU_MESSAGES`). The popup uses the app's language when connected, then Chrome's UI language, then English. The extension name and description in `chrome://extensions` come from `extension/_locales/<code>/messages.json` and follow Chrome's language.
@@ -32,8 +32,8 @@ Keep the `.strings` syntax valid (`"key" = "value";`, escape `"` and `\`). `plut
 ## Adding a language
 
 1. Create `Localization/<code>.lproj/Localizable.strings` with every key (copy `id.lproj` as a template and translate the values).
-2. In `Sources/Ririku/Localization.swift`, add a case to `InterfaceLanguage`, add the code to `supportedCodes`, and add its native name in `nativeName(of:)`.
-3. In `Sources/Ririku/SetupView.swift`, add the language to the picker.
+2. In `Sources/Ririku/App/Localization.swift`, add a case to `InterfaceLanguage`, add the code to `supportedCodes`, and add its native name in `nativeName(of:)`.
+3. In `Sources/Ririku/Setup/LanguagePage.swift`, add the language to the picker.
 4. In `scripts/build-app.sh`, add the code to `CFBundleLocalizations`. In `scripts/check-localization.py`, add it to `LANGUAGES`.
 5. In `extension/i18n.js`, add a message table with the same keys, and add `extension/_locales/<code>/messages.json`. The popup accepts only codes listed in `RIRIKU_MESSAGES`, and the service worker only accepts `en`, `id`, and `ja` from the app, so update that list in `background.js` too.
 6. Optionally translate `README.md` and `docs/user-guide.md` as `README.<code>.md` and `docs/user-guide.<code>.md`, and link them from the language switchers at the top of the existing files.

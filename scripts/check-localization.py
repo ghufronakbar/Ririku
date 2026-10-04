@@ -25,7 +25,7 @@ def load(language):
 
 keys = {}
 for folder in SOURCES:
-    for file in sorted(folder.glob("*.swift")):
+    for file in sorted(folder.rglob("*.swift")):
         for number, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
             for pattern in PATTERNS:
                 for match in pattern.finditer(line):

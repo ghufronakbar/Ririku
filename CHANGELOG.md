@@ -5,7 +5,9 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Changed
-- **Project scope:** Ririku is becoming a multipurpose notch app. Music controls and synced lyrics stay its core, and the panel will gain tabs with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, a camera mirror, and on-device translation (decisions D-017 to D-024). `docs/rules.md` replaces the old scope limits with rules for widgets and tools (R-WID), and the new `docs/roadmap.md` lists the stages. The app itself does not change yet.
+- **Project scope:** Ririku is becoming a multipurpose notch app. Music controls and synced lyrics stay its core, and the panel will gain tabs with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, a camera mirror, and on-device translation (decisions D-017 to D-024). `docs/rules.md` replaces the old scope limits with rules for widgets and tools (R-WID), and the new `docs/roadmap.md` lists the stages.
+- **Setup has a sidebar.** Each former section is now a page: Language, Browser connection, Startup, Music source, Appearance, Lyrics, and Prototype. Until a browser has connected, Setup opens on Browser connection, and the window can now be resized.
+- **Code layout (developers):** the app target is split into `App/`, `Panel/`, `Music/`, and `Setup/`. `AppModel` keeps the app-wide state and holds a new `MusicModel` for playback, lyrics, and the browser connection; `main.swift` is now only the entry point. The notch panel is unchanged: a demo render of the compact and expanded panel matches the previous build in size and pixels, apart from the animated spectrum.
 
 ## [0.3.1] - 2026-09-18
 

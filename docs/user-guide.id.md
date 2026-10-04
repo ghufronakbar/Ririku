@@ -85,7 +85,7 @@ Pilih **Keluar Ririku** dari ikon menu bar untuk keluar.
 
 ## Setup
 
-Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar. Perubahan langsung berlaku.
+Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar. Pilih halaman di sidebar; selama belum ada browser yang terhubung, Setup terbuka di **Koneksi browser**. Perubahan langsung berlaku.
 
 ### Bahasa
 

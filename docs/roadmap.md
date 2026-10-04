@@ -9,7 +9,7 @@ Each stage lands as one or more focused pull requests with tests, translations (
 | Stage | Work | Target |
 | --- | --- | --- |
 | 0 | Rules, decisions, and this roadmap | Done on 2026-10-05 |
-| 1 | Refactor without behavior change: split `AppModel` and `main.swift` into app, music, panel, and Setup parts, and give Setup a sidebar with one page per area | 0.4.0 |
+| 1 | Refactor without behavior change: split `AppModel` and `main.swift` into app, music, panel, and Setup parts, and give Setup a sidebar with one page per area | Done on 2026-10-05 |
 | 2 | General settings (D-022): display choice, hover and close delays, Dock and menu bar icons, haptic feedback, keyboard shortcut, tutorial, About | 0.4.0 |
 | 3 | Tabs and widget framework, layout editor in Setup with a live preview, default layout, Music and System widgets | 0.4.0 |
 | 4 | Local widgets: clock and date, Pomodoro, countdown, stopwatch, network speed, battery, notes, counter, days left, water, apps, shortcuts, bookmarks | 0.5.0 |

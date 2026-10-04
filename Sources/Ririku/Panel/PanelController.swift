@@ -9,13 +9,11 @@ final class NotchPanel: NSPanel {
     override func cancelOperation(_ sender: Any?) { dismissPanel?() }
 }
 
+/// Owns the notch panel: its place under the notch, the resize animation, and opening and closing by hover.
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let model = AppModel()
-    private let bridge = BridgeServer()
-    private var panel: NotchPanel!
-    private var settingsWindow: NSWindow?
-    private var statusItem: NSStatusItem!
+final class PanelController: NSObject {
+    private let model: AppModel
+    private let panel: NotchPanel
     private var hoverWork: DispatchWorkItem?
     /// Set when the menu opens the panel, so it stays open until the pointer has visited it.
     private var pinnedOpen = false
@@ -24,11 +22,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var resizeTimer: Timer?
     private var targetPanelFrame: NSRect?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        signal(SIGPIPE, SIG_IGN)
-        NSApp.setActivationPolicy(.accessory)
-        configureMenu()
+    init(model: AppModel) {
+        self.model = model
         panel = NotchPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
+        super.init()
         panel.isOpaque = false
         panel.backgroundColor = .clear
         panel.hasShadow = false
@@ -37,73 +34,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         panel.isMovable = false
         panel.dismissPanel = { [weak self] in self?.collapse() }
-        let hosting = NSHostingView(rootView: PlayerView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
+        let hosting = NSHostingView(rootView: PanelView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
         hosting.sizingOptions = []
         panel.contentView = hosting
-        model.geometryChanged = { [weak self] in self?.positionPanel() }
-        model.openSetup = { [weak self] in self?.showSetup() }
-        model.sendPacket = { [weak self] data in self?.bridge.send(data) }
-        model.startDesktopPlayers()
-        model.languageChanged = { [weak self] in self?.applyLanguage() }
-        bridge.setLanguage(model.localizer.code)
-        bridge.onPacket = { [weak self] data in self?.model.receive(data) }
-        bridge.onDisconnect = { [weak self] in self?.model.disconnect() }
-        do { try bridge.start() }
-        catch { model.bridgeError = UIText(error: error) }
+        model.geometryChanged = { [weak self] in self?.position() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
-        positionPanel()
+    }
+
+    func show() {
+        position()
         panel.orderFrontRegardless()
-        if !UserDefaults.standard.bool(forKey: "didShowSetup") {
-            showSetup()
-            UserDefaults.standard.set(true, forKey: "didShowSetup")
-        }
     }
 
-    private func configureMenu() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Ririku")
-        let menu = NSMenu()
-        let setup = menu.addItem(withTitle: model.t("Setup…"), action: #selector(showSetup), keyEquivalent: ",")
-        setup.target = self
-        let expand = menu.addItem(withTitle: model.t("Open music panel"), action: #selector(expandPanel), keyEquivalent: "")
-        expand.target = self
-        menu.addItem(.separator())
-        menu.addItem(withTitle: model.t("Quit Ririku"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        statusItem.menu = menu
-    }
+    /// Opened from the menu bar item, the panel takes focus and stays open until the pointer has visited it.
+    func expandFromMenu() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
 
-    private func applyLanguage() {
-        let items = statusItem.menu?.items ?? []
-        if items.count == 4 {
-            items[0].title = model.t("Setup…")
-            items[1].title = model.t("Open music panel")
-            items[3].title = model.t("Quit Ririku")
-        }
-        settingsWindow?.title = model.t("Ririku — Setup")
-        bridge.setLanguage(model.localizer.code)
-    }
+    func stop() { resizeTimer?.invalidate() }
 
-    @objc private func showSetup() {
-        if settingsWindow == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 580, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = model.t("Ririku — Setup")
-            window.isReleasedWhenClosed = false
-            window.contentView = NSHostingView(rootView: SetupView(model: model))
-            window.center()
-            settingsWindow = window
-        }
-        model.refreshLoginItem()
-        NSApp.activate(ignoringOtherApps: true)
-        settingsWindow?.makeKeyAndOrderFront(nil)
-    }
+    @objc private func screenChanged() { position(animate: false) }
+    @objc private func accessibilityChanged() { model.objectWillChange.send(); position(animate: false) }
 
-    @objc private func expandPanel() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
-    @objc private func screenChanged() { positionPanel(animate: false) }
-    @objc private func accessibilityChanged() { model.objectWillChange.send(); positionPanel(animate: false) }
-
-    private func positionPanel(animate: Bool = true) {
-        guard panel != nil, let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main else { return }
+    private func position(animate: Bool = true) {
+        guard let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main else { return }
         let top = max(32, screen.safeAreaInsets.top)
         let notch: CGFloat
         if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea, right.minX > left.maxX {
@@ -190,14 +143,4 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if panel.isKeyWindow { panel.resignKey() }
         model.expanded = false
     }
-
-    func applicationWillTerminate(_ notification: Notification) { resizeTimer?.invalidate(); bridge.stop() }
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSetup(); return false }
-}
-
-MainActor.assumeIsolated {
-    let application = NSApplication.shared
-    let delegate = AppDelegate()
-    application.delegate = delegate
-    application.run()
 }

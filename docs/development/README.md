@@ -27,8 +27,12 @@ There are no third-party Swift or JavaScript dependencies.
 Package.swift              SwiftPM package: Ririku, RirikuHost, RirikuCore
 Sources/RirikuCore/        Shared, UI-free code: playback snapshot and clock, LRC parser,
                            lyrics query matching, bridge framing, Unix socket helpers, panel motion
-Sources/Ririku/            macOS app: AppKit panel and menu bar, SwiftUI views, AppModel,
-                           bridge server, LRCLIB/artwork clients, Chrome setup, localization
+Sources/Ririku/            macOS app:
+  App/                     entry point, app delegate and menu bar, AppModel, localization, login item
+  Panel/                   notch panel: placement, hover, resize animation, size, surface view
+  Music/                   MusicModel and lyrics, music views, bridge server, LRCLIB/artwork
+                           clients, desktop players, browser setup
+  Setup/                   Setup window: sidebar and one view per page
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
 extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup, icons
 Resources/                 AppIcon.png: square source artwork for the app and extension icons

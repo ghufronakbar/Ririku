@@ -84,7 +84,7 @@ Choose **Quit Ririku** from the menu bar icon to quit.
 
 ## Setup
 
-Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Changes apply immediately.
+Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Choose a page in the sidebar; until a browser has connected, Setup opens on **Browser connection**. Changes apply immediately.
 
 ### Language
 

@@ -13,18 +13,18 @@ background.js       service worker: tracks tabs, forwards snapshots, validates c
       ↕ Chromium native messaging (stdio)
 RirikuHost          native messaging host inside Ririku.app
       ↕ Unix domain socket /tmp/ririku-<uid>/bridge.sock
-Ririku.app          BridgeServer → AppModel → SwiftUI views in an AppKit panel
+Ririku.app          BridgeServer → MusicModel (held by AppModel) → SwiftUI views in an AppKit panel
                     LyricsService (LRCLIB), ArtworkService, BrowserSetup, Localizer
 ```
 
-Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and the Setup window share one `AppModel`, which owns playback sessions, source selection, lyrics state, preferences, and localization. Views read the model; they never talk to the browser directly.
+Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and the Setup window share one `AppModel`, which owns the interface language, the island's size and accent, and launch at login, and holds a `MusicModel` that owns playback sessions, source selection, commands, artwork, lyrics, and the browser connection steps. Views read the models; they never talk to the browser directly.
 
 ## Swift targets
 
 | Target | Responsibility |
 | --- | --- |
 | `RirikuCore` | Code without UI: the `Browser` catalogue, `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation. |
-| `Ririku` | `main.swift` (app delegate, `NSPanel`, menu bar, hover, resize animation), `AppModel`, `PlayerView`, `SetupView`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `BrowserSetup`, `LoginItem`, `Localization`. |
+| `Ririku` | `App/`: `main.swift`, `AppDelegate` (menu bar, Setup window, bridge wiring), `AppModel`, `ArtworkAccent`, `LoginItem`, `Localization`. `Panel/`: `PanelController` (`NSPanel`, placement, hover, resize animation), `PanelView`, `PanelGeometry` (panel size). `Music/`: `MusicModel` and `MusicModel+Lyrics`, `MusicIslandView`, `MusicLayout`, `ScrollingLyricRows`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `DesktopPlayers`, `BrowserSetup`. `Setup/`: `SetupView` (sidebar) and one view per page. |
 | `RirikuHost` | Relays framed messages between the browser (stdin/stdout) and the app socket. It names its own browser from its parent process and sends that as the first message. If the app is not running and the first message is `openSetup`, it launches the enclosing `Ririku.app` with `open -g` and retries for up to 4 seconds. |
 
 ## Bridge protocol
@@ -102,8 +102,8 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 ## Panel and motion
 
 - The panel is a borderless, non-activating `NSPanel` at status bar level on all Spaces, placed at the top center of the first screen with a top safe-area inset (the notch), otherwise the main screen. The notch width comes from `auxiliaryTopLeftArea`/`auxiliaryTopRightArea`, and 180 pt is only a fallback when a screen does not report them; its height is the top safe-area inset (32 pt on a MacBook Air M2, which measures 179 × 32 pt).
-- `AppModel.panelSize` computes the frame from the expanded state, size preferences, lyric lines, notices, and errors, and never exceeds the screen minus 24 pt.
-- The expanded height is `expandedContentHeight`, the sum of the rows the view draws. `ExpandedLayout` holds those row sizes once and `PlayerView` lays out with the same values, so the window never has slack; change a padding there and the height follows. Without lyrics it is 199 pt on a 34 pt strip, and three lyric lines add 86 pt.
+- `AppModel.panelSize` (in `PanelGeometry.swift`) computes the frame from the expanded state, size preferences, lyric lines, notices, and errors, and never exceeds the screen minus 24 pt. The lyric heights come from `MusicModel`, given the width a lyric row has.
+- The expanded height is `expandedContentHeight`, the sum of the rows the view draws. `ExpandedLayout` holds those row sizes once and `MusicIslandView` lays out with the same values, so the window never has slack; change a padding there and the height follows. Without lyrics it is 199 pt on a 34 pt strip, and three lyric lines add 86 pt.
 - The compact island is stored as `compactExtraWidth`/`compactExtraHeight`, the amount added to the measured notch, so 0 fits the notch on any Mac and is the default. Artwork and the spectrum are pinned to the leading and trailing edges with a 6 pt inset, so they hide behind the camera housing at the notch size and appear as the island grows (fully visible from about 240 pt); `compactIconSize` shrinks them if the island is shorter than 32 pt. The expanded panel keeps its own absolute width and stays at least the notch plus 120 pt.
 - Lyrics leave the compact island while playback is paused (`islandLyricHeight` requires `isPlayingNow`), so a paused island shrinks back to the notch, while the expanded panel keeps them.
 - Frame changes use `IslandMotion`: 0.32 s smoothstep interpolation driven by a 60 Hz timer that runs only during the resize and keeps the top edge fixed. Reduce Motion or the animation setting disables it.

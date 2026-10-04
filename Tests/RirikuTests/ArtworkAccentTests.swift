@@ -40,15 +40,15 @@ struct ArtworkAccentTests {
         let model = AppModel(defaults: defaults)
         model.animations = false
         model.accentName = "Auto"
-        model.artwork = image(.red)
+        model.music.artwork = image(.red)
         #expect(model.accent == model.automaticAccent)
         #expect(defaults.string(forKey: "accentName") == "Auto")
         model.accentName = "Lavender"
         let manual = model.accent
-        model.artwork = image(.blue)
+        model.music.artwork = image(.blue)
         #expect(model.accent == manual)
         model.accentName = "Auto"
-        model.artwork = nil
+        model.music.artwork = nil
         #expect(model.accent == .white)
     }
 }

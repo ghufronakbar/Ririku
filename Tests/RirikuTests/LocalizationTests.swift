@@ -128,20 +128,20 @@ struct BrowserTests {
             "isAdvertisement": false, "capabilities": ["playPause": true, "previous": false, "next": false, "seek": true]
         ]
         let snapshot = try JSONDecoder().decode(PlaybackSnapshot.self, from: JSONSerialization.data(withJSONObject: packet))
-        #expect(model.sourceLabel(for: snapshot) == "YouTube Music · Chrome", "without a host the extension label is kept")
+        #expect(model.music.sourceLabel(for: snapshot) == "YouTube Music · Chrome", "without a host the extension label is kept")
 
         func hostPacket(_ browser: String) -> Data {
             try! JSONSerialization.data(withJSONObject: ["protocolVersion": 1, "kind": "host", "browser": browser])
         }
-        model.receive(hostPacket("Brave"))
-        #expect(model.connectedBrowser == "Brave")
-        #expect(model.sourceLabel(for: snapshot) == "YouTube Music · Brave")
+        model.music.receive(hostPacket("Brave"))
+        #expect(model.music.connectedBrowser == "Brave")
+        #expect(model.music.sourceLabel(for: snapshot) == "YouTube Music · Brave")
 
-        model.receive(hostPacket("Safari"))
-        #expect(model.connectedBrowser == nil, "only known browser names are accepted")
-        model.receive(hostPacket("Edge"))
-        model.disconnect()
-        #expect(model.connectedBrowser == nil)
+        model.music.receive(hostPacket("Safari"))
+        #expect(model.music.connectedBrowser == nil, "only known browser names are accepted")
+        model.music.receive(hostPacket("Edge"))
+        model.music.disconnect()
+        #expect(model.music.connectedBrowser == nil)
     }
 
     @Test("Names the browser that launched a process from its bundle")
