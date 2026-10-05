@@ -31,14 +31,14 @@ body:
     id: app-version
     attributes:
       label: Ririku version
-      description: Shown in Setup under Prototype (for example 0.3.0), or the commit you built.
+      description: Shown in Setup → About (for example 0.4.0), or the commit you built.
     validations:
       required: true
   - type: input
     id: extension-version
     attributes:
       label: Extension version
-      description: Shown in Setup → Chrome connection, step 4, or in chrome://extensions.
+      description: Shown in Setup → Browser connection, step 4, or on your browser's extensions page.
   - type: input
     id: macos
     attributes:

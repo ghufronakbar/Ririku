@@ -2,7 +2,7 @@
 
 English · [Bahasa Indonesia](user-guide.id.md) · [日本語](user-guide.ja.md)
 
-This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.3.1. Button names are shown as they appear in the English interface.
+This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.4.0. Button names are shown as they appear in the English interface.
 
 - [Before you start](#before-you-start)
 - [Install](#install)
@@ -126,7 +126,7 @@ A live preview of the expanded panel stays at the top; click a tab icon in it to
 
 Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on, and the Translate tab while Translate is on.
 
-**Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
+**Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets, and the Tray; the Clipboard and Translate tabs stay while they are on. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
 
 The widgets and their settings are described under [Widgets](#widgets).
 

@@ -1,16 +1,14 @@
 # Ririku
 
-**Lirik tersinkron dan kontrol musik di notch Mac Anda.**
+**Musik, lirik, dan widget praktis di notch Mac Anda.**
 
 [English](README.md) · Bahasa Indonesia · [日本語](README.ja.md)
 
-> Terjemahan dari README English untuk v0.3.1. Bila ada perbedaan, versi English yang berlaku.
+> Terjemahan dari README English untuk v0.4.0. Bila ada perbedaan, versi English yang berlaku.
 
-Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open source yang menampilkan lagu dari YouTube atau YouTube Music di browser Chromium tepat di bawah notch, lengkap dengan putar/jeda, lompat lagu, seek, dan lirik tersinkron per baris. Ririku adalah aplikasi native SwiftUI/AppKit dengan extension browser pendamping yang kecil, tanpa akun, dan tanpa telemetry.
+Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open source yang menampilkan lagu dari YouTube atau YouTube Music di browser Chromium tepat di bawah notch, lengkap dengan putar/jeda, lompat lagu, seek, dan lirik tersinkron per baris. Panel yang terbuka juga memuat halaman widget dan alat, seperti statistik sistem, timer, kalender, tray file dengan AirDrop, dan terjemahan di perangkat. Ririku adalah aplikasi native SwiftUI/AppKit dengan extension browser pendamping yang kecil, tanpa akun, dan tanpa telemetry.
 
-> **Status:** prototipe awal (v0.3.1). Unduh dari [Releases](https://github.com/ghufronakbar/Ririku/releases) atau [build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
-
-> **Berikutnya:** Ririku sedang dikembangkan menjadi aplikasi notch serbaguna, dengan widget dan alat seperti statistik sistem, timer, tray file dengan AirDrop, riwayat clipboard, kalender, dan terjemahan di perangkat. Belum ada yang masuk rilis; lihat [roadmap](docs/roadmap.md) (dalam bahasa Inggris).
+> **Status:** prototipe awal (v0.4.0). Unduh dari [Releases](https://github.com/ghufronakbar/Ririku/releases) atau [build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
 
 ## Fitur
 
@@ -20,12 +18,12 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 - **Mengikuti pemutar aktif:** berpindah ke tab browser yang mulai memutar, atau kunci satu tab secara manual.
 - **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen manual atau dari artwork, animasi, dan dukungan Reduce Motion.
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
-- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, kalender, cermin kamera, Tray untuk file dengan AirDrop, riwayat clipboard opsional, serta terjemahan di perangkat. Lainnya ada di [roadmap](docs/roadmap.md).
+- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, kalender, cermin kamera, Tray untuk file dengan AirDrop, riwayat clipboard opsional, serta terjemahan di perangkat. Rencana berikutnya ada di [roadmap](docs/roadmap.md).
 - **Sesuai kebiasaan Anda:** buka saat login, pilih layar, jeda hover, serta ikon Dock dan menu bar, tambahkan umpan balik haptik, atau rekam shortcut keyboard untuk panel. Semuanya opsional, di **Setup → Umum** dan **Setup → Keyboard**.
 
 ## Kebutuhan
 
-- macOS 14 Sonoma atau lebih baru. Dikembangkan di Apple silicon; Mac Intel belum diuji.
+- macOS 14 Sonoma atau lebih baru; Terjemahkan dan terjemahan lirik butuh macOS 15 Sequoia. Dikembangkan di Apple silicon; Mac Intel belum diuji.
 - MacBook dengan notch disarankan. Layar lain memakai layar utama, dan ini belum diuji penuh.
 - Browser Chromium (Chrome, Brave, Edge, Vivaldi, Opera, Chromium, atau Arc) dengan YouTube (`www.youtube.com`) atau YouTube Music (`music.youtube.com`). Baru Chrome yang teruji; Safari dan Firefox tidak didukung.
 
@@ -50,7 +48,7 @@ Lihat [panduan pengguna](docs/user-guide.id.md) untuk semua pengaturan, cara men
 
 ## Privasi
 
-Ririku tidak memakai akun dan tidak mengirim analitik. Saat pencarian lirik otomatis aktif, judul, artis, dan durasi lagu dikirim ke LRCLIB. Thumbnail diambil dari server gambar YouTube/Google. Extension hanya berjalan di YouTube dan YouTube Music dan membaca pemutar di halaman; extension tidak membaca cookies atau riwayat browsing. Lihat [Privasi](docs/user-guide.id.md#privasi) di panduan pengguna.
+Ririku tidak memakai akun dan tidak mengirim analitik. Saat pencarian lirik otomatis aktif, judul, artis, dan durasi lagu dikirim ke LRCLIB. Thumbnail diambil dari server gambar YouTube/Google. Extension hanya berjalan di YouTube dan YouTube Music dan membaca pemutar di halaman; extension tidak membaca cookies atau riwayat browsing. Widget bekerja di Mac Anda: kalender dan kamera meminta izin hanya saat Anda menambahkannya, riwayat clipboard nonaktif sampai Anda menyalakannya, dan terjemahan berjalan di perangkat. Lihat [Privasi](docs/user-guide.id.md#privasi) di panduan pengguna.
 
 Lirik berasal dari LRCLIB; ketersediaan dan timing-nya tidak dijamin. Ririku hanya menyimpan lirik di cache lokal dan tidak mengunduh audio maupun video.
 

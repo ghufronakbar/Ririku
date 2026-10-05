@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes how Ririku v0.3.0 works. The reasoning behind major choices is in the [decision log](../decisions.md), and the rules this design must keep are in [rules.md](../rules.md).
+This document describes how Ririku v0.4.0 works. The reasoning behind major choices is in the [decision log](../decisions.md), and the rules this design must keep are in [rules.md](../rules.md).
 
 ## Overview
 

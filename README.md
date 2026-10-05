@@ -1,14 +1,12 @@
 # Ririku
 
-**Synced lyrics and music controls in your Mac's notch.**
+**Music, lyrics, and handy widgets in your Mac's notch.**
 
 English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
-Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in a Chromium browser right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. It is a native SwiftUI/AppKit app with a small companion browser extension, no account, and no telemetry.
+Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in a Chromium browser right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. The expanded panel also holds pages of widgets and tools, such as system stats, timers, a calendar, a file tray with AirDrop, and on-device translation. It is a native SwiftUI/AppKit app with a small companion browser extension, no account, and no telemetry.
 
-> **Status:** early prototype (v0.3.1). Download it from [Releases](https://github.com/ghufronakbar/Ririku/releases) or [build it from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
-
-> **Coming next:** Ririku is growing into a multipurpose notch app, with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, and on-device translation. None of these are in a release yet; see the [roadmap](docs/roadmap.md).
+> **Status:** early prototype (v0.4.0). Download it from [Releases](https://github.com/ghufronakbar/Ririku/releases) or [build it from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
 
 ## Features
 
@@ -18,12 +16,12 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Follows the active player:** switches to the browser tab that starts playing, or lock one tab manually.
 - **Customizable:** island width, number of lyric lines, manual or artwork-based accent color, animations, and Reduce Motion support.
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
-- **Tabs and widgets:** arrange pages of widgets in the expanded panel in **Setup → Layout**: music with lyrics, system and network use, battery, a clock, Pomodoro, countdown and stopwatch timers, notes, a counter, days left, water, launchers for your apps, shortcuts, and bookmarks, a calendar, a camera mirror, a Tray for files with AirDrop, an optional clipboard history, and on-device translation. More are on the [roadmap](docs/roadmap.md).
+- **Tabs and widgets:** arrange pages of widgets in the expanded panel in **Setup → Layout**: music with lyrics, system and network use, battery, a clock, Pomodoro, countdown and stopwatch timers, notes, a counter, days left, water, launchers for your apps, shortcuts, and bookmarks, a calendar, a camera mirror, a Tray for files with AirDrop, an optional clipboard history, and on-device translation. Future plans are on the [roadmap](docs/roadmap.md).
 - **Fits your setup:** open at login, choose the display, the hover delays, and the Dock and menu bar icons, add haptic feedback, or record a keyboard shortcut for the panel. All optional, in **Setup → General** and **Setup → Keyboard**.
 
 ## Requirements
 
-- macOS 14 Sonoma or later. Developed on Apple silicon; Intel Macs are untested.
+- macOS 14 Sonoma or later; Translate and lyric translation need macOS 15 Sequoia. Developed on Apple silicon; Intel Macs are untested.
 - A MacBook with a notch is recommended. Other displays use the main screen, which is not fully tested.
 - A Chromium browser (Chrome, Brave, Edge, Vivaldi, Opera, Chromium, or Arc) with YouTube (`www.youtube.com`) or YouTube Music (`music.youtube.com`). Only Chrome is tested; Safari and Firefox are not supported.
 
@@ -48,7 +46,7 @@ See the [user guide](docs/user-guide.md) for all settings, troubleshooting, upda
 
 ## Privacy
 
-Ririku has no account and sends no analytics. When automatic lyrics search is on, the song title, artist, and duration are sent to LRCLIB. Thumbnails are loaded from YouTube/Google image servers. The extension only runs on YouTube and YouTube Music and reads the player on the page; it does not read cookies or browsing history. See [Privacy](docs/user-guide.md#privacy) in the user guide.
+Ririku has no account and sends no analytics. When automatic lyrics search is on, the song title, artist, and duration are sent to LRCLIB. Thumbnails are loaded from YouTube/Google image servers. The extension only runs on YouTube and YouTube Music and reads the player on the page; it does not read cookies or browsing history. Widgets work on your Mac: the calendar and camera ask for permission only when you add them, clipboard history is off until you turn it on, and translation runs on the device. See [Privacy](docs/user-guide.md#privacy) in the user guide.
 
 Lyrics come from LRCLIB; their availability and timing are not guaranteed. Ririku keeps lyrics only in a local cache and does not download audio or video.
 

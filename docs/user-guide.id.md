@@ -2,7 +2,7 @@
 
 [English](user-guide.md) · Bahasa Indonesia · [日本語](user-guide.ja.md)
 
-> Terjemahan dari panduan English untuk Ririku v0.3.1. Bila ada perbedaan, versi English yang berlaku.
+> Terjemahan dari panduan English untuk Ririku v0.4.0. Bila ada perbedaan, versi English yang berlaku.
 
 Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan browser ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau browser.
 
@@ -127,7 +127,7 @@ Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dal
 
 Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disembunyikan lewat **Tampilkan di panel**, tetapi tidak bisa dihapus. Tab Clipboard muncul selama riwayat clipboard aktif, dan tab Terjemahkan selama Terjemahkan aktif.
 
-**Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
+**Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem, serta Tray; tab Clipboard dan Terjemahkan tetap ada selama aktif. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
 
 Widget dan pengaturannya dijelaskan di [Widget](#widget).
 

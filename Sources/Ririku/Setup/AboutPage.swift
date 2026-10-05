@@ -13,7 +13,7 @@ struct AboutPage: View {
                     Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 64, height: 64).accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 4) {
                         Text(verbatim: "Ririku").font(.title2.bold())
-                        Text(verbatim: "Ririku 0.3.1 · Native macOS").font(.caption).foregroundStyle(.secondary)
+                        Text(verbatim: "Ririku 0.4.0 · Native macOS").font(.caption).foregroundStyle(.secondary)
                         Text(model.t("Synced lyrics and music controls in your Mac's notch.")).font(.callout)
                     }
                 }
