@@ -67,6 +67,7 @@ struct LayoutPage: View {
             }
             .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: 26, bottomTrailingRadius: 26))
             .environment(\.colorScheme, .dark)
+            .environment(\.panelPreview, true)
             .scaleEffect(scale, anchor: .topLeading)
             .frame(width: size.width * scale, height: size.height * scale, alignment: .topLeading)
     }
@@ -118,7 +119,7 @@ struct LayoutPage: View {
         let unused = model.layout.unusedKinds(of: WidgetKind.allCases.map(\.rawValue)).compactMap(WidgetKind.init(rawValue:))
         Menu(model.t("Add Widget")) {
             ForEach(unused, id: \.self) { kind in
-                Button { model.editLayout { $0.addWidget(kind: kind.rawValue, wide: kind == .music, toTab: tab.id) } } label: {
+                Button { model.addWidget(kind, toTab: tab.id) } label: {
                     Label(kind.title(model), systemImage: kind.icon)
                 }
             }

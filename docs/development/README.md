@@ -32,7 +32,7 @@ Sources/Ririku/            macOS app:
   Panel/                   notch panel: placement, hover, resize animation, size, tab bar and pages
   Music/                   MusicModel and lyrics, music views, bridge server, LRCLIB/artwork
                            clients, desktop players, browser setup
-  Widgets/                 widget registry, widget store and monitors, widget views
+  Widgets/                 widget registry, widget store and monitors, calendar and camera, widget views
   Tools/                   Tray with AirDrop, clipboard history
   Setup/                   Setup window: sidebar and one view per page
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay

@@ -9,6 +9,8 @@ struct WidgetsPage: View {
     @ObservedObject var widgets: WidgetStore
     @ObservedObject var tray: TrayStore
     @ObservedObject var clipboard: ClipboardStore
+    @ObservedObject var calendar: CalendarStore
+    @ObservedObject var camera: CameraMirror
     @State private var confirmClearClipboard = false
     @State private var availableShortcuts: [String]?
     @State private var bookmarkTitle = ""
@@ -56,6 +58,14 @@ struct WidgetsPage: View {
             Section { apps(data) } header: { header(.apps) }
             Section { shortcuts(data) } header: { header(.shortcuts) }
             Section { bookmarks(data) } header: { header(.bookmarks) }
+            Section { calendars } header: { header(.calendar) }
+            Section {
+                access(camera.access, pane: PrivacySettings.camera, denied: model.t("Ririku has no access to the camera.")) {
+                    camera.requestAccessIfNeeded()
+                }
+                Text(model.t("The camera turns on only when you click the Camera widget in the panel, and turns off when the panel closes or you change tabs. The picture is never recorded or saved."))
+                    .font(.caption).foregroundStyle(.secondary)
+            } header: { header(.camera) }
             Section {
                 LabeledContent(model.t("Files"), value: tray.items.count.formatted(.number.locale(model.locale)))
                 Button(model.t("Clear Tray")) { tray.clear() }.disabled(tray.items.isEmpty)
@@ -86,6 +96,9 @@ struct WidgetsPage: View {
             } header: { header(.notes) }
         }
         .task { availableShortcuts = await WidgetStore.availableShortcuts() }
+        .onAppear { refreshAccess() }
+        // Access can be changed in System Settings while Setup is open.
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in refreshAccess() }
     }
 
     // MARK: Sections
@@ -186,6 +199,51 @@ struct WidgetsPage: View {
         if let bookmarkError { Text(model.t(bookmarkError)).font(.caption).foregroundStyle(.orange) }
         Text(model.t("Bookmarks open in your default browser."))
             .font(.caption).foregroundStyle(.secondary)
+    }
+
+    @ViewBuilder
+    private var calendars: some View {
+        access(calendar.access, pane: PrivacySettings.calendars, denied: model.t("Ririku has no access to your calendars.")) {
+            calendar.requestAccessIfNeeded()
+        }
+        if calendar.access == .granted {
+            if calendar.calendars.isEmpty {
+                Text(model.t("No calendars found.")).font(.caption).foregroundStyle(.secondary)
+            }
+            ForEach(calendar.calendars) { item in
+                Toggle(isOn: Binding(get: { !calendar.hiddenCalendars.contains(item.id) }, set: { calendar.setCalendar(item.id, shown: $0) })) {
+                    HStack(spacing: 6) {
+                        Circle().fill(item.color).frame(width: 8, height: 8).accessibilityHidden(true)
+                        Text(item.title)
+                        if !item.source.isEmpty { Text(item.source).foregroundStyle(.secondary) }
+                    }
+                }
+            }
+        }
+        Text(model.t("The widget shows today's events that have not ended, or tomorrow's once today has none left. Ririku only reads your calendars: it never creates, changes, or deletes events."))
+            .font(.caption).foregroundStyle(.secondary)
+    }
+
+    /// The state of a permission, with a button to ask for it or to open System Settings once it was denied (R-WID-3).
+    @ViewBuilder
+    private func access(_ state: PermissionState, pane: String, denied: String, request: @escaping () -> Void) -> some View {
+        switch state {
+        case .granted:
+            LabeledContent(model.t("Access"), value: model.t("Allowed"))
+        case .notDetermined:
+            LabeledContent(model.t("Access")) { Button(model.t("Allow Access")) { request() } }
+            Text(model.t("macOS asks for access when you add the widget in Setup → Layout, or when you click Allow Access."))
+                .font(.caption).foregroundStyle(.secondary)
+        case .denied:
+            LabeledContent(model.t("Access")) { Button(model.t("Open System Settings")) { PrivacySettings.open(pane) } }
+            Text(denied + " " + model.t("Allow it in System Settings → Privacy & Security."))
+                .font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    private func refreshAccess() {
+        calendar.loadCalendars()
+        camera.refreshAccess()
     }
 
     // MARK: Helpers

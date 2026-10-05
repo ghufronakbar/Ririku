@@ -1,0 +1,4 @@
+/* Permission prompts shown by macOS. The keys are the Info.plist keys written by scripts/build-app.sh. */
+"NSAppleEventsUsageDescription" = "Ririku は、セットアップで有効にしたときに、Spotify またはミュージックで再生中の曲を読み取り、再生を操作します。";
+"NSCalendarsFullAccessUsageDescription" = "Ririku はカレンダーウィジェットに今日の予定を表示します。カレンダーを読み取るだけで、変更することはありません。";
+"NSCameraUsageDescription" = "Ririku は、カメラウィジェットをクリックしたときだけ、カメラの映像を鏡として表示します。録画や保存は行いません。";

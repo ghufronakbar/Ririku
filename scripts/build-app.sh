@@ -36,6 +36,8 @@ metadata = {
     "LSUIElement": True,
     "NSHighResolutionCapable": True,
     "NSAppleEventsUsageDescription": "Ririku reads the current song and controls playback in Spotify or Music when you enable them in Setup.",
+    "NSCalendarsFullAccessUsageDescription": "Ririku shows today's events in the Calendar widget. It only reads your calendars and never changes them.",
+    "NSCameraUsageDescription": "Ririku shows your camera as a mirror in the Camera widget, only after you click it. Nothing is recorded or saved.",
 }
 if (app / "Contents/Resources/AppIcon.icns").exists():
     metadata["CFBundleIconFile"] = "AppIcon"

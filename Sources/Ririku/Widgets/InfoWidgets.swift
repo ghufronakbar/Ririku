@@ -6,7 +6,7 @@ struct ClockWidgetView: View {
     let wide: Bool
 
     var body: some View {
-        let locale = timeLocale
+        let locale = model.timeLocale
         TimelineView(.everyMinute) { context in
             VStack(alignment: .leading, spacing: 4) {
                 Text(context.date.formatted(.dateTime.weekday(.wide).locale(locale))).widgetCaption()
@@ -18,13 +18,6 @@ struct ClockWidgetView: View {
             }
         }
         .widgetCard()
-    }
-
-    /// The interface language, with the 12- or 24-hour clock chosen in System Settings.
-    private var timeLocale: Locale {
-        var components = Locale.Components(locale: model.locale)
-        components.hourCycle = Locale.autoupdatingCurrent.hourCycle
-        return Locale(components: components)
     }
 }
 

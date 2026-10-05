@@ -1,0 +1,4 @@
+/* Permission prompts shown by macOS. The keys are the Info.plist keys written by scripts/build-app.sh. */
+"NSAppleEventsUsageDescription" = "Ririku membaca lagu yang sedang diputar dan mengontrol pemutaran di Spotify atau Music saat Anda mengaktifkannya di Setup.";
+"NSCalendarsFullAccessUsageDescription" = "Ririku menampilkan acara hari ini di widget Kalender. Ririku hanya membaca kalender Anda dan tidak pernah mengubahnya.";
+"NSCameraUsageDescription" = "Ririku menampilkan kamera Anda sebagai cermin di widget Kamera, hanya setelah Anda mengkliknya. Tidak ada yang direkam atau disimpan.";

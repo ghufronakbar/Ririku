@@ -3,8 +3,8 @@ import RirikuCore
 
 /// The widgets this version can show, in the order Setup lists them. The raw value is the `kind` stored in the layout.
 enum WidgetKind: String, CaseIterable {
-    case music, system, clock, pomodoro, countdown, stopwatch, network, battery
-    case notes, counter, daysLeft, water, apps, shortcuts, bookmarks
+    case music, system, clock, calendar, pomodoro, countdown, stopwatch, network, battery
+    case notes, counter, daysLeft, water, apps, shortcuts, bookmarks, camera
 
     static let identifiers = Set(allCases.map(\.rawValue))
 
@@ -13,6 +13,7 @@ enum WidgetKind: String, CaseIterable {
         case .music: return "music.note"
         case .system: return "cpu"
         case .clock: return "clock"
+        case .calendar: return "calendar"
         case .pomodoro: return "hourglass"
         case .countdown: return "timer"
         case .stopwatch: return "stopwatch"
@@ -25,6 +26,7 @@ enum WidgetKind: String, CaseIterable {
         case .apps: return "square.grid.3x3"
         case .shortcuts: return "command.square"
         case .bookmarks: return "bookmark"
+        case .camera: return "web.camera"
         }
     }
 
@@ -34,6 +36,7 @@ enum WidgetKind: String, CaseIterable {
         case .music: return model.t("Music")
         case .system: return model.t("System")
         case .clock: return model.t("Clock")
+        case .calendar: return model.t("Calendar")
         case .pomodoro: return model.t("Pomodoro")
         case .countdown: return model.t("Countdown")
         case .stopwatch: return model.t("Stopwatch")
@@ -46,6 +49,7 @@ enum WidgetKind: String, CaseIterable {
         case .apps: return model.t("Apps")
         case .shortcuts: return model.t("Shortcuts")
         case .bookmarks: return model.t("Bookmarks")
+        case .camera: return model.t("Camera")
         }
     }
 }
@@ -69,6 +73,7 @@ struct WidgetView: View {
             }
         case .system: SystemWidgetView(model: model, monitor: model.system, wide: wide)
         case .clock: ClockWidgetView(model: model, wide: wide)
+        case .calendar: CalendarWidgetView(model: model, calendar: model.calendar, wide: wide)
         case .pomodoro: PomodoroWidgetView(model: model, widgets: widgets, wide: wide)
         case .countdown: CountdownWidgetView(model: model, widgets: widgets, wide: wide)
         case .stopwatch: StopwatchWidgetView(model: model, widgets: widgets, wide: wide)
@@ -81,6 +86,7 @@ struct WidgetView: View {
         case .apps: AppsWidgetView(model: model, widgets: widgets)
         case .shortcuts: ShortcutsWidgetView(model: model, widgets: widgets)
         case .bookmarks: BookmarksWidgetView(model: model, widgets: widgets)
+        case .camera: CameraWidgetView(model: model, camera: model.camera)
         case nil: EmptyView()
         }
     }

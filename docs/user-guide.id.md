@@ -79,6 +79,7 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 - **Timer dan pemberitahuan:** selama tidak ada musik yang diputar, timer yang berjalan menampilkan ikon dan waktunya di samping notch. Saat timer selesai atau mulai mengisi daya, pemberitahuan singkat muncul di bawah notch sekitar tiga detik; panel tetap tertutup.
 - **Tray:** seret file ke notch untuk membuka panel di tab **Tray**, lalu lepas di sana. Klik file untuk membukanya, seret keluar ke app atau folder lain, atau Control-klik untuk **Tampilkan di Finder**, **Kirim dengan AirDrop**, dan **Hapus dari Tray**. Lepas file di kartu **AirDrop** untuk mengirimnya, atau klik kartu itu untuk mengirim seluruh isi Tray.
 - **Clipboard:** jika riwayat clipboard aktif, tab **Clipboard** menampilkan yang Anda salin. Klik sebuah item untuk menaruhnya kembali di clipboard, lalu paste di tempat yang Anda mau.
+- **Kalender dan Kamera:** widget Kalender menampilkan acara hari ini yang belum selesai; klik untuk membuka app Calendar. Klik widget Kamera untuk memakai kamera sebagai cermin; kamera mati saat panel tertutup atau Anda berpindah tab.
 - **Kontrol musik:** judul, artis, dan sumber; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
 - **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
@@ -145,6 +146,9 @@ Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di
 - **App:** hingga 12 app yang ditambahkan lewat **Tambah app…**; klik di panel untuk membukanya.
 - **Shortcut:** aktifkan hingga 12 shortcut dari app Shortcuts; panel hanya menjalankan shortcut itu, lewat perintah `shortcuts` milik Apple.
 - **Bookmark:** hingga 12 alamat web (http atau https) dengan judul opsional; dibuka di browser default Anda.
+- **Kalender:** acara hari ini yang belum selesai, atau acara besok jika hari ini sudah tidak ada lagi, dengan acara berjam sebelum acara sepanjang hari. Widget kecil menampilkan acara berikutnya, widget lebar hingga tiga. macOS meminta akses ke kalender Anda saat Anda menambahkan widget di **Setup → Tata letak**; Ririku hanya membacanya dan tidak pernah membuat, mengubah, atau menghapus acara. Matikan kalender yang tidak ingin Anda lihat; kalender baru otomatis ditampilkan.
+- **Kamera:** cermin dari kamera Mac Anda. macOS meminta akses kamera saat Anda menambahkan widget. Kamera hanya menyala saat Anda mengklik widget di panel, tidak pernah di pratinjau Setup, dan mati saat panel tertutup atau Anda berpindah tab; lampu hijau kamera menyala selama kamera aktif.
+- Jika Anda menolak akses ke kalender atau kamera, widget dan halaman ini menampilkan **Buka System Settings**, yang membuka **Privacy & Security** agar Anda bisa mengizinkannya; Ririku tidak meminta lagi dengan sendirinya. Ririku ditandatangani ad hoc, jadi macOS mungkin meminta izin ini lagi setelah update.
 - **Tray:** jumlah file dan **Kosongkan Tray**. Tray menyimpan tautan ke setiap file, bukan salinannya, dan tidak pernah memindahkan atau menghapus file: menghapus file dari Tray hanya melupakannya, dan file yang Anda hapus akan hilang dari Tray. Maksimal 50 file.
 - **Simpan riwayat clipboard** (nonaktif secara default): selama aktif, Ririku memeriksa clipboard dua kali per detik dan menyimpan 50 teks dan gambar terakhir yang Anda salin. Isi yang ditandai rahasia, sementara, atau dibuat otomatis oleh app, seperti kata sandi dari password manager, dan file yang disalin dilewati. Ririku tidak bisa melakukan paste untuk Anda, karena itu butuh izin Accessibility. **Hapus riwayat…** menghapus semua item, dan mematikan opsi ini juga menghapusnya.
 
@@ -259,6 +263,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
    - `io.github.lanstheprodigy.ririku.bridge.json` di folder `NativeMessagingHosts` setiap browser yang didaftarkan, misalnya `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (atau jalankan `defaults delete io.github.lanstheprodigy.ririku` di Terminal)
+5. Jika mau, hapus Ririku dari daftar di **System Settings → Privacy & Security** tempat Anda mengizinkannya: **Calendars**, **Camera**, dan **Automation**.
 
 ## Privasi
 
@@ -269,6 +274,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
 - **Widget:** widget bekerja di Mac Anda dan tidak menambah tujuan jaringan. Widget Sistem dan Jaringan membaca penghitung penggunaan hanya selama terlihat, dan widget Baterai membaca sumber daya. Catatan, penghitung, air minum, timer, serta daftar app, shortcut, dan bookmark Anda disimpan di preferensi Ririku. Shortcut dijalankan lewat perintah `shortcuts` milik Apple, app dibuka oleh macOS, dan bookmark dibuka di browser default Anda.
 - **Tray dan clipboard:** Tray menyimpan tautan ke file Anda di preferensi Ririku. Riwayat clipboard, jika aktif, disimpan di `~/Library/Application Support/Ririku/Clipboard`, hanya bisa dibaca oleh akun pengguna Anda, dan dihapus saat Anda mematikannya.
+- **Kalender dan kamera:** widget Kalender membaca acara di Mac Anda hanya selama terlihat dan tidak menyimpan satu pun; yang disimpan hanya daftar kalender yang Anda matikan. Gambar kamera hanya ditampilkan di panel: tidak pernah direkam, disimpan, atau dikirim.
 
 ## Keterbatasan
 

@@ -44,6 +44,8 @@ final class AppModel: ObservableObject {
     let widgets: WidgetStore
     let tray: TrayStore
     let clipboard: ClipboardStore
+    let calendar: CalendarStore
+    let camera: CameraMirror
     @Published private(set) var notice: PanelNotice?
     /// Width of the screen the panel was last placed on, so views lay out the panel for the same screen.
     var screenWidth: Double = 1512
@@ -96,7 +98,9 @@ final class AppModel: ObservableObject {
     var shortcutChanged: (() -> Void)?
     private let defaults: UserDefaults
 
-    init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard, clipboard: ClipboardStore? = nil) {
+    /// Tests pass their own clipboard, calendar, and camera, so they never touch the real ones or show a permission prompt.
+    init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard, clipboard: ClipboardStore? = nil,
+         calendar: CalendarStore? = nil, camera: CameraMirror? = nil) {
         self.defaults = defaults
         let storedLanguage = InterfaceLanguage(rawValue: defaults.string(forKey: "interfaceLanguage") ?? "") ?? .system
         interfaceLanguage = storedLanguage
@@ -106,6 +110,8 @@ final class AppModel: ObservableObject {
         widgets = WidgetStore(defaults: defaults)
         tray = TrayStore(defaults: defaults)
         self.clipboard = clipboard ?? ClipboardStore(defaults: defaults)
+        self.calendar = calendar ?? CalendarStore(defaults: defaults)
+        self.camera = camera ?? CameraMirror()
         system = SystemMonitor(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
@@ -142,6 +148,13 @@ final class AppModel: ObservableObject {
     }
 
     var locale: Locale { localizer.locale }
+
+    /// The interface language, with the 12- or 24-hour clock chosen in System Settings.
+    var timeLocale: Locale {
+        var components = Locale.Components(locale: locale)
+        components.hourCycle = Locale.autoupdatingCurrent.hourCycle
+        return Locale(components: components)
+    }
     func t(_ key: String, _ arguments: String...) -> String { localizer.string(key, arguments) }
     func t(_ text: UIText) -> String { localizer.string(text.key, text.arguments) }
 
@@ -189,6 +202,18 @@ final class AppModel: ObservableObject {
         var edited = layout
         change(&edited)
         setLayout(edited)
+    }
+
+    /// Adds a widget from Setup. A widget that needs a permission asks for it now, when the user turns it on
+    /// (R-WID-3); the returned task ends when the prompt is answered.
+    @discardableResult
+    func addWidget(_ kind: WidgetKind, toTab tabID: String) -> Task<Void, Never>? {
+        editLayout { $0.addWidget(kind: kind.rawValue, wide: kind == .music, toTab: tabID) }
+        switch kind {
+        case .calendar: return calendar.requestAccessIfNeeded()
+        case .camera: return camera.requestAccessIfNeeded()
+        default: return nil
+        }
     }
 
     /// The default layout, keeping the Clipboard tab while clipboard history is on.

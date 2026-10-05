@@ -14,7 +14,7 @@ Each stage lands as one or more focused pull requests with tests, translations (
 | 3 | Tabs and widget framework, layout editor in Setup with a live preview, default layout, Music and System widgets | Done on 2026-10-05 |
 | 4 | Local widgets: clock and date, Pomodoro, countdown, stopwatch, network speed, battery, notes, counter, days left, water, apps, shortcuts, bookmarks | Done on 2026-10-05 |
 | 5 | Tray with AirDrop, then clipboard history | Done on 2026-10-05 |
-| 6 | Calendar, camera mirror, Translate, then lyric translation | 0.6.0 |
+| 6 | Calendar, camera mirror, Translate, then lyric translation | Calendar and camera mirror done on 2026-10-05; Translate and lyric translation 0.6.0 |
 
 ## Panel layout
 

@@ -129,6 +129,12 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 - `PanelView` accepts file drags; when one enters, `PanelController.showTrayForDrag` opens the panel on the Tray and watches the pointer as hover does (R-UI-3, D-025). A held mouse button keeps it open for the whole drag.
 - `ClipboardStore` is off by default. While on, it compares `NSPasteboard.changeCount` every 0.5 s (R-WID-4) and keeps text up to 100,000 characters and images up to 20 MB as PNG files, at most 50 entries, newest first; copying the same content again moves it up. It skips the nspasteboard.org concealed, transient, and auto-generated types and copied files (R-WID-6). The history is a JSON file in `~/Library/Application Support/Ririku/Clipboard` (folder mode 0700, file 0600). Copying an entry back writes the pasteboard and records its change count, so it is not taken as a new entry; Ririku never pastes, which would need Accessibility permission (R-SEC-3). Turning it off stops the timer and deletes the folder, and `AppModel.setClipboardHistory` adds or removes the Clipboard tab.
 
+## Calendar and camera
+
+- `CalendarStore` and `CameraMirror` read their permission status at launch without asking. `AppModel.addWidget` asks only when the Calendar or Camera widget is added in Setup and the user has never answered (R-WID-3); a widget without access shows why and a button that asks once, or opens **Privacy & Security** after a denial. Tests pass their own status and request closures, so they never show a prompt.
+- `CalendarStore` counts the Calendar widgets on screen. While one is visible it reads the events from the start of today to the end of tomorrow in the calendars not turned off in Setup, builds an `Agenda` (in `RirikuCore`), and schedules one `Timer` for the next start, end, or midnight from `Agenda.nextChange`; it also reloads on `EKEventStoreChanged`. When none is visible it stops both (R-WID-4). It only reads (R-WID-8), keeps the events in memory, and clicking the widget opens the Calendar app.
+- `CameraMirror` makes its `AVCaptureSession` on the first click. `start(for:)` remembers which widget view turned it on, picks the default camera on a serial queue, and starts the session; the view shows an `AVCaptureVideoPreviewLayer`, mirrored. The view's `onDisappear` calls `stop(for:)`, so closing the panel or changing the tab stops the camera (R-WID-5). Setup's preview sets `panelPreview` in the environment, where the camera cannot be turned on. Frames go only to the preview layer.
+
 ## Localization
 
 Interface text is written in English in code and translated through `Localization/<code>.lproj/Localizable.strings`. `Localizer` loads the chosen `.lproj` sub-bundle directly so the language can change without restarting. Stored statuses are `UIText` (key plus arguments) and are translated at render time. See [localization.md](localization.md).
@@ -181,5 +187,6 @@ Changing any of these breaks existing installations; document migration steps in
 - The bridge has no network listener. The socket and native host manifest are user-only, and the host only accepts the fixed extension ID. Because the extension key is public, another unpacked extension could reuse the ID, but only if the user installs it; the bridge only exposes player snapshots and a small command set.
 - Outbound traffic is limited to LRCLIB and image hosts. There is no telemetry. Widgets and tools add no destination.
 - Clipboard history is off by default, skips content marked as secret, and is stored only on this Mac; the Tray stores links, not files. Neither is logged (R-SEC-6).
+- Calendar and camera access are asked for only when their widget is added (R-WID-3). Events are only read and kept in memory (R-WID-8); camera frames are only shown, never recorded, saved, or sent (R-WID-5).
 
 Report vulnerabilities as described in [SECURITY.md](../../SECURITY.md).

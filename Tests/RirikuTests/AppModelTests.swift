@@ -769,3 +769,76 @@ struct TrayClipboardTests {
         #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
     }
 }
+
+/// A permission whose answer the test chooses, counting how often macOS would have shown its prompt.
+@MainActor
+private final class FakePermission {
+    var state: PermissionState
+    let answer: PermissionState
+    private(set) var prompts = 0
+
+    init(_ state: PermissionState, answer: PermissionState = .granted) {
+        self.state = state
+        self.answer = answer
+    }
+
+    func request() async -> Bool {
+        prompts += 1
+        state = answer
+        return answer == .granted
+    }
+}
+
+@MainActor
+@Suite("Calendar and camera")
+struct CalendarCameraTests {
+    @Test("Adding the Calendar or Camera widget asks for access once; other widgets ask for nothing")
+    func asksWhenAdded() async {
+        let defaults = MemoryDefaults()
+        let calendarAccess = FakePermission(.notDetermined, answer: .denied)
+        let cameraAccess = FakePermission(.notDetermined)
+        let model = AppModel(defaults: defaults,
+                             calendar: CalendarStore(defaults: defaults, status: { calendarAccess.state }, requester: calendarAccess.request),
+                             camera: CameraMirror(status: { cameraAccess.state }, requester: cameraAccess.request))
+        #expect(model.calendar.access == .notDetermined, "nothing is asked at launch (R-WID-3)")
+        #expect(calendarAccess.prompts == 0 && cameraAccess.prompts == 0)
+        let home = model.layout.tabs[0].id
+        #expect(model.addWidget(.clock, toTab: home) == nil)
+        await model.addWidget(.calendar, toTab: home)?.value
+        await model.addWidget(.camera, toTab: home)?.value
+        #expect(model.layout.tabs[0].widgets.map(\.kind).suffix(3) == ["clock", "calendar", "camera"])
+        #expect(calendarAccess.prompts == 1 && cameraAccess.prompts == 1)
+        #expect(model.calendar.access == .denied)
+        #expect(model.camera.access == .granted)
+
+        let calendarWidget = model.layout.tabs[0].widgets.first { $0.kind == "calendar" }!.id
+        model.editLayout { $0.removeWidget(id: calendarWidget) }
+        #expect(model.addWidget(.calendar, toTab: home) == nil, "a denied permission is never asked again")
+        #expect(model.calendar.requestAccessIfNeeded() == nil)
+        #expect(calendarAccess.prompts == 1)
+    }
+
+    @Test("Without access, the Calendar widget reads nothing and the camera stays off")
+    func staysOffWithoutAccess() {
+        let calendar = CalendarStore(defaults: MemoryDefaults(), status: { .denied })
+        calendar.start()
+        #expect(calendar.agenda == nil)
+        #expect(calendar.calendars.isEmpty)
+        calendar.stop()
+
+        let camera = CameraMirror(status: { .denied })
+        let widget = UUID()
+        camera.start(for: widget)
+        #expect(camera.owner == nil)
+    }
+
+    @Test("Calendars turned off in Setup are saved, and other calendars stay on")
+    func savesHiddenCalendars() {
+        let defaults = MemoryDefaults()
+        let calendar = CalendarStore(defaults: defaults, status: { .denied })
+        calendar.setCalendar("work", shown: false)
+        calendar.setCalendar("family", shown: false)
+        calendar.setCalendar("family", shown: true)
+        #expect(CalendarStore(defaults: defaults, status: { .denied }).hiddenCalendars == ["work"])
+    }
+}

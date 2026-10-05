@@ -78,6 +78,7 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 - **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
 - **Tray:** drag files onto the notch to open the panel on the **Tray** tab, and drop them there. Click a file to open it, drag it out to another app or folder, or Control-click it for **Show in Finder**, **Send with AirDrop**, and **Remove from Tray**. Drop files on the **AirDrop** card to send them, or click the card to send everything on the Tray.
 - **Clipboard:** with clipboard history on, the **Clipboard** tab lists what you copied. Click an entry to put it back on the clipboard, then paste it where you want.
+- **Calendar and Camera:** the Calendar widget shows today's events that have not ended; click it to open the Calendar app. Click the Camera widget to use your camera as a mirror; it turns off when the panel closes or you change tabs.
 - **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
@@ -144,6 +145,9 @@ Settings for the widgets; choose where they appear in **Setup → Layout**. In t
 - **Apps:** up to 12 apps you add with **Add Apps…**; click one in the panel to open it.
 - **Shortcuts:** turn on up to 12 shortcuts from the Shortcuts app; the panel runs only those, through Apple's `shortcuts` command.
 - **Bookmarks:** up to 12 web addresses (http or https) with an optional title; they open in your default browser.
+- **Calendar:** today's events that have not ended, or tomorrow's once today has none left, with timed events before all-day ones. The small widget shows the next event, the wide widget up to three. macOS asks for access to your calendars when you add the widget in **Setup → Layout**; Ririku only reads them and never creates, changes, or deletes an event. Turn off calendars you do not want to see; new calendars are shown.
+- **Camera:** a mirror from your Mac's camera. macOS asks for camera access when you add the widget. The camera turns on only when you click the widget in the panel, never in Setup's preview, and turns off when the panel closes or you change tabs; the green camera light shows while it is on.
+- If you denied access to the calendars or the camera, the widget and this page show **Open System Settings**, which opens **Privacy & Security** so you can allow it; Ririku does not ask again by itself. Ririku is signed ad hoc, so macOS may ask for these permissions again after an update.
 - **Tray:** the number of files and **Clear Tray**. The Tray keeps a link to each file, never a copy, and never moves or deletes a file: removing one from the Tray only forgets it, and a file you delete disappears from the Tray. At most 50 files.
 - **Keep clipboard history** (off by default): while on, Ririku looks at the clipboard twice a second and keeps the last 50 texts and images you copy. It skips content that apps mark as secret, transient, or generated, such as passwords from a password manager, and copied files. Ririku cannot paste for you, which would need Accessibility permission. **Clear History…** deletes the entries, and turning the option off deletes them too.
 
@@ -258,6 +262,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
    - `io.github.lanstheprodigy.ririku.bridge.json` in the `NativeMessagingHosts` folder of each browser you registered, for example `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (or run `defaults delete io.github.lanstheprodigy.ririku` in Terminal)
+5. Optionally remove Ririku from the lists in **System Settings → Privacy & Security** where you allowed it: **Calendars**, **Camera**, and **Automation**.
 
 ## Privacy
 
@@ -268,6 +273,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
 - **Widgets:** the widgets work on your Mac and add no network destination. The System and Network widgets read usage counters only while visible, and the Battery widget reads the power source. Notes, the counter, water, timers, and your app, shortcut, and bookmark lists are stored in Ririku's preferences. Shortcuts run through Apple's `shortcuts` command, apps open through macOS, and bookmarks open in your default browser.
 - **Tray and clipboard:** the Tray keeps links to your files in Ririku's preferences. Clipboard history, when on, is kept in `~/Library/Application Support/Ririku/Clipboard`, readable only by your user account, and deleted when you turn it off.
+- **Calendar and camera:** the Calendar widget reads events on your Mac only while it is visible and stores none of them; only the calendars you turned off are saved. The camera picture is only shown in the panel: it is never recorded, saved, or sent.
 
 ## Known limitations
 
