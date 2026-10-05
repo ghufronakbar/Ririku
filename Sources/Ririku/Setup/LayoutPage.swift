@@ -23,7 +23,7 @@ struct LayoutPage: View {
             Divider()
             Form {
                 ForEach(model.layout.tabs) { tab in
-                    Section { pageEditor(tab) } header: { pageHeader(tab) }
+                    Section { if tab.isPage { pageEditor(tab) } else { toolEditor(tab) } } header: { pageHeader(tab) }
                 }
                 Section {
                     HStack {
@@ -82,13 +82,26 @@ struct LayoutPage: View {
                     .disabled(model.layout.tabs.first?.id == tab.id)
                 Button(model.t("Move Right")) { model.editLayout { $0.moveTab(id: tab.id, by: 1) } }
                     .disabled(model.layout.tabs.last?.id == tab.id)
-                Divider()
-                Button(model.t("Delete Page"), role: .destructive) { model.editLayout { $0.removeTab(id: tab.id) } }
-                    .disabled(model.visibleTabs.count <= 1)
+                if tab.isPage {
+                    Divider()
+                    Button(model.t("Delete Page"), role: .destructive) { model.editLayout { $0.removeTab(id: tab.id) } }
+                        .disabled(model.visibleTabs.count <= 1)
+                }
             } label: { Image(systemName: "ellipsis.circle") }
             .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
             .accessibilityLabel(model.t("Page actions"))
         }
+    }
+
+    /// A tool cannot be deleted, only hidden; it keeps its contents while hidden.
+    @ViewBuilder
+    private func toolEditor(_ tab: PanelTab) -> some View {
+        Toggle(model.t("Show in the panel"), isOn: Binding(get: { !tab.hidden }, set: { shown in
+            model.editLayout { $0.setHidden(!shown, forTab: tab.id) }
+        }))
+        .disabled(!tab.hidden && model.visibleTabs.count <= 1)
+        Text(model.t("A tool fills its tab. Settings for it are in Setup → Widgets."))
+            .font(.caption).foregroundStyle(.secondary)
     }
 
     @ViewBuilder
@@ -116,7 +129,7 @@ struct LayoutPage: View {
 
     private func widgetRow(_ slot: WidgetSlot, in tab: PanelTab) -> some View {
         let kind = WidgetKind(rawValue: slot.kind)
-        let others = model.layout.tabs.filter { $0.id != tab.id }
+        let others = model.layout.tabs.filter { $0.id != tab.id && $0.isPage }
         return HStack {
             Image(systemName: kind?.icon ?? "questionmark.square").frame(width: 20).foregroundStyle(.secondary).accessibilityHidden(true)
             Text(kind?.title(model) ?? slot.kind)

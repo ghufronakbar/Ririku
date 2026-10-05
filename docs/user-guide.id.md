@@ -77,6 +77,8 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**.
 - **Tab dan widget:** panel terbuka menampilkan satu halaman widget. **Beranda** dimulai dengan kontrol musik dan widget **Sistem** (penggunaan prosesor, memori, dan disk). Tombol gear di kanan notch membuka **Setup**; jika ada lebih dari satu halaman, ikon tab muncul di kiri notch. Panel selalu terbuka di halaman pertama. Atur halaman di **Setup → Tata letak**.
 - **Timer dan pemberitahuan:** selama tidak ada musik yang diputar, timer yang berjalan menampilkan ikon dan waktunya di samping notch. Saat timer selesai atau mulai mengisi daya, pemberitahuan singkat muncul di bawah notch sekitar tiga detik; panel tetap tertutup.
+- **Tray:** seret file ke notch untuk membuka panel di tab **Tray**, lalu lepas di sana. Klik file untuk membukanya, seret keluar ke app atau folder lain, atau Control-klik untuk **Tampilkan di Finder**, **Kirim dengan AirDrop**, dan **Hapus dari Tray**. Lepas file di kartu **AirDrop** untuk mengirimnya, atau klik kartu itu untuk mengirim seluruh isi Tray.
+- **Clipboard:** jika riwayat clipboard aktif, tab **Clipboard** menampilkan yang Anda salin. Klik sebuah item untuk menaruhnya kembali di clipboard, lalu paste di tempat yang Anda mau.
 - **Kontrol musik:** judul, artis, dan sumber; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
 - **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
@@ -121,6 +123,8 @@ Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dal
 - Widget-widgetnya dari kiri ke kanan, masing-masing **Kecil** (satu unit) atau **Lebar** (dua unit). Menu **…** di samping widget memindahkannya ke kiri, ke kanan, atau ke halaman lain, atau menghapusnya.
 - **Tambah widget** menampilkan widget yang belum ada di halaman mana pun; setiap widget hanya bisa berada di satu halaman.
 
+Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disembunyikan lewat **Tampilkan di panel**, tetapi tidak bisa dihapus. Tab Clipboard muncul selama riwayat clipboard aktif.
+
 **Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
 
 Widget dan pengaturannya dijelaskan di [Widget](#widget).
@@ -141,6 +145,8 @@ Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di
 - **App:** hingga 12 app yang ditambahkan lewat **Tambah app…**; klik di panel untuk membukanya.
 - **Shortcut:** aktifkan hingga 12 shortcut dari app Shortcuts; panel hanya menjalankan shortcut itu, lewat perintah `shortcuts` milik Apple.
 - **Bookmark:** hingga 12 alamat web (http atau https) dengan judul opsional; dibuka di browser default Anda.
+- **Tray:** jumlah file dan **Kosongkan Tray**. Tray menyimpan tautan ke setiap file, bukan salinannya, dan tidak pernah memindahkan atau menghapus file: menghapus file dari Tray hanya melupakannya, dan file yang Anda hapus akan hilang dari Tray. Maksimal 50 file.
+- **Simpan riwayat clipboard** (nonaktif secara default): selama aktif, Ririku memeriksa clipboard dua kali per detik dan menyimpan 50 teks dan gambar terakhir yang Anda salin. Isi yang ditandai rahasia, sementara, atau dibuat otomatis oleh app, seperti kata sandi dari password manager, dan file yang disalin dilewati. Ririku tidak bisa melakukan paste untuk Anda, karena itu butuh izin Accessibility. **Hapus riwayat…** menghapus semua item, dan mematikan opsi ini juga menghapusnya.
 
 ### Tampilan
 
@@ -249,7 +255,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 2. Di halaman extension browser, hapus **Ririku — Browser Bridge**.
 3. Pindahkan **Ririku.app** ke Trash.
 4. Opsional, hapus datanya. Di Finder pilih **Go → Go to Folder…** lalu hapus hanya item berikut:
-   - `~/Library/Application Support/Ririku`
+   - `~/Library/Application Support/Ririku` (salinan extension browser dan riwayat clipboard)
    - `io.github.lanstheprodigy.ririku.bridge.json` di folder `NativeMessagingHosts` setiap browser yang didaftarkan, misalnya `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (atau jalankan `defaults delete io.github.lanstheprodigy.ririku` di Terminal)
@@ -262,6 +268,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - **Extension browser:** hanya berjalan di `www.youtube.com` dan `music.youtube.com` dan hanya memakai izin `nativeMessaging`. Extension membaca status pemutar, judul, artis, alamat artwork, dan caption yang terlihat di halaman, lalu mengirimkannya hanya ke app Ririku di Mac Anda. Extension tidak membaca cookies, kata sandi, atau riwayat browsing.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
 - **Widget:** widget bekerja di Mac Anda dan tidak menambah tujuan jaringan. Widget Sistem dan Jaringan membaca penghitung penggunaan hanya selama terlihat, dan widget Baterai membaca sumber daya. Catatan, penghitung, air minum, timer, serta daftar app, shortcut, dan bookmark Anda disimpan di preferensi Ririku. Shortcut dijalankan lewat perintah `shortcuts` milik Apple, app dibuka oleh macOS, dan bookmark dibuka di browser default Anda.
+- **Tray dan clipboard:** Tray menyimpan tautan ke file Anda di preferensi Ririku. Riwayat clipboard, jika aktif, disimpan di `~/Library/Application Support/Ririku/Clipboard`, hanya bisa dibaca oleh akun pengguna Anda, dan dihapus saat Anda mematikannya.
 
 ## Keterbatasan
 

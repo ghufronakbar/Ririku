@@ -7,6 +7,9 @@ import RirikuCore
 struct WidgetsPage: View {
     @ObservedObject var model: AppModel
     @ObservedObject var widgets: WidgetStore
+    @ObservedObject var tray: TrayStore
+    @ObservedObject var clipboard: ClipboardStore
+    @State private var confirmClearClipboard = false
     @State private var availableShortcuts: [String]?
     @State private var bookmarkTitle = ""
     @State private var bookmarkAddress = ""
@@ -53,6 +56,25 @@ struct WidgetsPage: View {
             Section { apps(data) } header: { header(.apps) }
             Section { shortcuts(data) } header: { header(.shortcuts) }
             Section { bookmarks(data) } header: { header(.bookmarks) }
+            Section {
+                LabeledContent(model.t("Files"), value: tray.items.count.formatted(.number.locale(model.locale)))
+                Button(model.t("Clear Tray")) { tray.clear() }.disabled(tray.items.isEmpty)
+                Text(model.t("The Tray keeps a link to each file, never a copy, and never moves or deletes the file. Removing a file from the Tray only forgets it, and a file you delete disappears from the Tray."))
+                    .font(.caption).foregroundStyle(.secondary)
+            } header: { Label(model.t("Tray"), systemImage: "tray") }
+            Section {
+                Toggle(model.t("Keep clipboard history"), isOn: Binding(get: { clipboard.enabled }, set: { model.setClipboardHistory($0) }))
+                Text(model.t("While on, Ririku looks at the clipboard twice a second and keeps the last 50 texts and images you copy, on this Mac only. Content that apps mark as secret, such as passwords from a password manager, and copied files are skipped. Turning it off deletes the history."))
+                    .font(.caption).foregroundStyle(.secondary)
+                if clipboard.enabled {
+                    LabeledContent(model.t("Entries"), value: clipboard.entries.count.formatted(.number.locale(model.locale)))
+                    Button(model.t("Clear History…"), role: .destructive) { confirmClearClipboard = true }
+                        .disabled(clipboard.entries.isEmpty)
+                        .confirmationDialog(model.t("Clear the clipboard history?"), isPresented: $confirmClearClipboard) {
+                            Button(model.t("Clear History"), role: .destructive) { clipboard.clear() }
+                        } message: { Text(model.t("This cannot be undone.")) }
+                }
+            } header: { Label(model.t("Clipboard"), systemImage: "doc.on.clipboard") }
             Section {
                 Text(model.t("The note is saved on this Mac as you type in the panel."))
                     .font(.caption).foregroundStyle(.secondary)

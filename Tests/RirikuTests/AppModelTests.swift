@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import Testing
 @testable import Ririku
@@ -440,7 +441,7 @@ struct PanelTabTests {
         }
         let restored = AppModel(defaults: defaults)
         #expect(restored.layout == model.layout)
-        #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "Stats"])
+        #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "Tray", "Stats"])
         restored.resetLayout()
         #expect(restored.layout == .standard)
     }
@@ -456,7 +457,7 @@ struct PanelTabTests {
     func namesPages() {
         let (model, _) = makeModel()
         model.editLayout { $0.addPage(); $0.addPage() }
-        #expect(model.visibleTabs.map(model.tabName) == ["Home", "Page 2", "Page 3"])
+        #expect(model.visibleTabs.map(model.tabName) == ["Home", "Tray", "Page 2", "Page 3"], "pages are numbered among pages only")
         model.editLayout { $0.renameTab(id: "home", to: "  ") }
         #expect(model.tabName(model.visibleTabs[0]) == "Home", "a blank name keeps the default")
     }
@@ -487,7 +488,7 @@ struct PanelTabTests {
         #expect(layout.width == 518)
         #expect(layout.slotWidths["music"] == 312)
         #expect(layout.slotWidths["system"] == 150)
-        #expect(!layout.showsTabs, "one tab needs no tab bar")
+        #expect(layout.showsTabs, "Home and the Tray")
         _ = model.panelSize(screenWidth: 1512)
         #expect(model.lyricTextWidth == 312)
     }
@@ -500,11 +501,15 @@ struct PanelTabTests {
         model.expanded = true
         var page = ""
         model.editLayout { page = $0.addPage()!; $0.moveWidget(id: "system", toTab: page) }
-        let systemPage = model.visibleTabs[1]
+        let systemPage = model.visibleTabs.first { $0.id == page }!
         #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).height == 34 + 12 + SystemWidgetLayout.height + 14)
         #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).showsTabs)
         model.editLayout { $0.removeWidget(id: "system") }
-        #expect(model.expandedLayout(for: model.visibleTabs[1], screenWidth: 1512).height == 34 + 12 + PanelMetrics.emptyPageHeight + 14)
+        let emptyPage = model.visibleTabs.first { $0.id == page }!
+        #expect(model.expandedLayout(for: emptyPage, screenWidth: 1512).height == 34 + 12 + PanelMetrics.emptyPageHeight + 14)
+        let tray = model.trayTab!
+        #expect(model.expandedLayout(for: tray, screenWidth: 1512).height == 34 + 12 + ToolKind.tray.contentHeight + 14)
+        #expect(model.expandedLayout(for: tray, screenWidth: 1512).width == 518, "a tool needs three units")
         model.editLayout { $0.setWide(false, forWidget: "music") }
         #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).height == 34 + 12 + MusicWidgetLayout.smallHeight(error: false) + 14)
         model.editLayout { while $0.addPage() != nil {} }
@@ -624,11 +629,12 @@ struct LocalWidgetTests {
         let (model, _) = quietModel()
         model.notchWidth = 180
         model.topHeight = 34
+        var pageID = ""
         model.editLayout { layout in
-            let page = layout.addPage()!
-            for kind in ["clock", "pomodoro", "notes"] { layout.addWidget(kind: kind, wide: false, toTab: page) }
+            pageID = layout.addPage()!
+            for kind in ["clock", "pomodoro", "notes"] { layout.addWidget(kind: kind, wide: false, toTab: pageID) }
         }
-        let page = model.visibleTabs[1]
+        let page = model.visibleTabs.first { $0.id == pageID }!
         #expect(page.widgets.map(\.kind) == ["clock", "pomodoro", "notes"])
         let layout = model.expandedLayout(for: page, screenWidth: 1512)
         #expect(layout.height == 34 + 12 + WidgetCardLayout.height + 14)
@@ -661,5 +667,105 @@ struct SystemReadingTests {
         let defaults = MemoryDefaults()
         defaults.set(7.0, forKey: "lastCPUUsage")
         #expect(SystemMonitor(defaults: defaults).cpu == nil)
+    }
+}
+
+@MainActor
+@Suite("Tray and clipboard")
+struct TrayClipboardTests {
+    private func temporaryFolder() throws -> URL {
+        let folder = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-test-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        return folder
+    }
+
+    @Test("The Tray keeps links, follows moved files, forgets deleted ones, and never deletes a file")
+    func keepsFileLinks() throws {
+        let folder = try temporaryFolder()
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let report = folder.appendingPathComponent("Report.txt")
+        let photo = folder.appendingPathComponent("Photo.txt")
+        try Data("a".utf8).write(to: report)
+        try Data("b".utf8).write(to: photo)
+        let defaults = MemoryDefaults()
+        let tray = TrayStore(defaults: defaults)
+        tray.add([report, photo, report, folder.appendingPathComponent("missing.txt")])
+        #expect(tray.items.map(\.name) == ["Report.txt", "Photo.txt"])
+        #expect(TrayStore(defaults: defaults).items.count == 2, "the links are saved")
+
+        let moved = folder.appendingPathComponent("Report final.txt")
+        try FileManager.default.moveItem(at: report, to: moved)
+        try FileManager.default.removeItem(at: photo)
+        tray.refresh()
+        #expect(tray.items.map(\.name) == ["Report final.txt"], "a moved file is followed and a deleted one forgotten")
+
+        tray.clear()
+        #expect(tray.items.isEmpty)
+        #expect(FileManager.default.fileExists(atPath: moved.path), "clearing the Tray never deletes the file (R-WID-7)")
+    }
+
+    @Test("Clipboard history keeps text and images, skips secrets, and deletes everything when turned off")
+    func keepsClipboardHistory() throws {
+        let folder = try temporaryFolder().appendingPathComponent("Clipboard", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: folder.deletingLastPathComponent()) }
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name("ririku-test-\(UUID().uuidString)"))
+        defer { pasteboard.releaseGlobally() }
+        let defaults = MemoryDefaults()
+        let clipboard = ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder)
+
+        pasteboard.clearContents()
+        pasteboard.setString("before", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.isEmpty, "nothing is read while history is off")
+
+        clipboard.setEnabled(true)
+        clipboard.poll()
+        #expect(clipboard.entries.isEmpty, "what was already on the clipboard is not taken")
+        pasteboard.clearContents()
+        pasteboard.setString("hello", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello"])
+
+        pasteboard.clearContents()
+        pasteboard.declareTypes([.string, NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType")], owner: nil)
+        pasteboard.setString("secret", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello"], "content marked as secret is skipped (R-WID-6)")
+
+        let image = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 4, pixelsHigh: 4, bitsPerSample: 8, samplesPerPixel: 4,
+                                     hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+        pasteboard.clearContents()
+        pasteboard.setData(image.representation(using: .png, properties: [:]), forType: .png)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.kind) == [.image, .text])
+        #expect(FileManager.default.fileExists(atPath: clipboard.imageURL(clipboard.entries[0]).path))
+
+        clipboard.copy(clipboard.entries[1])
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello", nil], "copying back moves the entry up without a duplicate")
+        #expect(pasteboard.string(forType: .string) == "hello")
+
+        #expect(ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder).entries.count == 2, "the history survives a restart")
+
+        clipboard.setEnabled(false)
+        #expect(clipboard.entries.isEmpty)
+        #expect(!FileManager.default.fileExists(atPath: folder.path), "turning history off deletes it")
+    }
+
+    @Test("The Clipboard tab exists exactly while clipboard history is on")
+    func managesClipboardTab() throws {
+        let folder = try temporaryFolder()
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let defaults = MemoryDefaults()
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name("ririku-test-\(UUID().uuidString)"))
+        defer { pasteboard.releaseGlobally() }
+        let model = AppModel(defaults: defaults, clipboard: ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder))
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
+        model.setClipboardHistory(true)
+        #expect(model.layout.tabs.last?.kind == PanelTab.clipboardKind)
+        model.resetLayout()
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "clipboard"], "resetting keeps the tab while history is on")
+        model.setClipboardHistory(false)
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
     }
 }

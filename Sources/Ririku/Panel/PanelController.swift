@@ -38,6 +38,7 @@ final class PanelController: NSObject {
         hosting.sizingOptions = []
         panel.contentView = hosting
         model.geometryChanged = { [weak self] in self?.position() }
+        model.fileDragEntered = { [weak self] in self?.showTrayForDrag() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
     }
@@ -49,6 +50,17 @@ final class PanelController: NSObject {
 
     /// Opened from the menu bar item, the panel takes focus and stays open until the pointer has visited it.
     func expandFromMenu() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
+
+    /// A file dragged onto the notch opens the panel on the Tray, like hovering does. It closes once the pointer
+    /// has left with no button held, so it stays open for the whole drag.
+    func showTrayForDrag() {
+        guard let tray = model.trayTab else { return }
+        hoverWork?.cancel()
+        pinnedOpen = false
+        model.expanded = true
+        model.selectedTabID = tray.id
+        watchPointer()
+    }
 
     /// The keyboard shortcut opens the panel like the menu item does, and closes it when it is open.
     func toggleFromShortcut() { model.expanded ? collapse() : expandFromMenu() }

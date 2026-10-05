@@ -73,8 +73,11 @@ extension AppModel {
         let tabsWidth = showsTabs ? tabCount * PanelMetrics.tabButtonWidth + (tabCount - 1) * PanelMetrics.tabSpacing : 0
         // Tabs sit left of the notch and the gear right of it, so each side needs room for the wider of the two (R-UI-5).
         let chromeWidth = notchWidth + 2 * (PanelMetrics.stripPadding + max(tabsWidth, PanelMetrics.gearWidth))
-        let pageWidth = PageGeometry.minimumWidth(units: units, unit: PanelMetrics.minimumUnitWidth, spacing: PanelMetrics.widgetSpacing)
-            + 2 * ExpandedLayout.horizontalPadding
+        let tool = ToolKind(rawValue: tab.kind)
+        let contentWidth = tool == nil
+            ? PageGeometry.minimumWidth(units: units, unit: PanelMetrics.minimumUnitWidth, spacing: PanelMetrics.widgetSpacing)
+            : ToolKind.minimumContentWidth
+        let pageWidth = contentWidth + 2 * ExpandedLayout.horizontalPadding
         let width = min(max(0, screenWidth - 24), max(panelWidth, notchWidth + 120, pageWidth, chromeWidth))
         let widths = PageGeometry.widths(units: units, contentWidth: width - 2 * ExpandedLayout.horizontalPadding,
                                          spacing: PanelMetrics.widgetSpacing)
@@ -92,7 +95,7 @@ extension AppModel {
             case nil: return 0
             default: return WidgetCardLayout.height
             }
-        }.max() ?? PanelMetrics.emptyPageHeight
+        }.max() ?? tool?.contentHeight ?? PanelMetrics.emptyPageHeight
         return ExpandedPanelLayout(width: width,
                                    height: islandHeight + ExpandedLayout.topPadding + pageHeight + ExpandedLayout.bottomPadding,
                                    slotWidths: slotWidths, lyricWidth: lyricWidth, lyricHeight: lyricHeight,

@@ -33,6 +33,7 @@ Sources/Ririku/            macOS app:
   Music/                   MusicModel and lyrics, music views, bridge server, LRCLIB/artwork
                            clients, desktop players, browser setup
   Widgets/                 widget registry, widget store and monitors, widget views
+  Tools/                   Tray with AirDrop, clipboard history
   Setup/                   Setup window: sidebar and one view per page
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
 extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup, icons

@@ -42,6 +42,8 @@ final class AppModel: ObservableObject {
     let network = NetworkMonitor()
     let battery = BatteryMonitor()
     let widgets: WidgetStore
+    let tray: TrayStore
+    let clipboard: ClipboardStore
     @Published private(set) var notice: PanelNotice?
     /// Width of the screen the panel was last placed on, so views lay out the panel for the same screen.
     var screenWidth: Double = 1512
@@ -86,13 +88,15 @@ final class AppModel: ObservableObject {
     @Published private(set) var screenRevision = 0
 
     var geometryChanged: (() -> Void)?
+    /// A file dragged over the panel; the panel controller opens the Tray for it.
+    var fileDragEntered: (() -> Void)?
     var openSetup: (() -> Void)?
     var languageChanged: (() -> Void)?
     var iconsChanged: (() -> Void)?
     var shortcutChanged: (() -> Void)?
     private let defaults: UserDefaults
 
-    init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard) {
+    init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard, clipboard: ClipboardStore? = nil) {
         self.defaults = defaults
         let storedLanguage = InterfaceLanguage(rawValue: defaults.string(forKey: "interfaceLanguage") ?? "") ?? .system
         interfaceLanguage = storedLanguage
@@ -100,6 +104,8 @@ final class AppModel: ObservableObject {
         self.localizer = localizer
         music = MusicModel(lyricsService: lyricsService, defaults: defaults, localizer: localizer)
         widgets = WidgetStore(defaults: defaults)
+        tray = TrayStore(defaults: defaults)
+        self.clipboard = clipboard ?? ClipboardStore(defaults: defaults)
         system = SystemMonitor(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
@@ -121,14 +127,18 @@ final class AppModel: ObservableObject {
         let storedShortcut = defaults.data(forKey: "panelShortcut").flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) }
         panelShortcut = storedShortcut?.isValid == true ? storedShortcut : nil
         let storedLayout = defaults.data(forKey: "panelLayout").flatMap { try? JSONDecoder().decode(PanelLayout.self, from: $0) }
-        layout = (storedLayout ?? .standard).sanitized(widgetKinds: WidgetKind.identifiers)
+        layout = (storedLayout ?? .standard).sanitized(widgetKinds: WidgetKind.identifiers, toolKinds: ToolKind.identifiers)
         music.layoutChanged = { [weak self] in self?.geometryChanged?() }
         music.openSetup = { [weak self] in self?.openSetup?() }
         music.artworkChanged = { [weak self] image in self?.updateAutomaticAccent(for: image) }
         widgets.notice = { [weak self] text, icon in self?.showNotice(text, icon: icon) }
+        tray.notice = { [weak self] text, icon in self?.showNotice(text, icon: icon) }
         widgets.changed = { [weak self] in self?.geometryChanged?() }
         battery.changed = { [weak self] old, new in self?.batteryChanged(from: old, to: new) }
         updateBatteryListening()
+        // The Clipboard tab exists exactly while clipboard history is on.
+        let hasClipboardTab = layout.tabs.contains { $0.kind == PanelTab.clipboardKind }
+        if hasClipboardTab != self.clipboard.enabled { setClipboardHistory(self.clipboard.enabled) }
     }
 
     var locale: Locale { localizer.locale }
@@ -161,11 +171,16 @@ final class AppModel: ObservableObject {
         visibleTabs.first { $0.id == selectedTabID } ?? visibleTabs.first ?? PanelLayout.standard.tabs[0]
     }
 
-    /// The page's own name, or "Home" for the first page and "Page 2", "Page 3", and so on for the others.
+    /// The visible Tray tab, which a file dragged onto the notch opens.
+    var trayTab: PanelTab? { visibleTabs.first { $0.kind == PanelTab.trayKind } }
+
+    /// A tool's name; for a page, its own name, or "Home" for the first page and "Page 2", "Page 3", and so on.
     func tabName(_ tab: PanelTab) -> String {
+        if let tool = ToolKind(rawValue: tab.kind) { return tool.title(self) }
         let name = tab.name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard name.isEmpty else { return name }
-        let index = layout.tabs.firstIndex { $0.id == tab.id } ?? 0
+        // Pages are numbered among pages only, so a tool tab in between does not skip a number.
+        let index = layout.tabs.filter(\.isPage).firstIndex { $0.id == tab.id } ?? 0
         return index == 0 ? t("Home") : t("Page %@", (index + 1).formatted(.number.locale(locale)))
     }
 
@@ -176,10 +191,15 @@ final class AppModel: ObservableObject {
         setLayout(edited)
     }
 
-    func resetLayout() { setLayout(.standard) }
+    /// The default layout, keeping the Clipboard tab while clipboard history is on.
+    func resetLayout() {
+        var standard = PanelLayout.standard
+        if clipboard.enabled { standard.addTool(PanelTab.clipboardKind) }
+        setLayout(standard)
+    }
 
     private func setLayout(_ newLayout: PanelLayout) {
-        layout = newLayout.sanitized(widgetKinds: WidgetKind.identifiers)
+        layout = newLayout.sanitized(widgetKinds: WidgetKind.identifiers, toolKinds: ToolKind.identifiers)
         defaults.set(try? JSONEncoder().encode(layout), forKey: "panelLayout")
         if !visibleTabs.contains(where: { $0.id == selectedTabID }) { selectedTabID = nil }
         updateBatteryListening()
@@ -199,6 +219,12 @@ final class AppModel: ObservableObject {
             self.notice = nil
             self.geometryChanged?()
         }
+    }
+
+    /// Turning clipboard history on adds its tab; turning it off removes the tab and deletes the history (D-020).
+    func setClipboardHistory(_ on: Bool) {
+        clipboard.setEnabled(on)
+        editLayout { on ? $0.addTool(PanelTab.clipboardKind) : $0.removeTool(PanelTab.clipboardKind) }
     }
 
     /// A running timer takes the compact island only while no music plays (R-WID-1).

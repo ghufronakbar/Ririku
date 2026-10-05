@@ -76,6 +76,8 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
 - **Tabs and widgets:** the expanded panel shows a page of widgets. **Home** starts with the music controls and the **System** widget (processor, memory, and disk use). The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the first page each time. Arrange pages in **Setup → Layout**.
 - **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
+- **Tray:** drag files onto the notch to open the panel on the **Tray** tab, and drop them there. Click a file to open it, drag it out to another app or folder, or Control-click it for **Show in Finder**, **Send with AirDrop**, and **Remove from Tray**. Drop files on the **AirDrop** card to send them, or click the card to send everything on the Tray.
+- **Clipboard:** with clipboard history on, the **Clipboard** tab lists what you copied. Click an entry to put it back on the clipboard, then paste it where you want.
 - **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
@@ -120,6 +122,8 @@ A live preview of the expanded panel stays at the top; click a tab icon in it to
 - Its widgets from left to right, each **Small** (one unit) or **Wide** (two units). The **…** menu beside a widget moves it left, right, or to another page, or removes it.
 - **Add Widget** lists the widgets that are not on any page yet; each widget can be on one page.
 
+Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on.
+
 **Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
 
 The widgets and their settings are described under [Widgets](#widgets).
@@ -140,6 +144,8 @@ Settings for the widgets; choose where they appear in **Setup → Layout**. In t
 - **Apps:** up to 12 apps you add with **Add Apps…**; click one in the panel to open it.
 - **Shortcuts:** turn on up to 12 shortcuts from the Shortcuts app; the panel runs only those, through Apple's `shortcuts` command.
 - **Bookmarks:** up to 12 web addresses (http or https) with an optional title; they open in your default browser.
+- **Tray:** the number of files and **Clear Tray**. The Tray keeps a link to each file, never a copy, and never moves or deletes a file: removing one from the Tray only forgets it, and a file you delete disappears from the Tray. At most 50 files.
+- **Keep clipboard history** (off by default): while on, Ririku looks at the clipboard twice a second and keeps the last 50 texts and images you copy. It skips content that apps mark as secret, transient, or generated, such as passwords from a password manager, and copied files. Ririku cannot paste for you, which would need Accessibility permission. **Clear History…** deletes the entries, and turning the option off deletes them too.
 
 ### Appearance
 
@@ -248,7 +254,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 2. On your browser's extensions page, remove **Ririku — Browser Bridge**.
 3. Move **Ririku.app** to the Trash.
 4. Optionally remove its data. In Finder choose **Go → Go to Folder…** and delete only these items:
-   - `~/Library/Application Support/Ririku`
+   - `~/Library/Application Support/Ririku` (the copied browser extension and the clipboard history)
    - `io.github.lanstheprodigy.ririku.bridge.json` in the `NativeMessagingHosts` folder of each browser you registered, for example `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (or run `defaults delete io.github.lanstheprodigy.ririku` in Terminal)
@@ -261,6 +267,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - **Browser extension:** runs only on `www.youtube.com` and `music.youtube.com` and uses only the `nativeMessaging` permission. It reads the player state, title, artist, artwork address, and visible captions on the page, and sends them only to the Ririku app on your Mac. It does not read cookies, passwords, or browsing history.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
 - **Widgets:** the widgets work on your Mac and add no network destination. The System and Network widgets read usage counters only while visible, and the Battery widget reads the power source. Notes, the counter, water, timers, and your app, shortcut, and bookmark lists are stored in Ririku's preferences. Shortcuts run through Apple's `shortcuts` command, apps open through macOS, and bookmarks open in your default browser.
+- **Tray and clipboard:** the Tray keeps links to your files in Ririku's preferences. Clipboard history, when on, is kept in `~/Library/Application Support/Ririku/Clipboard`, readable only by your user account, and deleted when you turn it off.
 
 ## Known limitations
 

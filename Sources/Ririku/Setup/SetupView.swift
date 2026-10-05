@@ -78,7 +78,7 @@ struct SetupView: View {
                 case .language: LanguagePage(model: model)
                 case .keyboard: KeyboardPage(model: model)
                 case .layout: LayoutPage(model: model, music: music)
-                case .widgets: WidgetsPage(model: model, widgets: model.widgets)
+                case .widgets: WidgetsPage(model: model, widgets: model.widgets, tray: model.tray, clipboard: model.clipboard)
                 case .appearance: AppearancePage(model: model, music: music)
                 case .browserConnection: BrowserConnectionPage(model: model, music: music)
                 case .musicSource: MusicSourcePage(model: model, music: music)

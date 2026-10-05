@@ -24,9 +24,11 @@ public struct WidgetSlot: Codable, Equatable, Identifiable, Sendable {
     }
 }
 
-/// A tab of the panel. For now every tab is a page of widgets; tools such as the Tray become tabs of their own kind later.
+/// A tab of the panel: a page of widgets, or a tool such as the Tray that fills the tab.
 public struct PanelTab: Codable, Equatable, Identifiable, Sendable {
     public static let pageKind = "widgets"
+    public static let trayKind = "tray"
+    public static let clipboardKind = "clipboard"
 
     public var id: String
     public var kind: String
@@ -35,6 +37,8 @@ public struct PanelTab: Codable, Equatable, Identifiable, Sendable {
     public var icon: String
     public var widgets: [WidgetSlot]
     public var hidden: Bool
+
+    public var isPage: Bool { kind == Self.pageKind }
 
     public init(id: String = UUID().uuidString, kind: String = PanelTab.pageKind, name: String = "", icon: String, widgets: [WidgetSlot] = [], hidden: Bool = false) {
         self.id = id
@@ -58,7 +62,8 @@ public struct PanelTab: Codable, Equatable, Identifiable, Sendable {
 
 /// The tabs of the panel and the widgets on them (D-018). Edited in Setup and stored as versioned JSON.
 public struct PanelLayout: Codable, Equatable, Sendable {
-    public static let currentVersion = 1
+    /// Version 2 added tool tabs; layouts saved earlier get the Tray tab once.
+    public static let currentVersion = 2
     public static let maximumTabs = 8
     public static let maximumNameLength = 24
     /// Symbols a page can use in the tab bar. Stored icons outside this list are replaced.
@@ -78,26 +83,38 @@ public struct PanelLayout: Codable, Equatable, Sendable {
         tabs = (try container.decodeIfPresent([Lossy<PanelTab>].self, forKey: .tabs) ?? []).compactMap(\.value)
     }
 
-    /// Home with the music widget, wide, and the system widget (D-018).
+    public static func toolTab(_ kind: String) -> PanelTab { PanelTab(id: kind, kind: kind, icon: toolIcon(kind)) }
+
+    public static func toolIcon(_ kind: String) -> String { kind == PanelTab.clipboardKind ? "doc.on.clipboard" : "tray" }
+
+    /// Home with the music widget, wide, and the system widget, then the Tray (D-018).
     public static let standard = PanelLayout(tabs: [
         PanelTab(id: "home", icon: "house", widgets: [
             WidgetSlot(id: "music", kind: "music", wide: true),
             WidgetSlot(id: "system", kind: "system", wide: false)
-        ])
+        ]),
+        toolTab(PanelTab.trayKind)
     ])
 
-    /// Keeps what this version can show: widget kinds it knows, each once, pages with valid icons and names,
-    /// at most `maximumTabs` tabs, and at least one visible tab, otherwise the standard layout.
-    public func sanitized(widgetKinds: Set<String>) -> PanelLayout {
+    /// Keeps what this version can show: widget kinds and tools it knows, each once, pages with valid icons and
+    /// names, at most `maximumTabs` tabs, and at least one visible tab, otherwise the standard layout.
+    /// A layout saved before version 2 gets the Tray tab once.
+    public func sanitized(widgetKinds: Set<String>, toolKinds: Set<String>) -> PanelLayout {
         var tabIDs = Set<String>()
         var widgetIDs = Set<String>()
         var kinds = Set<String>()
+        var tools = Set<String>()
         var result: [PanelTab] = []
-        for var tab in tabs where tab.kind == PanelTab.pageKind && !tab.id.isEmpty && tabIDs.insert(tab.id).inserted {
-            tab.name = String(tab.name.prefix(Self.maximumNameLength))
-            if !Self.pageIcons.contains(tab.icon) { tab.icon = Self.pageIcons[1] }
-            tab.widgets = tab.widgets.filter {
-                widgetKinds.contains($0.kind) && !$0.id.isEmpty && widgetIDs.insert($0.id).inserted && kinds.insert($0.kind).inserted
+        for var tab in tabs where !tab.id.isEmpty && (tab.isPage || toolKinds.contains(tab.kind)) && tabIDs.insert(tab.id).inserted {
+            if tab.isPage {
+                tab.name = String(tab.name.prefix(Self.maximumNameLength))
+                if !Self.pageIcons.contains(tab.icon) { tab.icon = Self.pageIcons[1] }
+                tab.widgets = tab.widgets.filter {
+                    widgetKinds.contains($0.kind) && !$0.id.isEmpty && widgetIDs.insert($0.id).inserted && kinds.insert($0.kind).inserted
+                }
+            } else {
+                guard tools.insert(tab.kind).inserted else { continue }
+                tab = PanelTab(id: tab.id, kind: tab.kind, icon: Self.toolIcon(tab.kind), hidden: tab.hidden)
             }
             result.append(tab)
             if result.count == Self.maximumTabs { break }
@@ -105,7 +122,12 @@ public struct PanelLayout: Codable, Equatable, Sendable {
         guard result.contains(where: { !$0.hidden }) else {
             var standard = Self.standard
             standard.tabs[0].widgets.removeAll { !widgetKinds.contains($0.kind) }
+            standard.tabs.removeAll { !$0.isPage && !toolKinds.contains($0.kind) }
             return standard
+        }
+        if version < 2, toolKinds.contains(PanelTab.trayKind), !tools.contains(PanelTab.trayKind), result.count < Self.maximumTabs,
+           !tabIDs.contains(PanelTab.trayKind) {
+            result.append(Self.toolTab(PanelTab.trayKind))
         }
         return PanelLayout(tabs: result)
     }
@@ -127,6 +149,23 @@ public struct PanelLayout: Codable, Equatable, Sendable {
         let page = PanelTab(icon: Self.pageIcons.dropFirst().first { icon in !tabs.contains { $0.icon == icon } } ?? Self.pageIcons[1])
         tabs.append(page)
         return page.id
+    }
+
+    /// Shows or hides a tab in the panel; the last visible tab stays.
+    public mutating func setHidden(_ hidden: Bool, forTab id: String) {
+        guard let index = tabs.firstIndex(where: { $0.id == id }), !hidden || visibleTabs.count > 1 || tabs[index].hidden else { return }
+        tabs[index].hidden = hidden
+    }
+
+    /// Adds a tool's tab at the end, unless it is already there.
+    public mutating func addTool(_ kind: String) {
+        guard !tabs.contains(where: { $0.kind == kind }), tabs.count < Self.maximumTabs else { return }
+        tabs.append(Self.toolTab(kind))
+    }
+
+    public mutating func removeTool(_ kind: String) {
+        guard kind != PanelTab.pageKind else { return }
+        tabs.removeAll { $0.kind == kind }
     }
 
     /// The last visible tab cannot be removed.
@@ -156,7 +195,7 @@ public struct PanelLayout: Codable, Equatable, Sendable {
     /// Adds a widget kind at the end of a page, unless it is already somewhere in the layout.
     public mutating func addWidget(kind: String, wide: Bool, toTab id: String) {
         guard !tabs.contains(where: { $0.widgets.contains { $0.kind == kind } }),
-              let index = tabs.firstIndex(where: { $0.id == id }) else { return }
+              let index = tabs.firstIndex(where: { $0.id == id }), tabs[index].isPage else { return }
         tabs[index].widgets.append(WidgetSlot(kind: kind, wide: wide))
     }
 
@@ -193,7 +232,7 @@ public struct PanelLayout: Codable, Equatable, Sendable {
 
     /// Moves a widget to the end of another page.
     public mutating func moveWidget(id: String, toTab tabID: String) {
-        guard let target = tabs.firstIndex(where: { $0.id == tabID }),
+        guard let target = tabs.firstIndex(where: { $0.id == tabID }), tabs[target].isPage,
               let source = tabs.firstIndex(where: { $0.widgets.contains { $0.id == id } }), source != target,
               let slot = tabs[source].widgets.firstIndex(where: { $0.id == id }) else { return }
         tabs[target].widgets.append(tabs[source].widgets.remove(at: slot))

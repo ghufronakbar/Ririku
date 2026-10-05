@@ -20,7 +20,7 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 - **Mengikuti pemutar aktif:** berpindah ke tab browser yang mulai memutar, atau kunci satu tab secara manual.
 - **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen manual atau dari artwork, animasi, dan dukungan Reduce Motion.
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
-- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, serta peluncur untuk app, shortcut, dan bookmark Anda. Lainnya ada di [roadmap](docs/roadmap.md).
+- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, Tray untuk file dengan AirDrop, serta riwayat clipboard opsional. Lainnya ada di [roadmap](docs/roadmap.md).
 - **Sesuai kebiasaan Anda:** buka saat login, pilih layar, jeda hover, serta ikon Dock dan menu bar, tambahkan umpan balik haptik, atau rekam shortcut keyboard untuk panel. Semuanya opsional, di **Setup → Umum** dan **Setup → Keyboard**.
 
 ## Kebutuhan

@@ -25,7 +25,9 @@ struct ExpandedPanelView: View {
             .padding(.horizontal, PanelMetrics.stripPadding)
             .frame(height: model.islandHeight)
             HStack(alignment: .top, spacing: PanelMetrics.widgetSpacing) {
-                if tab.widgets.isEmpty {
+                if let tool = ToolKind(rawValue: tab.kind) {
+                    ToolView(model: model, kind: tool)
+                } else if tab.widgets.isEmpty {
                     Text(model.t("No widgets on this page. Add them in Setup → Layout."))
                         .font(.caption).foregroundStyle(.white.opacity(0.6))
                         .frame(maxWidth: .infinity, minHeight: PanelMetrics.emptyPageHeight)
