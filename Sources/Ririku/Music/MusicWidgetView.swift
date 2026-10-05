@@ -19,7 +19,10 @@ struct MusicWidgetView: View {
             }
             TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                 VStack(spacing: ExpandedLayout.spacing) {
-                    if lyricHeight > 0 { LyricViews.island(model: model, music: music, twoRows: twoRows).frame(height: lyricHeight) }
+                    if lyricHeight > 0 {
+                        LyricViews.island(model: model, music: music, twoRows: twoRows, translations: music.expandedLyricTranslations)
+                            .frame(height: lyricHeight)
+                    }
                     VStack(spacing: ExpandedLayout.seekLabelSpacing) {
                         Slider(value: Binding(get: { scrubbing ? seekPosition : music.position() }, set: { seekPosition = $0 }),
                                in: 0...max(1, music.current?.snapshot.duration ?? 1), onEditingChanged: { editing in

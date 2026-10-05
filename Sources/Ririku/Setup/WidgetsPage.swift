@@ -11,6 +11,7 @@ struct WidgetsPage: View {
     @ObservedObject var clipboard: ClipboardStore
     @ObservedObject var calendar: CalendarStore
     @ObservedObject var camera: CameraMirror
+    @ObservedObject var translate: TranslateStore
     @State private var confirmClearClipboard = false
     @State private var availableShortcuts: [String]?
     @State private var bookmarkTitle = ""
@@ -85,6 +86,7 @@ struct WidgetsPage: View {
                         } message: { Text(model.t("This cannot be undone.")) }
                 }
             } header: { Label(model.t("Clipboard"), systemImage: "doc.on.clipboard") }
+            Section { TranslateSettings(model: model, translate: translate) } header: { Label(model.t("Translate"), systemImage: "translate") }
             Section {
                 Text(model.t("The note is saved on this Mac as you type in the panel."))
                     .font(.caption).foregroundStyle(.secondary)

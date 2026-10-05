@@ -17,6 +17,8 @@ final class PanelController: NSObject {
     private var hoverWork: DispatchWorkItem?
     /// Set when the menu opens the panel, so it stays open until the pointer has visited it.
     private var pinnedOpen = false
+    /// Menus open from the panel, such as Translate's languages or a Control-click menu, which can reach past its edge.
+    private var openMenus = 0
     private var pointerTimer: Timer?
     private var pointerLeftAt: TimeInterval?
     private var resizeTimer: Timer?
@@ -41,6 +43,8 @@ final class PanelController: NSObject {
         model.fileDragEntered = { [weak self] in self?.showTrayForDrag() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(menuBegan), name: NSMenu.didBeginTrackingNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(menuEnded), name: NSMenu.didEndTrackingNotification, object: nil)
     }
 
     func show() {
@@ -69,6 +73,8 @@ final class PanelController: NSObject {
 
     @objc private func screenChanged() { model.screensChanged(); position(animate: false) }
     @objc private func accessibilityChanged() { model.objectWillChange.send(); position(animate: false) }
+    @objc private func menuBegan() { openMenus += 1 }
+    @objc private func menuEnded() { openMenus = max(0, openMenus - 1) }
 
     private func position(animate: Bool = true) {
         let displays = ConnectedDisplay.all()
@@ -138,8 +144,9 @@ final class PanelController: NSObject {
 
     /// Clicking a control makes the panel key and SwiftUI can miss the exit while the content changes
     /// (for example after pausing), so the pointer position decides when a hover-opened panel closes.
+    /// An open menu keeps the panel open, since it can reach past the panel's edge.
     private var pointerIsInside: Bool {
-        pinnedOpen || NSEvent.pressedMouseButtons != 0 || panel.frame.contains(NSEvent.mouseLocation)
+        pinnedOpen || openMenus > 0 || NSEvent.pressedMouseButtons != 0 || panel.frame.contains(NSEvent.mouseLocation)
     }
 
     private func watchPointer() {

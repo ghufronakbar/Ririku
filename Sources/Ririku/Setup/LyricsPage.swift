@@ -66,6 +66,7 @@ struct LyricsPage: View {
                 }.disabled(music.lyricSource == "caption" || music.trackKey == nil)
                 if let error = music.commandError { Text(model.t(error)).font(.caption).foregroundStyle(.orange) }
             }
+            Section(model.t("Lyric translation")) { LyricTranslationSettings(model: model, translator: music.lyricTranslator) }
         }
     }
 

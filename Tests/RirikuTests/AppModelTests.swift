@@ -842,3 +842,105 @@ struct CalendarCameraTests {
         #expect(CalendarStore(defaults: defaults, status: { .denied }).hiddenCalendars == ["work"])
     }
 }
+
+/// Languages for the translation tests, so they do not depend on what this Mac offers or has downloaded.
+private let offeredLanguages = ["en", "en-GB", "ja", "id", "zh", "zh-TW", "ko"]
+private let onMacOS15 = ProcessInfo.processInfo.isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 15, minorVersion: 0, patchVersion: 0))
+
+@MainActor
+@Suite("Translate and lyric translation", .enabled(if: onMacOS15, "Translation needs macOS 15"))
+struct TranslationTests {
+    @Test("The Translate tab exists exactly while Translate is on, and turning it off clears the text")
+    func managesTab() {
+        let (model, _) = makeModel()
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.translateKind }, "off by default")
+        model.setTranslateTab(true)
+        #expect(model.layout.tabs.last?.kind == PanelTab.translateKind)
+        model.translate.input = "hello"
+        model.resetLayout()
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "translate"], "resetting keeps the tab while it is on")
+        model.setTranslateTab(false)
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.translateKind })
+        #expect(model.translate.input.isEmpty)
+    }
+
+    @Test("Detects the language, translates only downloaded languages, and drops a late result")
+    func translatesText() async throws {
+        let (model, _) = makeModel()
+        let translate = model.translate
+        var downloaded = false
+        translate.languageList = { offeredLanguages }
+        translate.availabilityCheck = { _, _ in downloaded ? .installed : .downloadable }
+        translate.target = "en"
+        translate.input = "今日はいい天気ですね。明日も晴れるといいですね。"
+        await translate.requestTranslation(now: true)?.value
+        #expect(translate.detected == "ja")
+        #expect(translate.state == .needsDownload(source: "ja"), "the panel never starts a download")
+        #expect(translate.job == nil)
+
+        downloaded = true
+        await translate.requestTranslation(now: true)?.value
+        let first = try #require(translate.job)
+        #expect(first.source == "ja" && first.target == "en")
+        translate.input = "おはようございます。今日も一日頑張りましょう。"
+        await translate.requestTranslation(now: true)?.value
+        translate.complete(first, output: "Nice weather")
+        #expect(translate.output.isEmpty, "a result for earlier text is dropped")
+        translate.complete(try #require(translate.job), output: "Good morning")
+        #expect(translate.output == "Good morning")
+        #expect(translate.state == .done)
+
+        translate.swap()
+        #expect(translate.source == "en" && translate.target == "ja")
+        #expect(translate.input == "Good morning", "swapping continues from the translation")
+
+        translate.source = nil
+        translate.target = "en"
+        translate.input = "This sentence is already written in English."
+        await translate.requestTranslation(now: true)?.value
+        #expect(translate.state == .sameLanguage)
+        #expect(translate.job == nil)
+    }
+
+    @Test("Translates a song once, keeps a row under the active line, and never reaches another song")
+    func translatesLyrics() async throws {
+        let (model, _) = makeModel()
+        let music = model.music
+        let translator = music.lyricTranslator
+        translator.languageList = { offeredLanguages }
+        translator.availabilityCheck = { _, _ in .installed }
+        translator.target = "en"
+        model.expanded = true
+        music.receive(snapshotData(position: 10))
+        music.lyricLineCount = 3
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]君の名前を呼んでいた\n[00:10]夜の街で一人きり\n[00:20]I love you\n")
+        let plain = model.islandLyricHeight
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        #expect(translator.job == nil && music.expandedLyricTranslations == nil, "off by default")
+
+        translator.enabled = true
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        let job = try #require(translator.job)
+        #expect(job.source == "ja")
+        #expect(job.indices == [0, 1], "the English line stays as it is")
+        #expect(model.islandLyricHeight == plain + 20, "a row is kept while the song is translated")
+        translator.complete(job, responses: [("0", "I was calling your name"), ("1", "All alone in the night city")])
+        #expect(music.expandedLyricTranslations == ["I was calling your name", "All alone in the night city", ""])
+        #expect(translator.status == .done(source: "ja"))
+        #expect(music.currentLines.map(\.text) == ["君の名前を呼んでいた", "夜の街で一人きり", "I love you"], "the lyrics never change (R-LYR-6)")
+        model.expanded = false
+        #expect(model.islandLyricHeight == plain, "the compact island shows no translation")
+        model.expanded = true
+
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]別の歌を歌おう\n[00:10]もう一度だけ\n")
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        translator.complete(job, responses: [("0", "Old")])
+        #expect(music.expandedLyricTranslations == [], "a result for the earlier lyrics is dropped (R-LYR-5)")
+
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]I walk alone tonight\n[00:10]Under the city lights\n")
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        #expect(translator.status == .sameLanguage)
+        #expect(music.expandedLyricTranslations == nil)
+        #expect(model.islandLyricHeight == plain, "a song already in the target language keeps its height")
+    }
+}

@@ -3,7 +3,7 @@ import RirikuCore
 
 /// Tools that fill a tab of their own. The raw value is the tab `kind` stored in the layout.
 enum ToolKind: String, CaseIterable {
-    case tray, clipboard
+    case tray, clipboard, translate
 
     static let identifiers = Set(allCases.map(\.rawValue))
 
@@ -14,7 +14,7 @@ enum ToolKind: String, CaseIterable {
     var contentHeight: Double {
         switch self {
         case .tray: return WidgetCardLayout.height
-        case .clipboard: return 160
+        case .clipboard, .translate: return 160
         }
     }
 
@@ -23,6 +23,7 @@ enum ToolKind: String, CaseIterable {
         switch self {
         case .tray: return model.t("Tray")
         case .clipboard: return model.t("Clipboard")
+        case .translate: return model.t("Translate")
         }
     }
 }
@@ -36,6 +37,7 @@ struct ToolView: View {
         switch kind {
         case .tray: TrayView(model: model, tray: model.tray)
         case .clipboard: ClipboardView(model: model, clipboard: model.clipboard)
+        case .translate: TranslateView(model: model, translate: model.translate)
         }
     }
 }

@@ -101,14 +101,36 @@ extension MusicModel {
         return value
     }
 
-    func lyricBlockHeight(width: Double) -> Double {
-        Double(min(3, max(1, lyricLineCount))) * LyricRowLayout.step + 14 + (reservesTwoLyricRows(width: width) ? LyricRowLayout.step : 0)
+    /// A translated song adds one row under the active line.
+    func lyricBlockHeight(width: Double, translated: Bool = false) -> Double {
+        Double(min(3, max(1, lyricLineCount))) * LyricRowLayout.step + 14
+            + (reservesTwoLyricRows(width: width) ? LyricRowLayout.step : 0) + (translated ? LyricRowLayout.step : 0)
     }
 
     /// Lyrics leave the compact island while paused, so it shrinks back to the notch; the expanded panel keeps them.
+    /// Translations are shown only in the expanded panel.
     func islandLyricHeight(expanded: Bool, width: Double) -> Double {
         guard expanded || isPlayingNow else { return 0 }
-        return hasIslandLyrics ? lyricBlockHeight(width: width) : lyricNotice != nil ? 34 : 0
+        guard hasIslandLyrics else { return lyricNotice != nil ? 34 : 0 }
+        return lyricBlockHeight(width: width, translated: expanded && expandedLyricTranslations != nil)
+    }
+
+    // MARK: Translation
+
+    /// The synced lines that lyric translation works on; captions and plain lyrics are not translated.
+    var lyricTranslationLines: [String] { usesVideoCaption ? [] : currentLines.map(\.text) }
+
+    /// Identifies the current song's lines and the target language, so a translation never reaches another song.
+    var lyricTranslationKey: String? {
+        let lines = lyricTranslationLines
+        guard let trackKey, !lines.isEmpty else { return nil }
+        return [trackKey, lyricTranslator.target, String(lines.joined(separator: "\n").hashValue)].joined(separator: "|")
+    }
+
+    /// One translation per line for the expanded panel, empty while they are being made; nil when none are shown.
+    var expandedLyricTranslations: [String]? {
+        guard showLyrics, lyricTranslator.enabled, let key = lyricTranslationKey, lyricTranslator.expects(key) else { return nil }
+        return lyricTranslator.translations(for: key) ?? []
     }
 
     // MARK: Automatic search

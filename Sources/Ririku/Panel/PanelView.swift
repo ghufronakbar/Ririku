@@ -35,5 +35,7 @@ struct PanelView: View {
         .accessibilityLabel(model.t("Ririku, music player"))
         .environment(\.locale, model.locale)
         .environment(\.colorScheme, .dark)
+        // The panel is always on screen, so the lyrics of the current song are translated here (D-027).
+        .lyricTranslationTask(model.music)
     }
 }

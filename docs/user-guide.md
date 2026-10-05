@@ -78,6 +78,7 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 - **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
 - **Tray:** drag files onto the notch to open the panel on the **Tray** tab, and drop them there. Click a file to open it, drag it out to another app or folder, or Control-click it for **Show in Finder**, **Send with AirDrop**, and **Remove from Tray**. Drop files on the **AirDrop** card to send them, or click the card to send everything on the Tray.
 - **Clipboard:** with clipboard history on, the **Clipboard** tab lists what you copied. Click an entry to put it back on the clipboard, then paste it where you want.
+- **Translate:** with Translate on, the **Translate** tab translates what you type or paste, 0.6 seconds after you stop typing or when you press Return. The source language is detected unless you choose one; the arrows swap the languages. Click the copy button to copy the translation.
 - **Calendar and Camera:** the Calendar widget shows today's events that have not ended; click it to open the Calendar app. Click the Camera widget to use your camera as a mirror; it turns off when the panel closes or you change tabs.
 - **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away, press **Esc**, or press the shortcut again.
@@ -123,7 +124,7 @@ A live preview of the expanded panel stays at the top; click a tab icon in it to
 - Its widgets from left to right, each **Small** (one unit) or **Wide** (two units). The **…** menu beside a widget moves it left, right, or to another page, or removes it.
 - **Add Widget** lists the widgets that are not on any page yet; each widget can be on one page.
 
-Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on.
+Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on, and the Translate tab while Translate is on.
 
 **Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
 
@@ -150,6 +151,7 @@ Settings for the widgets; choose where they appear in **Setup → Layout**. In t
 - If you denied access to the calendars or the camera, the widget and this page show **Open System Settings**, which opens **Privacy & Security** so you can allow it; Ririku does not ask again by itself. Ririku is signed ad hoc, so macOS may ask for these permissions again after an update.
 - **Tray:** the number of files and **Clear Tray**. The Tray keeps a link to each file, never a copy, and never moves or deletes a file: removing one from the Tray only forgets it, and a file you delete disappears from the Tray. At most 50 files.
 - **Keep clipboard history** (off by default): while on, Ririku looks at the clipboard twice a second and keeps the last 50 texts and images you copy. It skips content that apps mark as secret, transient, or generated, such as passwords from a password manager, and copied files. Ririku cannot paste for you, which would need Accessibility permission. **Clear History…** deletes the entries, and turning the option off deletes them too.
+- **Translate** (macOS 15 or later, off by default): **Show the Translate tab** and **Translate into**. Translation runs on your Mac with Apple's Translation framework. Each language is downloaded once: open **Languages on this Mac** and click **Download** beside a language, then confirm in the window macOS shows. The panel only translates languages that are already downloaded and otherwise points here. Downloaded languages can be removed in **System Settings → General → Language & Region**.
 
 ### Appearance
 
@@ -185,6 +187,7 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Import LRC…:** use your own `.lrc` file (UTF-8, up to 1 MB) for the current song until Ririku quits.
 - **Offset for this song** and **Earlier/Later by 0.1 s:** see [Fixing timing](#fixing-timing).
 - **Search and choose a lyrics version:** see [Choosing another version](#choosing-another-version).
+- **Translate lyrics** (macOS 15 or later, off by default) and **Translate into:** the translation of each synced line appears under the active line in the expanded panel; the compact island is unchanged. The whole song is translated on your Mac when its lyrics load, lines already in the chosen language are left as they are, and the lyrics themselves never change. The line below shows how the current song is doing; when its language is not downloaded yet, click **Download**. Plain lyrics and captions are not translated.
 
 ### Prototype
 
@@ -273,6 +276,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
 - **Widgets:** the widgets work on your Mac and add no network destination. The System and Network widgets read usage counters only while visible, and the Battery widget reads the power source. Notes, the counter, water, timers, and your app, shortcut, and bookmark lists are stored in Ririku's preferences. Shortcuts run through Apple's `shortcuts` command, apps open through macOS, and bookmarks open in your default browser.
 - **Tray and clipboard:** the Tray keeps links to your files in Ririku's preferences. Clipboard history, when on, is kept in `~/Library/Application Support/Ririku/Clipboard`, readable only by your user account, and deleted when you turn it off.
+- **Translation:** text you translate and lyrics are translated on your Mac with Apple's Translation framework and are not sent to a translation service. macOS downloads the languages from Apple once. The text and the translations are kept in memory only.
 - **Calendar and camera:** the Calendar widget reads events on your Mac only while it is visible and stores none of them; only the calendars you turned off are saved. The camera picture is only shown in the panel: it is never recorded, saved, or sent.
 
 ## Known limitations
@@ -283,3 +287,4 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - Not notarized by Apple, so the first launch needs confirmation.
 - Lyrics availability and timing depend on LRCLIB.
 - YouTube page changes can break detection until Ririku is updated.
+- Translate and lyric translation need macOS 15 or later. Whether macOS shows its language download prompt correctly from Setup has not been confirmed on every system.

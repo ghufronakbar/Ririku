@@ -97,6 +97,8 @@ final class MusicModel: ObservableObject {
     var candidateSearchIdentity: String?
     var candidateDuration: Double?
     let lyricsService: LyricsService
+    /// Display-only translation of the current song's lyrics (D-027).
+    let lyricTranslator: LyricTranslator
     var lyricTask: Task<Void, Never>?
     var lyricRequestID: String?
     var manualLyrics = Set<String>()
@@ -116,6 +118,7 @@ final class MusicModel: ObservableObject {
         self.lyricsService = lyricsService
         self.defaults = defaults
         self.localizer = localizer
+        lyricTranslator = LyricTranslator(defaults: defaults, defaultTarget: localizer.code)
         automaticSource = defaults.object(forKey: "automaticSource") as? Bool ?? true
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedLineCount = defaults.integer(forKey: "lyricLineCount")
@@ -127,6 +130,10 @@ final class MusicModel: ObservableObject {
         lyricOffsets = (defaults.dictionary(forKey: "lyricOffsetsByTrack") as? [String: Double] ?? [:]).filter { $0.value.isFinite && abs($0.value) <= 60 }
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.expireSessions() }
+        }
+        lyricTranslator.changed = { [weak self] in
+            self?.objectWillChange.send()
+            self?.layoutChanged?()
         }
     }
 

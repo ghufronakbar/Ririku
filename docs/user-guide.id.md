@@ -79,6 +79,7 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 - **Timer dan pemberitahuan:** selama tidak ada musik yang diputar, timer yang berjalan menampilkan ikon dan waktunya di samping notch. Saat timer selesai atau mulai mengisi daya, pemberitahuan singkat muncul di bawah notch sekitar tiga detik; panel tetap tertutup.
 - **Tray:** seret file ke notch untuk membuka panel di tab **Tray**, lalu lepas di sana. Klik file untuk membukanya, seret keluar ke app atau folder lain, atau Control-klik untuk **Tampilkan di Finder**, **Kirim dengan AirDrop**, dan **Hapus dari Tray**. Lepas file di kartu **AirDrop** untuk mengirimnya, atau klik kartu itu untuk mengirim seluruh isi Tray.
 - **Clipboard:** jika riwayat clipboard aktif, tab **Clipboard** menampilkan yang Anda salin. Klik sebuah item untuk menaruhnya kembali di clipboard, lalu paste di tempat yang Anda mau.
+- **Terjemahkan:** jika Terjemahkan aktif, tab **Terjemahkan** menerjemahkan teks yang Anda ketik atau tempel, 0,6 detik setelah Anda berhenti mengetik atau saat Anda menekan Return. Bahasa sumber dideteksi kecuali Anda memilihnya; tombol panah menukar bahasa. Klik tombol salin untuk menyalin terjemahan.
 - **Kalender dan Kamera:** widget Kalender menampilkan acara hari ini yang belum selesai; klik untuk membuka app Calendar. Klik widget Kamera untuk memakai kamera sebagai cermin; kamera mati saat panel tertutup atau Anda berpindah tab.
 - **Kontrol musik:** judul, artis, dan sumber; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
@@ -124,7 +125,7 @@ Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dal
 - Widget-widgetnya dari kiri ke kanan, masing-masing **Kecil** (satu unit) atau **Lebar** (dua unit). Menu **…** di samping widget memindahkannya ke kiri, ke kanan, atau ke halaman lain, atau menghapusnya.
 - **Tambah widget** menampilkan widget yang belum ada di halaman mana pun; setiap widget hanya bisa berada di satu halaman.
 
-Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disembunyikan lewat **Tampilkan di panel**, tetapi tidak bisa dihapus. Tab Clipboard muncul selama riwayat clipboard aktif.
+Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disembunyikan lewat **Tampilkan di panel**, tetapi tidak bisa dihapus. Tab Clipboard muncul selama riwayat clipboard aktif, dan tab Terjemahkan selama Terjemahkan aktif.
 
 **Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
 
@@ -151,6 +152,7 @@ Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di
 - Jika Anda menolak akses ke kalender atau kamera, widget dan halaman ini menampilkan **Buka System Settings**, yang membuka **Privacy & Security** agar Anda bisa mengizinkannya; Ririku tidak meminta lagi dengan sendirinya. Ririku ditandatangani ad hoc, jadi macOS mungkin meminta izin ini lagi setelah update.
 - **Tray:** jumlah file dan **Kosongkan Tray**. Tray menyimpan tautan ke setiap file, bukan salinannya, dan tidak pernah memindahkan atau menghapus file: menghapus file dari Tray hanya melupakannya, dan file yang Anda hapus akan hilang dari Tray. Maksimal 50 file.
 - **Simpan riwayat clipboard** (nonaktif secara default): selama aktif, Ririku memeriksa clipboard dua kali per detik dan menyimpan 50 teks dan gambar terakhir yang Anda salin. Isi yang ditandai rahasia, sementara, atau dibuat otomatis oleh app, seperti kata sandi dari password manager, dan file yang disalin dilewati. Ririku tidak bisa melakukan paste untuk Anda, karena itu butuh izin Accessibility. **Hapus riwayat…** menghapus semua item, dan mematikan opsi ini juga menghapusnya.
+- **Terjemahkan** (macOS 15 atau lebih baru, nonaktif secara default): **Tampilkan tab Terjemahkan** dan **Terjemahkan ke**. Terjemahan berjalan di Mac Anda dengan framework Translation milik Apple. Setiap bahasa diunduh sekali: buka **Bahasa di Mac ini**, klik **Unduh** di samping bahasa, lalu konfirmasi di jendela yang ditampilkan macOS. Panel hanya menerjemahkan bahasa yang sudah diunduh dan selain itu mengarahkan ke sini. Bahasa yang sudah diunduh bisa dihapus di **System Settings → General → Language & Region**.
 
 ### Tampilan
 
@@ -186,6 +188,7 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 - **Impor LRC…:** memakai berkas `.lrc` Anda (UTF-8, maksimal 1 MB) untuk lagu saat ini sampai Ririku ditutup.
 - **Offset lagu ini** serta **Majukan/Tunda 0,1 dtk:** lihat [Memperbaiki timing](#memperbaiki-timing).
 - **Cari dan pilih versi lirik:** lihat [Memilih versi lain](#memilih-versi-lain).
+- **Terjemahkan lirik** (macOS 15 atau lebih baru, nonaktif secara default) dan **Terjemahkan ke:** terjemahan setiap baris tersinkron muncul di bawah baris aktif di panel yang terbuka; island kecil tidak berubah. Seluruh lagu diterjemahkan di Mac Anda saat liriknya dimuat, baris yang sudah dalam bahasa tujuan dibiarkan, dan liriknya sendiri tidak pernah diubah. Baris di bawahnya menampilkan status lagu saat ini; jika bahasanya belum diunduh, klik **Unduh**. Lirik teks biasa dan caption tidak diterjemahkan.
 
 ### Prototipe
 
@@ -274,6 +277,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
 - **Widget:** widget bekerja di Mac Anda dan tidak menambah tujuan jaringan. Widget Sistem dan Jaringan membaca penghitung penggunaan hanya selama terlihat, dan widget Baterai membaca sumber daya. Catatan, penghitung, air minum, timer, serta daftar app, shortcut, dan bookmark Anda disimpan di preferensi Ririku. Shortcut dijalankan lewat perintah `shortcuts` milik Apple, app dibuka oleh macOS, dan bookmark dibuka di browser default Anda.
 - **Tray dan clipboard:** Tray menyimpan tautan ke file Anda di preferensi Ririku. Riwayat clipboard, jika aktif, disimpan di `~/Library/Application Support/Ririku/Clipboard`, hanya bisa dibaca oleh akun pengguna Anda, dan dihapus saat Anda mematikannya.
+- **Terjemahan:** teks yang Anda terjemahkan dan lirik diterjemahkan di Mac Anda dengan framework Translation milik Apple dan tidak dikirim ke layanan terjemahan. macOS mengunduh bahasanya dari Apple satu kali. Teks dan terjemahannya hanya disimpan di memori.
 - **Kalender dan kamera:** widget Kalender membaca acara di Mac Anda hanya selama terlihat dan tidak menyimpan satu pun; yang disimpan hanya daftar kalender yang Anda matikan. Gambar kamera hanya ditampilkan di panel: tidak pernah direkam, disimpan, atau dikirim.
 
 ## Keterbatasan
@@ -284,3 +288,4 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - Tidak di-notarize Apple, sehingga peluncuran pertama perlu konfirmasi.
 - Ketersediaan dan timing lirik bergantung pada LRCLIB.
 - Perubahan halaman YouTube dapat mengganggu deteksi sampai Ririku diperbarui.
+- Terjemahkan dan terjemahan lirik butuh macOS 15 atau lebih baru. Belum dipastikan di semua sistem bahwa macOS menampilkan prompt unduhan bahasa dengan benar dari Setup.

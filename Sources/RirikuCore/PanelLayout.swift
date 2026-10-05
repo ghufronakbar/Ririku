@@ -29,6 +29,7 @@ public struct PanelTab: Codable, Equatable, Identifiable, Sendable {
     public static let pageKind = "widgets"
     public static let trayKind = "tray"
     public static let clipboardKind = "clipboard"
+    public static let translateKind = "translate"
 
     public var id: String
     public var kind: String
@@ -85,7 +86,13 @@ public struct PanelLayout: Codable, Equatable, Sendable {
 
     public static func toolTab(_ kind: String) -> PanelTab { PanelTab(id: kind, kind: kind, icon: toolIcon(kind)) }
 
-    public static func toolIcon(_ kind: String) -> String { kind == PanelTab.clipboardKind ? "doc.on.clipboard" : "tray" }
+    public static func toolIcon(_ kind: String) -> String {
+        switch kind {
+        case PanelTab.clipboardKind: return "doc.on.clipboard"
+        case PanelTab.translateKind: return "translate"
+        default: return "tray"
+        }
+    }
 
     /// Home with the music widget, wide, and the system widget, then the Tray (D-018).
     public static let standard = PanelLayout(tabs: [

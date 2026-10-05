@@ -30,10 +30,10 @@ Sources/RirikuCore/        Shared, UI-free code: playback snapshot and clock, LR
 Sources/Ririku/            macOS app:
   App/                     entry point, app delegate and menu bar, AppModel, localization, login item
   Panel/                   notch panel: placement, hover, resize animation, size, tab bar and pages
-  Music/                   MusicModel and lyrics, music views, bridge server, LRCLIB/artwork
+  Music/                   MusicModel and lyrics, lyric translation, music views, bridge server, LRCLIB/artwork
                            clients, desktop players, browser setup
   Widgets/                 widget registry, widget store and monitors, calendar and camera, widget views
-  Tools/                   Tray with AirDrop, clipboard history
+  Tools/                   Tray with AirDrop, clipboard history, Translate
   Setup/                   Setup window: sidebar and one view per page
 Sources/RirikuHost/        Chrome native messaging host: stdin/stdout ↔ Unix socket relay
 extension/                 Chrome extension (Manifest V3): content scripts, service worker, popup, icons

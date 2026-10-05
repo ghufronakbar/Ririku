@@ -45,19 +45,19 @@ struct TransportButtons: View {
 @MainActor
 enum LyricViews {
     @ViewBuilder
-    static func island(model: AppModel, music: MusicModel, twoRows: Bool) -> some View {
+    static func island(model: AppModel, music: MusicModel, twoRows: Bool, translations: [String]? = nil) -> some View {
         if let notice = music.lyricNotice {
             Text(notice).font(.system(size: 12)).foregroundStyle(.white.opacity(0.65)).lineLimit(1)
-        } else if music.hasIslandLyrics { block(model: model, music: music, twoRows: twoRows) }
+        } else if music.hasIslandLyrics { block(model: model, music: music, twoRows: twoRows, translations: translations) }
     }
 
-    private static func block(model: AppModel, music: MusicModel, twoRows: Bool) -> some View {
+    private static func block(model: AppModel, music: MusicModel, twoRows: Bool, translations: [String]?) -> some View {
         VStack(spacing: 4) {
             if music.usesVideoCaption {
                 Text(music.lyricStatus).foregroundStyle(model.accent).lineLimit(music.lyricLineCount)
                     .help(model.t("Video captions active; previous and next lines are not available from the player."))
             } else if let index = music.lyricIndex(), !music.currentLines.isEmpty {
-                ScrollingLyricRows(lines: music.currentLines, activeIndex: index, lineCount: music.lyricLineCount,
+                ScrollingLyricRows(lines: music.currentLines, translations: translations, activeIndex: index, lineCount: music.lyricLineCount,
                                    animate: model.canAnimate, accent: model.accent, twoRows: twoRows)
                     .id(music.lyricSearchIdentity)
             } else if let plain = music.currentPlainLyrics {

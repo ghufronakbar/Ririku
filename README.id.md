@@ -16,11 +16,11 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 
 - **Panel notch:** artwork, spectrum dekoratif, dan hingga tiga baris lirik di island ringkas; arahkan pointer atau klik untuk membuka info lagu, bar posisi, dan kontrol.
 - **Lirik tersinkron:** dicari otomatis dari [LRCLIB](https://lrclib.net) berdasarkan judul, artis, dan durasi, lalu disimpan di cache Mac Anda. Anda juga bisa memakai caption video, memilih versi lirik lain, mengatur timing per lagu, atau mengimpor berkas `.lrc` sendiri.
-- **Ramah lirik Jepang:** bila berkas lirik berisi baris Jepang dan romaji dengan timestamp sama, Ririku dapat menampilkan baris Jepangnya saja.
+- **Ramah lirik Jepang:** bila berkas lirik berisi baris Jepang dan romaji dengan timestamp sama, Ririku dapat menampilkan baris Jepangnya saja. Di macOS 15 atau lebih baru, lirik tersinkron juga bisa diterjemahkan di Mac Anda dan ditampilkan di bawah baris aktif.
 - **Mengikuti pemutar aktif:** berpindah ke tab browser yang mulai memutar, atau kunci satu tab secara manual.
 - **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen manual atau dari artwork, animasi, dan dukungan Reduce Motion.
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
-- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, kalender, cermin kamera, Tray untuk file dengan AirDrop, serta riwayat clipboard opsional. Lainnya ada di [roadmap](docs/roadmap.md).
+- **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, kalender, cermin kamera, Tray untuk file dengan AirDrop, riwayat clipboard opsional, serta terjemahan di perangkat. Lainnya ada di [roadmap](docs/roadmap.md).
 - **Sesuai kebiasaan Anda:** buka saat login, pilih layar, jeda hover, serta ikon Dock dan menu bar, tambahkan umpan balik haptik, atau rekam shortcut keyboard untuk panel. Semuanya opsional, di **Setup → Umum** dan **Setup → Keyboard**.
 
 ## Kebutuhan

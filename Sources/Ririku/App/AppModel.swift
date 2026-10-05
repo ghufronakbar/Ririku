@@ -46,6 +46,7 @@ final class AppModel: ObservableObject {
     let clipboard: ClipboardStore
     let calendar: CalendarStore
     let camera: CameraMirror
+    let translate: TranslateStore
     @Published private(set) var notice: PanelNotice?
     /// Width of the screen the panel was last placed on, so views lay out the panel for the same screen.
     var screenWidth: Double = 1512
@@ -112,6 +113,7 @@ final class AppModel: ObservableObject {
         self.clipboard = clipboard ?? ClipboardStore(defaults: defaults)
         self.calendar = calendar ?? CalendarStore(defaults: defaults)
         self.camera = camera ?? CameraMirror()
+        translate = TranslateStore(defaults: defaults, defaultTarget: localizer.code)
         system = SystemMonitor(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
@@ -145,6 +147,9 @@ final class AppModel: ObservableObject {
         // The Clipboard tab exists exactly while clipboard history is on.
         let hasClipboardTab = layout.tabs.contains { $0.kind == PanelTab.clipboardKind }
         if hasClipboardTab != self.clipboard.enabled { setClipboardHistory(self.clipboard.enabled) }
+        // The same for the Translate tab, which macOS 14 cannot show.
+        let hasTranslateTab = layout.tabs.contains { $0.kind == PanelTab.translateKind }
+        if hasTranslateTab != translate.enabled { setTranslateTab(translate.enabled) }
     }
 
     var locale: Locale { localizer.locale }
@@ -216,10 +221,11 @@ final class AppModel: ObservableObject {
         }
     }
 
-    /// The default layout, keeping the Clipboard tab while clipboard history is on.
+    /// The default layout, keeping the Clipboard and Translate tabs while they are on.
     func resetLayout() {
         var standard = PanelLayout.standard
         if clipboard.enabled { standard.addTool(PanelTab.clipboardKind) }
+        if translate.enabled { standard.addTool(PanelTab.translateKind) }
         setLayout(standard)
     }
 
@@ -250,6 +256,12 @@ final class AppModel: ObservableObject {
     func setClipboardHistory(_ on: Bool) {
         clipboard.setEnabled(on)
         editLayout { on ? $0.addTool(PanelTab.clipboardKind) : $0.removeTool(PanelTab.clipboardKind) }
+    }
+
+    /// Turning Translate on adds its tab and turning it off removes it, clearing the text (D-018).
+    func setTranslateTab(_ on: Bool) {
+        translate.setEnabled(on)
+        editLayout { translate.enabled ? $0.addTool(PanelTab.translateKind) : $0.removeTool(PanelTab.translateKind) }
     }
 
     /// A running timer takes the compact island only while no music plays (R-WID-1).
