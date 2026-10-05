@@ -28,14 +28,16 @@ metadata = {
     "CFBundleName": "Ririku",
     "CFBundleDisplayName": "Ririku",
     "CFBundlePackageType": "APPL",
-    "CFBundleShortVersionString": "0.3.1",
-    "CFBundleVersion": "5",
+    "CFBundleShortVersionString": "0.4.0",
+    "CFBundleVersion": "6",
     "CFBundleDevelopmentRegion": "en",
     "CFBundleLocalizations": ["en", "id", "ja"],
     "LSMinimumSystemVersion": "14.0",
     "LSUIElement": True,
     "NSHighResolutionCapable": True,
     "NSAppleEventsUsageDescription": "Ririku reads the current song and controls playback in Spotify or Music when you enable them in Setup.",
+    "NSCalendarsFullAccessUsageDescription": "Ririku shows today's events in the Calendar widget. It only reads your calendars and never changes them.",
+    "NSCameraUsageDescription": "Ririku shows your camera as a mirror in the Camera widget, only after you click it. Nothing is recorded or saved.",
 }
 if (app / "Contents/Resources/AppIcon.icns").exists():
     metadata["CFBundleIconFile"] = "AppIcon"

@@ -9,26 +9,25 @@ final class NotchPanel: NSPanel {
     override func cancelOperation(_ sender: Any?) { dismissPanel?() }
 }
 
+/// Owns the notch panel: its place under the notch, the resize animation, and opening and closing by hover.
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let model = AppModel()
-    private let bridge = BridgeServer()
-    private var panel: NotchPanel!
-    private var settingsWindow: NSWindow?
-    private var statusItem: NSStatusItem!
+final class PanelController: NSObject {
+    private let model: AppModel
+    private let panel: NotchPanel
     private var hoverWork: DispatchWorkItem?
     /// Set when the menu opens the panel, so it stays open until the pointer has visited it.
     private var pinnedOpen = false
+    /// Menus open from the panel, such as Translate's languages or a Control-click menu, which can reach past its edge.
+    private var openMenus = 0
     private var pointerTimer: Timer?
     private var pointerLeftAt: TimeInterval?
     private var resizeTimer: Timer?
     private var targetPanelFrame: NSRect?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        signal(SIGPIPE, SIG_IGN)
-        NSApp.setActivationPolicy(.accessory)
-        configureMenu()
+    init(model: AppModel) {
+        self.model = model
         panel = NotchPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
+        super.init()
         panel.isOpaque = false
         panel.backgroundColor = .clear
         panel.hasShadow = false
@@ -37,73 +36,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         panel.isMovable = false
         panel.dismissPanel = { [weak self] in self?.collapse() }
-        let hosting = NSHostingView(rootView: PlayerView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
+        let hosting = NSHostingView(rootView: PanelView(model: model, hoverChanged: { [weak self] inside in self?.hover(inside) }))
         hosting.sizingOptions = []
         panel.contentView = hosting
-        model.geometryChanged = { [weak self] in self?.positionPanel() }
-        model.openSetup = { [weak self] in self?.showSetup() }
-        model.sendPacket = { [weak self] data in self?.bridge.send(data) }
-        model.startDesktopPlayers()
-        model.languageChanged = { [weak self] in self?.applyLanguage() }
-        bridge.setLanguage(model.localizer.code)
-        bridge.onPacket = { [weak self] data in self?.model.receive(data) }
-        bridge.onDisconnect = { [weak self] in self?.model.disconnect() }
-        do { try bridge.start() }
-        catch { model.bridgeError = UIText(error: error) }
+        model.geometryChanged = { [weak self] in self?.position() }
+        model.fileDragEntered = { [weak self] in self?.showTrayForDrag() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(accessibilityChanged), name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil)
-        positionPanel()
+        NotificationCenter.default.addObserver(self, selector: #selector(menuBegan), name: NSMenu.didBeginTrackingNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(menuEnded), name: NSMenu.didEndTrackingNotification, object: nil)
+    }
+
+    func show() {
+        position()
         panel.orderFrontRegardless()
-        if !UserDefaults.standard.bool(forKey: "didShowSetup") {
-            showSetup()
-            UserDefaults.standard.set(true, forKey: "didShowSetup")
-        }
     }
 
-    private func configureMenu() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Ririku")
-        let menu = NSMenu()
-        let setup = menu.addItem(withTitle: model.t("Setup…"), action: #selector(showSetup), keyEquivalent: ",")
-        setup.target = self
-        let expand = menu.addItem(withTitle: model.t("Open music panel"), action: #selector(expandPanel), keyEquivalent: "")
-        expand.target = self
-        menu.addItem(.separator())
-        menu.addItem(withTitle: model.t("Quit Ririku"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        statusItem.menu = menu
+    /// Opened from the menu bar item, the panel takes focus and stays open until the pointer has visited it.
+    func expandFromMenu() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
+
+    /// A file dragged onto the notch opens the panel on the Tray, like hovering does. It closes once the pointer
+    /// has left with no button held, so it stays open for the whole drag.
+    func showTrayForDrag() {
+        guard let tray = model.trayTab else { return }
+        hoverWork?.cancel()
+        pinnedOpen = false
+        model.expanded = true
+        model.selectedTabID = tray.id
+        watchPointer()
     }
 
-    private func applyLanguage() {
-        let items = statusItem.menu?.items ?? []
-        if items.count == 4 {
-            items[0].title = model.t("Setup…")
-            items[1].title = model.t("Open music panel")
-            items[3].title = model.t("Quit Ririku")
-        }
-        settingsWindow?.title = model.t("Ririku — Setup")
-        bridge.setLanguage(model.localizer.code)
-    }
+    /// The keyboard shortcut opens the panel like the menu item does, and closes it when it is open.
+    func toggleFromShortcut() { model.expanded ? collapse() : expandFromMenu() }
 
-    @objc private func showSetup() {
-        if settingsWindow == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 580, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = model.t("Ririku — Setup")
-            window.isReleasedWhenClosed = false
-            window.contentView = NSHostingView(rootView: SetupView(model: model))
-            window.center()
-            settingsWindow = window
-        }
-        model.refreshLoginItem()
-        NSApp.activate(ignoringOtherApps: true)
-        settingsWindow?.makeKeyAndOrderFront(nil)
-    }
+    func stop() { resizeTimer?.invalidate() }
 
-    @objc private func expandPanel() { pinnedOpen = true; model.expanded = true; panel.makeKeyAndOrderFront(nil) }
-    @objc private func screenChanged() { positionPanel(animate: false) }
-    @objc private func accessibilityChanged() { model.objectWillChange.send(); positionPanel(animate: false) }
+    @objc private func screenChanged() { model.screensChanged(); position(animate: false) }
+    @objc private func accessibilityChanged() { model.objectWillChange.send(); position(animate: false) }
+    @objc private func menuBegan() { openMenus += 1 }
+    @objc private func menuEnded() { openMenus = max(0, openMenus - 1) }
 
-    private func positionPanel(animate: Bool = true) {
-        guard panel != nil, let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main else { return }
+    private func position(animate: Bool = true) {
+        let displays = ConnectedDisplay.all()
+        guard let index = PanelDisplay.choose(preferred: model.panelDisplayID, from: displays.map(\.candidate)) else { return }
+        let screen = displays[index].screen
         let top = max(32, screen.safeAreaInsets.top)
         let notch: CGFloat
         if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea, right.minX > left.maxX {
@@ -145,7 +121,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func hover(_ inside: Bool) {
         hoverWork?.cancel()
-        if inside { pinnedOpen = false }
+        if inside {
+            pinnedOpen = false
+            // The tap comes as the pointer arrives, while the finger is still moving on the trackpad: macOS drops
+            // haptic feedback once the finger is lifted, which a quick swipe to the notch does before the open delay ends.
+            if !model.expanded && model.hapticFeedback {
+                NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
+            }
+        }
         let work = DispatchWorkItem { [weak self] in
             guard let self else { return }
             if inside {
@@ -156,13 +139,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         hoverWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + (inside ? 0.15 : 0.35), execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + (inside ? model.hoverOpenDelay : model.hoverCloseDelay), execute: work)
     }
 
     /// Clicking a control makes the panel key and SwiftUI can miss the exit while the content changes
     /// (for example after pausing), so the pointer position decides when a hover-opened panel closes.
+    /// An open menu keeps the panel open, since it can reach past the panel's edge.
     private var pointerIsInside: Bool {
-        pinnedOpen || NSEvent.pressedMouseButtons != 0 || panel.frame.contains(NSEvent.mouseLocation)
+        pinnedOpen || openMenus > 0 || NSEvent.pressedMouseButtons != 0 || panel.frame.contains(NSEvent.mouseLocation)
     }
 
     private func watchPointer() {
@@ -175,7 +159,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 if self.pointerIsInside { self.pointerLeftAt = nil; return }
                 let leftAt = self.pointerLeftAt ?? now
                 self.pointerLeftAt = leftAt
-                if now - leftAt >= 0.35 { self.collapse() }
+                if now - leftAt >= self.model.hoverCloseDelay { self.collapse() }
             }
         }
         pointerTimer = timer
@@ -190,14 +174,4 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if panel.isKeyWindow { panel.resignKey() }
         model.expanded = false
     }
-
-    func applicationWillTerminate(_ notification: Notification) { resizeTimer?.invalidate(); bridge.stop() }
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSetup(); return false }
-}
-
-MainActor.assumeIsolated {
-    let application = NSApplication.shared
-    let delegate = AppDelegate()
-    application.delegate = delegate
-    application.run()
 }

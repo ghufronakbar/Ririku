@@ -63,24 +63,24 @@ struct DesktopPlayerTests {
         let defaults = MemoryDefaults()
         defaults.set(false, forKey: "automaticLyrics")
         let model = AppModel(defaults: defaults)
-        model.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 1)))
+        model.music.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 1)))
         var browser = track().packet(sequence: 1)
         browser["sessionId"] = "browser"
         browser["sourceId"] = "tab:1"
         browser["sourceLabel"] = "Fixture"
-        model.receive(try JSONSerialization.data(withJSONObject: browser))
-        #expect(model.current?.id == "browser:tab:1")
-        model.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 2)))
-        #expect(model.current?.id == "browser:tab:1")
-        model.receive(try JSONSerialization.data(withJSONObject: track(id: "spotify:track:abcdefghijklmnopqrstuv").packet(sequence: 3)))
-        #expect(model.current?.id == "spotify:desktop")
-        model.receive(try JSONSerialization.data(withJSONObject: track(id: musicIdentifier, player: .appleMusic).packet(sequence: 1)))
-        #expect(model.current?.id == "apple-music:desktop")
-        model.automaticSource = false
+        model.music.receive(try JSONSerialization.data(withJSONObject: browser))
+        #expect(model.music.current?.id == "browser:tab:1")
+        model.music.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 2)))
+        #expect(model.music.current?.id == "browser:tab:1")
+        model.music.receive(try JSONSerialization.data(withJSONObject: track(id: "spotify:track:abcdefghijklmnopqrstuv").packet(sequence: 3)))
+        #expect(model.music.current?.id == "spotify:desktop")
+        model.music.receive(try JSONSerialization.data(withJSONObject: track(id: musicIdentifier, player: .appleMusic).packet(sequence: 1)))
+        #expect(model.music.current?.id == "apple-music:desktop")
+        model.music.automaticSource = false
         browser["sequence"] = 2
         browser["trackId"] = "new"
-        model.receive(try JSONSerialization.data(withJSONObject: browser))
-        #expect(model.current?.id == "apple-music:desktop")
+        model.music.receive(try JSONSerialization.data(withJSONObject: browser))
+        #expect(model.music.current?.id == "apple-music:desktop")
     }
 
     @Test func unknownContentDoesNotExposeLyricsOrControls() {
@@ -118,18 +118,18 @@ struct DesktopPlayerTests {
         let defaults = MemoryDefaults()
         defaults.set(false, forKey: "automaticLyrics")
         let model = AppModel(defaults: defaults)
-        model.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 1)))
-        model.connectedBrowser = "Chrome"
-        #expect(model.current?.id == "spotify:desktop")
-        #expect(model.sourceLabel(for: try #require(model.current?.snapshot)) == "Spotify")
-        model.disconnect()
-        #expect(model.current?.id == "spotify:desktop")
-        #expect(model.trackKey == "Spotify:" + identifier)
-        model.receive(try JSONSerialization.data(withJSONObject: track(id: musicIdentifier, player: .appleMusic).packet(sequence: 1)))
-        #expect(model.sourceLabel(for: try #require(model.current?.snapshot)) == "Apple Music")
-        model.disconnect()
-        #expect(model.current?.id == "apple-music:desktop")
-        #expect(model.trackKey == "Apple Music:" + musicIdentifier)
+        model.music.receive(try JSONSerialization.data(withJSONObject: track().packet(sequence: 1)))
+        model.music.connectedBrowser = "Chrome"
+        #expect(model.music.current?.id == "spotify:desktop")
+        #expect(model.music.sourceLabel(for: try #require(model.music.current?.snapshot)) == "Spotify")
+        model.music.disconnect()
+        #expect(model.music.current?.id == "spotify:desktop")
+        #expect(model.music.trackKey == "Spotify:" + identifier)
+        model.music.receive(try JSONSerialization.data(withJSONObject: track(id: musicIdentifier, player: .appleMusic).packet(sequence: 1)))
+        #expect(model.music.sourceLabel(for: try #require(model.music.current?.snapshot)) == "Apple Music")
+        model.music.disconnect()
+        #expect(model.music.current?.id == "apple-music:desktop")
+        #expect(model.music.trackKey == "Apple Music:" + musicIdentifier)
     }
 
     @Test func scriptsCompileWhenAppIsInstalled() throws {

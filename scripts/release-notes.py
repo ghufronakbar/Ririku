@@ -19,6 +19,6 @@ print(f"""
 
 Full instructions: <https://github.com/ghufronakbar/Ririku/blob/main/docs/user-guide.md#install>
 
-- Requires macOS 14 or later. This build contains an arm64 (Apple silicon) executable only.
+- Requires macOS 14 or later; Translate and lyric translation need macOS 15. This build contains an arm64 (Apple silicon) executable only.
 - After updating, copy the extension again from Setup and reload it on your browser's extensions page.
 - Verify the download with `shasum -a 256 -c SHA256SUMS.txt`.""")

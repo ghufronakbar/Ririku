@@ -12,8 +12,8 @@ Update the version in all of these places:
 | --- | --- |
 | `scripts/build-app.sh` | `CFBundleShortVersionString`, and increase `CFBundleVersion` by one |
 | `extension/manifest.json` | `version` (keep it equal to the app version so Setup can detect outdated extensions) |
-| `Sources/Ririku/MediaServices.swift` | `User-Agent` sent to LRCLIB |
-| `Sources/Ririku/SetupView.swift` | Version text in the Prototype section |
+| `Sources/Ririku/Music/MediaServices.swift` | `User-Agent` sent to LRCLIB |
+| `Sources/Ririku/Setup/AboutPage.swift` | Version text on the About page |
 | `CHANGELOG.md` | New section with the release date |
 | `README*.md`, `docs/user-guide*.md` | Version mentioned in the status note and translation headers, if changed |
 

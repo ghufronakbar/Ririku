@@ -106,15 +106,15 @@ struct MetadataRefreshTests {
             "sequence": 1, "trackId": "same", "title": "Old", "artist": "Singer", "position": 10, "duration": 224,
             "playbackRate": 1, "state": "playing", "isAdvertisement": false,
             "capabilities": ["playPause": true, "seek": true, "previous": false, "next": true]]
-        model.receive(try JSONSerialization.data(withJSONObject: packet))
-        let previous = model.lyricSearchIdentity
-        #expect(model.suggestedLyricSearch == "Old Singer")
+        model.music.receive(try JSONSerialization.data(withJSONObject: packet))
+        let previous = model.music.lyricSearchIdentity
+        #expect(model.music.suggestedLyricSearch == "Old Singer")
         packet["title"] = "New"
         packet["sequence"] = 2
-        model.receive(try JSONSerialization.data(withJSONObject: packet))
-        #expect(model.lyricSearchIdentity != previous)
-        #expect(model.suggestedLyricSearch == "New Singer")
-        #expect(model.current?.snapshot.duration == 224)
+        model.music.receive(try JSONSerialization.data(withJSONObject: packet))
+        #expect(model.music.lyricSearchIdentity != previous)
+        #expect(model.music.suggestedLyricSearch == "New Singer")
+        #expect(model.music.current?.snapshot.duration == 224)
         #expect(!model.expanded)
     }
 }

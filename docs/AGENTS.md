@@ -20,6 +20,7 @@ Read `README.md`, `docs/rules.md`, and the documents relevant to the change (pat
 - `docs/development/localization.md`: interface text and translations.
 - `docs/development/releasing.md`: versioning and releases.
 - `docs/decisions.md`: agreed decisions, technical choices, and open questions.
+- `docs/roadmap.md`: the staged plan for widgets and tools. A planned feature is not an implemented one.
 - `CONTRIBUTING.md`: pull request and commit conventions.
 
 The planning history before v0.3.0 is in Git history, not in the working tree. Do not restore or cite it as a current requirement; its rules that still apply are in `docs/rules.md`.

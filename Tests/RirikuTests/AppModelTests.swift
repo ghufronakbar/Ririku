@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import Testing
 @testable import Ririku
@@ -35,94 +36,94 @@ struct SourceSelectionTests {
     @Test("Follows the first player that reports playback")
     func selectsIncomingSource() {
         let (model, _) = makeModel()
-        model.receive(snapshotData())
-        #expect(model.sessions.count == 1)
-        #expect(model.current?.snapshot.sourceId == "tab:1")
-        #expect(model.trackKey == "YouTube:abc")
-        #expect(model.canControl)
+        model.music.receive(snapshotData())
+        #expect(model.music.sessions.count == 1)
+        #expect(model.music.current?.snapshot.sourceId == "tab:1")
+        #expect(model.music.trackKey == "YouTube:abc")
+        #expect(model.music.canControl)
     }
 
     @Test("Ignores snapshots that are not newer for the same session")
     func ignoresStaleSequence() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(sequence: 5, position: 50))
-        model.receive(snapshotData(sequence: 4, position: 10))
-        #expect(model.current?.snapshot.position == 50)
+        model.music.receive(snapshotData(sequence: 5, position: 50))
+        model.music.receive(snapshotData(sequence: 4, position: 10))
+        #expect(model.music.current?.snapshot.position == 50)
     }
 
     @Test("Ignores invalid snapshots and unknown message kinds")
     func ignoresInvalidMessages() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(state: "stopped"))
-        model.receive(Data(#"{"protocolVersion":2,"kind":"snapshot"}"#.utf8))
-        model.receive(Data(#"{"protocolVersion":1,"kind":"mystery"}"#.utf8))
-        #expect(model.sessions.isEmpty)
+        model.music.receive(snapshotData(state: "stopped"))
+        model.music.receive(Data(#"{"protocolVersion":2,"kind":"snapshot"}"#.utf8))
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"mystery"}"#.utf8))
+        #expect(model.music.sessions.isEmpty)
     }
 
     @Test("Switches to a tab that starts playing, and a heartbeat does not steal the source")
     func followsNewPlayback() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(tab: 1, session: "s1"))
-        model.receive(snapshotData(tab: 2, session: "s2", track: "second"))
-        #expect(model.current?.snapshot.sourceId == "tab:2")
-        model.receive(snapshotData(tab: 1, session: "s1", sequence: 2))
-        #expect(model.current?.snapshot.sourceId == "tab:2", "an ongoing player keeps sending heartbeats")
-        model.receive(snapshotData(tab: 1, session: "s1", sequence: 3, track: "third"))
-        #expect(model.current?.snapshot.sourceId == "tab:1", "a new track counts as new activity")
+        model.music.receive(snapshotData(tab: 1, session: "s1"))
+        model.music.receive(snapshotData(tab: 2, session: "s2", track: "second"))
+        #expect(model.music.current?.snapshot.sourceId == "tab:2")
+        model.music.receive(snapshotData(tab: 1, session: "s1", sequence: 2))
+        #expect(model.music.current?.snapshot.sourceId == "tab:2", "an ongoing player keeps sending heartbeats")
+        model.music.receive(snapshotData(tab: 1, session: "s1", sequence: 3, track: "third"))
+        #expect(model.music.current?.snapshot.sourceId == "tab:1", "a new track counts as new activity")
     }
 
     @Test("Manual mode keeps the chosen tab")
     func manualModeLocksTab() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(tab: 1, session: "s1"))
-        model.automaticSource = false
-        model.selectedSource = "s1:tab:1"
-        model.receive(snapshotData(tab: 2, session: "s2", track: "second"))
-        #expect(model.current?.snapshot.sourceId == "tab:1")
+        model.music.receive(snapshotData(tab: 1, session: "s1"))
+        model.music.automaticSource = false
+        model.music.selectedSource = "s1:tab:1"
+        model.music.receive(snapshotData(tab: 2, session: "s2", track: "second"))
+        #expect(model.music.current?.snapshot.sourceId == "tab:1")
     }
 
     @Test("Manual mode recovers the same tab after a page refresh")
     func manualModeRestoresSession() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(tab: 1, session: "s1"))
-        model.automaticSource = false
-        model.selectedSource = "s1:tab:1"
-        model.receive(Data(#"{"protocolVersion":1,"kind":"remove","sourceId":"tab:1","sessionId":"s1"}"#.utf8))
-        #expect(model.current == nil)
-        model.receive(snapshotData(tab: 1, session: "s1-new"))
-        #expect(model.current?.snapshot.sessionId == "s1-new")
+        model.music.receive(snapshotData(tab: 1, session: "s1"))
+        model.music.automaticSource = false
+        model.music.selectedSource = "s1:tab:1"
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"remove","sourceId":"tab:1","sessionId":"s1"}"#.utf8))
+        #expect(model.music.current == nil)
+        model.music.receive(snapshotData(tab: 1, session: "s1-new"))
+        #expect(model.music.current?.snapshot.sessionId == "s1-new")
     }
 
     @Test("Removing a session and disconnecting clear the panel")
     func clearsOnDisconnect() {
         let (model, _) = makeModel()
-        model.receive(snapshotData())
-        model.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3.0"}"#.utf8))
-        #expect(model.connectedExtensionVersion == "0.3.0")
-        model.receive(snapshotData(tab: 2, session: "s2", track: "second"))
-        model.disconnect()
-        #expect(model.sessions.isEmpty)
-        #expect(model.current == nil)
-        #expect(model.connectedExtensionVersion == nil)
-        #expect(!model.canControl)
+        model.music.receive(snapshotData())
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3.0"}"#.utf8))
+        #expect(model.music.connectedExtensionVersion == "0.3.0")
+        model.music.receive(snapshotData(tab: 2, session: "s2", track: "second"))
+        model.music.disconnect()
+        #expect(model.music.sessions.isEmpty)
+        #expect(model.music.current == nil)
+        #expect(model.music.connectedExtensionVersion == nil)
+        #expect(!model.music.canControl)
     }
 
     @Test("Rejects an extension version that is not numeric")
     func validatesExtensionVersion() {
         let (model, _) = makeModel()
-        model.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3"}"#.utf8))
-        #expect(model.connectedExtensionVersion == "0.3")
-        model.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"<b>"}"#.utf8))
-        #expect(model.connectedExtensionVersion == "0.3")
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3"}"#.utf8))
+        #expect(model.music.connectedExtensionVersion == "0.3")
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"<b>"}"#.utf8))
+        #expect(model.music.connectedExtensionVersion == "0.3")
     }
 
     @Test("Has no track key and no controls during an ad")
     func pausesDuringAdvertisement() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(advertisement: true))
-        #expect(model.trackKey == nil)
-        #expect(!model.canControl)
-        #expect(model.lyricStatus == "Ad · lyrics paused")
+        model.music.receive(snapshotData(advertisement: true))
+        #expect(model.music.trackKey == nil)
+        #expect(!model.music.canControl)
+        #expect(model.music.lyricStatus == "Ad · lyrics paused")
     }
 }
 
@@ -133,9 +134,9 @@ struct CommandTests {
     func sendsCommand() throws {
         let (model, _) = makeModel()
         var sent: [[String: Any]] = []
-        model.sendPacket = { data in sent.append(try! JSONSerialization.jsonObject(with: data) as! [String: Any]) }
-        model.receive(snapshotData())
-        model.command("toggle")
+        model.music.sendPacket = { data in sent.append(try! JSONSerialization.jsonObject(with: data) as! [String: Any]) }
+        model.music.receive(snapshotData())
+        model.music.command("toggle")
         #expect(sent.count == 1)
         let packet = try #require(sent.first)
         #expect(packet["kind"] as? String == "command")
@@ -143,30 +144,30 @@ struct CommandTests {
         #expect(packet["sessionId"] as? String == "session-1")
         #expect(packet["trackId"] as? String == "abc")
         let commandId = try #require(packet["commandId"] as? String)
-        #expect(!model.canControl, "a second command waits for the ack")
+        #expect(!model.music.canControl, "a second command waits for the ack")
 
-        model.receive(Data("{\"protocolVersion\":1,\"kind\":\"ack\",\"commandId\":\"\(commandId)\",\"ok\":false}".utf8))
-        #expect(model.commandError != nil)
-        #expect(model.t(model.commandError!) == "Control failed. Try again from the player tab.")
+        model.music.receive(Data("{\"protocolVersion\":1,\"kind\":\"ack\",\"commandId\":\"\(commandId)\",\"ok\":false}".utf8))
+        #expect(model.music.commandError != nil)
+        #expect(model.t(model.music.commandError!) == "Control failed. Try again from the player tab.")
     }
 
     @Test("Ignores an ack for another command")
     func ignoresForeignAck() {
         let (model, _) = makeModel()
-        model.sendPacket = { _ in }
-        model.receive(snapshotData())
-        model.command("next")
-        model.receive(Data(#"{"protocolVersion":1,"kind":"ack","commandId":"other","ok":true}"#.utf8))
-        #expect(!model.canControl)
-        #expect(model.commandError == nil)
+        model.music.sendPacket = { _ in }
+        model.music.receive(snapshotData())
+        model.music.command("next")
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"ack","commandId":"other","ok":true}"#.utf8))
+        #expect(!model.music.canControl)
+        #expect(model.music.commandError == nil)
     }
 
     @Test("Sends nothing without a source")
     func requiresSource() {
         let (model, _) = makeModel()
         var count = 0
-        model.sendPacket = { _ in count += 1 }
-        model.command("toggle")
+        model.music.sendPacket = { _ in count += 1 }
+        model.music.command("toggle")
         #expect(count == 0)
     }
 }
@@ -177,39 +178,39 @@ struct PreferenceTests {
     @Test("Stores the lyric offset per track, clamped to one minute")
     func storesOffsetPerTrack() {
         let (model, defaults) = makeModel()
-        model.receive(snapshotData())
-        model.lyricOffset = 1.5
-        #expect(model.lyricOffset == 1.5)
-        model.lyricOffset = 500
-        #expect(model.lyricOffset == 60)
-        model.lyricOffset = -500
-        #expect(model.lyricOffset == -60)
+        model.music.receive(snapshotData())
+        model.music.lyricOffset = 1.5
+        #expect(model.music.lyricOffset == 1.5)
+        model.music.lyricOffset = 500
+        #expect(model.music.lyricOffset == 60)
+        model.music.lyricOffset = -500
+        #expect(model.music.lyricOffset == -60)
         let stored = defaults.dictionary(forKey: "lyricOffsetsByTrack") as? [String: Double]
         #expect(stored?["YouTube:abc"] == -60)
-        model.receive(snapshotData(sequence: 2, track: "other"))
-        #expect(model.lyricOffset == 0, "another song starts without an offset")
+        model.music.receive(snapshotData(sequence: 2, track: "other"))
+        #expect(model.music.lyricOffset == 0, "another song starts without an offset")
     }
 
     @Test("A video plays with the same offset on YouTube and YouTube Music")
     func sharesOffsetBetweenSites() {
         let (model, _) = makeModel()
-        model.receive(snapshotData())
-        model.lyricOffset = 2
-        model.receive(snapshotData(tab: 2, session: "s2", sequence: 1, label: "YouTube Music · Chrome"))
-        #expect(model.trackKey == "YouTube:abc")
-        #expect(model.lyricOffset == 2)
+        model.music.receive(snapshotData())
+        model.music.lyricOffset = 2
+        model.music.receive(snapshotData(tab: 2, session: "s2", sequence: 1, label: "YouTube Music · Chrome"))
+        #expect(model.music.trackKey == "YouTube:abc")
+        #expect(model.music.lyricOffset == 2)
     }
 
     @Test("Saves and restores the interface language and appearance")
     func persistsPreferences() {
         let (model, defaults) = makeModel()
         model.interfaceLanguage = .ja
-        model.lyricLineCount = 2
+        model.music.lyricLineCount = 2
         model.compactExtraWidth = 120
         model.compactExtraHeight = 8
         let restored = AppModel(defaults: defaults)
         #expect(restored.interfaceLanguage == .ja)
-        #expect(restored.lyricLineCount == 2)
+        #expect(restored.music.lyricLineCount == 2)
         #expect(restored.compactExtraWidth == 120)
         #expect(restored.compactExtraHeight == 8)
     }
@@ -221,7 +222,7 @@ struct PreferenceTests {
         model.topHeight = 34
         #expect(model.panelSize(screenWidth: 1512).width == 200, "idle matches the notch")
         #expect(model.panelSize(screenWidth: 1512).height == 34)
-        model.receive(snapshotData())
+        model.music.receive(snapshotData())
         #expect(model.panelSize(screenWidth: 1512).width == 200, "playing still matches the notch by default")
         #expect(model.panelSize(screenWidth: 1512).height == 34, "and lyrics are the only thing that adds height")
         model.compactExtraWidth = 80
@@ -236,9 +237,11 @@ struct PreferenceTests {
         model.resetIslandSize()
         #expect(model.panelSize(screenWidth: 1512).width == 200)
         model.expanded = true
-        #expect(model.panelSize(screenWidth: 1512).width == 442)
+        #expect(model.panelSize(screenWidth: 1512).width == 518, "Home holds the wide music widget and the system widget")
         #expect(model.panelSize(screenWidth: 400).width == 376, "never wider than the screen minus 24 pt")
         #expect(model.panelSize(screenWidth: 1512).height == 199, "the expanded panel is as tall as its rows")
+        model.editLayout { $0.removeWidget(id: "system") }
+        #expect(model.panelSize(screenWidth: 1512).width == 442, "music alone keeps the expanded island width")
     }
 
     @Test("The expanded panel adds height only for the rows it draws")
@@ -246,31 +249,31 @@ struct PreferenceTests {
         let (model, _) = makeModel()
         model.topHeight = 34
         model.expanded = true
-        model.receive(snapshotData())
+        model.music.receive(snapshotData())
         let bare = model.panelSize(screenWidth: 1512).height
         #expect(bare == 199, "12 + 48 + 12 + 20 + 2 + 13 + 12 + 32 + 14 rows plus the 34 pt strip")
-        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
-        model.lyricLineCount = 3
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        model.music.lyricLineCount = 3
         #expect(model.islandLyricHeight == 74)
         #expect(model.panelSize(screenWidth: 1512).height == bare + 86)
-        model.lyricLineCount = 1
+        model.music.lyricLineCount = 1
         #expect(model.panelSize(screenWidth: 1512).height == bare + 46, "fewer lyric lines shorten the panel")
-        model.showLyrics = false
-        model.commandError = UIText("Control failed. Try again from the player tab.")
+        model.music.showLyrics = false
+        model.music.commandError = UIText("Control failed. Try again from the player tab.")
         #expect(model.panelSize(screenWidth: 1512).height == bare + 38, "an error gets its own row instead of borrowing slack")
     }
 
     @Test("Keeps artwork and spectrum while paused but hides the lyrics")
     func hidesLyricsWhilePaused() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(position: 10))
-        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
-        #expect(model.isPlayingNow)
+        model.music.receive(snapshotData(position: 10))
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        #expect(model.music.isPlayingNow)
         #expect(model.islandLyricHeight > 0)
         let playingHeight = model.panelSize(screenWidth: 1512).height
-        model.receive(snapshotData(sequence: 2, state: "paused", position: 10))
-        #expect(!model.isPlayingNow)
-        #expect(model.current != nil, "the artwork and the spectrum stay")
+        model.music.receive(snapshotData(sequence: 2, state: "paused", position: 10))
+        #expect(!model.music.isPlayingNow)
+        #expect(model.music.current != nil, "the artwork and the spectrum stay")
         #expect(model.islandLyricHeight == 0)
         #expect(model.panelSize(screenWidth: 1512).height < playingHeight)
         model.expanded = true
@@ -280,42 +283,42 @@ struct PreferenceTests {
     @Test("Shows the configured number of lyric lines around the active one")
     func buildsLyricRows() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(position: 10))
-        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n[00:20]third\n")
-        model.lyricLineCount = 1
-        #expect(model.displayedLyricRows().map(\.text) == ["second"])
-        model.lyricLineCount = 2
-        #expect(model.displayedLyricRows().map(\.text) == ["second", "third"])
-        model.lyricLineCount = 3
-        #expect(model.displayedLyricRows().map(\.text) == ["first", "second", "third"])
-        #expect(model.displayedLyricRows().map(\.active) == [false, true, false])
-        #expect(model.lyricStatus == "second")
+        model.music.receive(snapshotData(position: 10))
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n[00:20]third\n")
+        model.music.lyricLineCount = 1
+        #expect(model.music.displayedLyricRows().map(\.text) == ["second"])
+        model.music.lyricLineCount = 2
+        #expect(model.music.displayedLyricRows().map(\.text) == ["second", "third"])
+        model.music.lyricLineCount = 3
+        #expect(model.music.displayedLyricRows().map(\.text) == ["first", "second", "third"])
+        #expect(model.music.displayedLyricRows().map(\.active) == [false, true, false])
+        #expect(model.music.lyricStatus == "second")
     }
 
     @Test("Hides lyrics and status text when the island has no lyrics")
     func reportsIslandLyrics() {
         let (model, _) = makeModel()
-        model.receive(snapshotData())
-        #expect(!model.hasIslandLyrics)
+        model.music.receive(snapshotData())
+        #expect(!model.music.hasIslandLyrics)
         #expect(model.islandLyricHeight == 0)
-        model.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]line\n")
-        #expect(model.hasIslandLyrics)
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]line\n")
+        #expect(model.music.hasIslandLyrics)
         #expect(model.islandLyricHeight > 0)
-        model.showLyrics = false
-        #expect(!model.hasIslandLyrics)
+        model.music.showLyrics = false
+        #expect(!model.music.hasIslandLyrics)
         #expect(model.islandLyricHeight == 0)
     }
 
     @Test("Translates the demo source label but leaves service labels alone")
     func localizesDemoLabel() {
         let (model, _) = makeModel()
-        model.demo = true
-        let demo = try! #require(model.current?.snapshot)
-        #expect(model.sourceLabel(for: demo) == "Local demo")
-        model.receive(snapshotData())
-        model.demo = false
-        let real = try! #require(model.current?.snapshot)
-        #expect(model.sourceLabel(for: real) == "YouTube · Chrome")
+        model.music.demo = true
+        let demo = try! #require(model.music.current?.snapshot)
+        #expect(model.music.sourceLabel(for: demo) == "Local demo")
+        model.music.receive(snapshotData())
+        model.music.demo = false
+        let real = try! #require(model.music.current?.snapshot)
+        #expect(model.music.sourceLabel(for: real) == "YouTube · Chrome")
     }
 }
 
@@ -325,9 +328,9 @@ struct LyricRowTests {
     @Test("Reserves a second row for the active line only when a line does not fit")
     func reservesSecondRow() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(position: 10))
-        model.lyricLineCount = 3
-        model.lyrics["YouTube:abc"] = LRCParser.parse(
+        model.music.receive(snapshotData(position: 10))
+        model.music.lyricLineCount = 3
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse(
             "[00:00]Ah ah\n[00:10]I have been searching for a long time and I am looking back now\n")
         #expect(model.lyricTextWidth == 144, "the notch-sized island minus the lyric padding")
         #expect(model.reservesTwoLyricRows)
@@ -340,10 +343,604 @@ struct LyricRowTests {
     @Test("Leaves captions and songs without lyrics on one row")
     func skipsOtherSources() {
         let (model, _) = makeModel()
-        model.receive(snapshotData(position: 10, extra: ["captionEnabled": true, "captionText": "a caption line"]))
-        #expect(model.usesVideoCaption)
+        model.music.receive(snapshotData(position: 10, extra: ["captionEnabled": true, "captionText": "a caption line"]))
+        #expect(model.music.usesVideoCaption)
         #expect(!model.reservesTwoLyricRows, "captions wrap on their own")
-        model.showLyrics = false
+        model.music.showLyrics = false
         #expect(!model.reservesTwoLyricRows)
+    }
+}
+
+@MainActor
+@Suite("General settings")
+struct GeneralSettingsTests {
+    @Test("Start with the earlier behavior: no Dock icon, a menu bar icon, the same delays, no haptics, no shortcut")
+    func keepsEarlierDefaults() {
+        let (model, _) = makeModel()
+        #expect(!model.showInDock)
+        #expect(model.showMenuBarIcon)
+        #expect(model.hoverOpenDelay == 0.15)
+        #expect(model.hoverCloseDelay == 0.35)
+        #expect(!model.hapticFeedback)
+        #expect(model.panelShortcut == nil)
+        #expect(model.panelDisplayID == nil)
+    }
+
+    @Test("Saves and restores the general settings")
+    func persistsSettings() {
+        let (model, defaults) = makeModel()
+        var iconChanges = 0
+        model.iconsChanged = { iconChanges += 1 }
+        model.showInDock = true
+        model.showMenuBarIcon = false
+        #expect(iconChanges == 2)
+        model.hoverOpenDelay = 0.4
+        model.hoverCloseDelay = 1.2
+        model.hapticFeedback = true
+        model.panelShortcut = HotKey(keyCode: 45, modifiers: HotKey.command | HotKey.option, key: "N")
+        model.choosePanelDisplay(id: "display-uuid", name: "Studio Display")
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.showInDock)
+        #expect(!restored.showMenuBarIcon)
+        #expect(restored.hoverOpenDelay == 0.4)
+        #expect(restored.hoverCloseDelay == 1.2)
+        #expect(restored.hapticFeedback)
+        #expect(restored.panelShortcut?.label == "⌥⌘N")
+        #expect(restored.panelDisplayID == "display-uuid")
+        #expect(restored.panelDisplayName == "Studio Display")
+        restored.choosePanelDisplay(id: nil, name: "ignored")
+        #expect(restored.panelDisplayName == nil, "automatic placement keeps no display name")
+    }
+
+    @Test("Ignores stored values that are out of range or unreadable")
+    func rejectsInvalidStoredValues() {
+        let defaults = MemoryDefaults()
+        defaults.set(9.0, forKey: "hoverOpenDelay")
+        defaults.set(-1.0, forKey: "hoverCloseDelay")
+        defaults.set(Data("not json".utf8), forKey: "panelShortcut")
+        let model = AppModel(defaults: defaults)
+        #expect(model.hoverOpenDelay == 0.15)
+        #expect(model.hoverCloseDelay == 0.35)
+        #expect(model.panelShortcut == nil)
+        let plain = try! JSONEncoder().encode(HotKey(keyCode: 45, modifiers: 0, key: "N"))
+        defaults.set(plain, forKey: "panelShortcut")
+        #expect(AppModel(defaults: defaults).panelShortcut == nil, "a shortcut without Command, Option, or Control is dropped")
+    }
+
+    @Test("Releases the shortcut while a new one is recorded")
+    func reportsShortcutChanges() {
+        let (model, _) = makeModel()
+        var changes = 0
+        model.shortcutChanged = { changes += 1 }
+        model.recordingShortcut = true
+        model.panelShortcut = HotKey(keyCode: 45, modifiers: HotKey.control, key: "N")
+        model.recordingShortcut = false
+        #expect(changes == 3)
+    }
+
+    @Test("Setup opens where the music is connected until a source is set up")
+    func choosesSetupPage() {
+        let (model, _) = makeModel()
+        #expect(model.defaultSetupPage == .browserConnection)
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3.1"}"#.utf8))
+        #expect(model.defaultSetupPage == .general)
+    }
+}
+
+@MainActor
+@Suite("Panel tabs and widgets")
+struct PanelTabTests {
+    @Test("Starts with the standard layout, saves edits, and restores them")
+    func persistsLayout() {
+        let (model, defaults) = makeModel()
+        #expect(model.layout == .standard)
+        model.editLayout { layout in
+            let page = layout.addPage()!
+            layout.moveWidget(id: "system", toTab: page)
+            layout.renameTab(id: page, to: "Stats")
+        }
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.layout == model.layout)
+        #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "Tray", "Stats"])
+        restored.resetLayout()
+        #expect(restored.layout == .standard)
+    }
+
+    @Test("A stored layout that cannot be read falls back to the standard one")
+    func ignoresBrokenLayout() {
+        let defaults = MemoryDefaults()
+        defaults.set(Data("{broken".utf8), forKey: "panelLayout")
+        #expect(AppModel(defaults: defaults).layout == .standard)
+    }
+
+    @Test("Names pages by position until they are given a name")
+    func namesPages() {
+        let (model, _) = makeModel()
+        model.editLayout { $0.addPage(); $0.addPage() }
+        #expect(model.visibleTabs.map(model.tabName) == ["Home", "Tray", "Page 2", "Page 3"], "pages are numbered among pages only")
+        model.editLayout { $0.renameTab(id: "home", to: "  ") }
+        #expect(model.tabName(model.visibleTabs[0]) == "Home", "a blank name keeps the default")
+    }
+
+    @Test("Opens on the first tab again after the panel closes")
+    func resetsSelectedTab() {
+        let (model, _) = makeModel()
+        var page = ""
+        model.editLayout { page = $0.addPage()! }
+        model.expanded = true
+        model.selectedTabID = page
+        #expect(model.currentTab.id == page)
+        model.expanded = false
+        #expect(model.currentTab.id == "home")
+        model.expanded = true
+        model.selectedTabID = page
+        model.editLayout { $0.removeTab(id: page) }
+        #expect(model.currentTab.id == "home", "a removed tab falls back to the first one")
+    }
+
+    @Test("Shares the page between widgets and fits the lyrics into the wide music widget")
+    func laysOutPage() {
+        let (model, _) = makeModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        model.expanded = true
+        let layout = model.expandedLayout(for: model.currentTab, screenWidth: 1512)
+        #expect(layout.width == 518)
+        #expect(layout.slotWidths["music"] == 312)
+        #expect(layout.slotWidths["system"] == 150)
+        #expect(layout.showsTabs, "Home and the Tray")
+        _ = model.panelSize(screenWidth: 1512)
+        #expect(model.lyricTextWidth == 312)
+    }
+
+    @Test("Sizes pages by their tallest widget, and widens the panel for many tabs")
+    func sizesPages() {
+        let (model, _) = makeModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        model.expanded = true
+        var page = ""
+        model.editLayout { page = $0.addPage()!; $0.moveWidget(id: "system", toTab: page) }
+        let systemPage = model.visibleTabs.first { $0.id == page }!
+        #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).height == 34 + 12 + SystemWidgetLayout.height + 14)
+        #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).showsTabs)
+        model.editLayout { $0.removeWidget(id: "system") }
+        let emptyPage = model.visibleTabs.first { $0.id == page }!
+        #expect(model.expandedLayout(for: emptyPage, screenWidth: 1512).height == 34 + 12 + PanelMetrics.emptyPageHeight + 14)
+        let tray = model.trayTab!
+        #expect(model.expandedLayout(for: tray, screenWidth: 1512).height == 34 + 12 + ToolKind.tray.contentHeight + 14)
+        #expect(model.expandedLayout(for: tray, screenWidth: 1512).width == 518, "a tool needs three units")
+        model.editLayout { $0.setWide(false, forWidget: "music") }
+        #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).height == 34 + 12 + MusicWidgetLayout.smallHeight(error: false) + 14)
+        model.editLayout { while $0.addPage() != nil {} }
+        // Eight tab buttons left of the notch and room for as much on the right: 180 + 2 × (14 + 8 × 28 + 7 × 4).
+        #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).width == 712)
+    }
+}
+
+@MainActor
+@Suite("Local widgets")
+struct LocalWidgetTests {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    private func quietModel() -> (AppModel, UserDefaults) {
+        let (model, defaults) = makeModel()
+        model.widgets.update { $0.timerSound = false }
+        return (model, defaults)
+    }
+
+    @Test("A finished countdown settles and shows a notice without opening the panel")
+    func finishesCountdown() {
+        let (model, _) = quietModel()
+        model.widgets.toggleCountdown(now: now)
+        #expect(model.widgets.data.countdown.endDate == now.addingTimeInterval(600))
+        model.widgets.finishDueTimers(now: now.addingTimeInterval(601))
+        #expect(!model.widgets.data.countdown.clock.isRunning)
+        #expect(model.widgets.data.countdown.remaining(at: now) == 0)
+        #expect(model.notice?.text.key == "Countdown finished")
+        #expect(!model.expanded, "a notice never opens the panel (R-UI-3)")
+        model.widgets.toggleCountdown(now: now.addingTimeInterval(700))
+        #expect(model.widgets.data.countdown.remaining(at: now.addingTimeInterval(700)) == 600, "starting again starts from the full length")
+    }
+
+    @Test("A finished focus session moves to a break")
+    func finishesFocus() {
+        let (model, _) = quietModel()
+        model.widgets.togglePomodoro(now: now)
+        model.widgets.finishDueTimers(now: now.addingTimeInterval(25 * 60))
+        #expect(model.widgets.data.pomodoroState.phase == .shortBreak)
+        #expect(!model.widgets.data.pomodoroState.clock.isRunning)
+        #expect(model.notice?.text.key == "Focus finished · time for a break")
+    }
+
+    @Test("Timers that ended while the app was closed settle quietly")
+    func settlesOnLaunch() {
+        let defaults = MemoryDefaults()
+        let first = WidgetStore(defaults: defaults, now: now)
+        first.toggleCountdown(now: now)
+        var announced = false
+        let second = WidgetStore(defaults: defaults, now: now.addingTimeInterval(3600))
+        second.notice = { _, _ in announced = true }
+        #expect(!second.data.countdown.clock.isRunning)
+        #expect(!announced)
+    }
+
+    @Test("The compact island shows a running timer only while no music plays")
+    func showsLiveTimer() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 32
+        #expect(model.liveTimer == nil)
+        model.widgets.toggleStopwatch(now: now)
+        #expect(model.liveTimer?.kind == .stopwatch)
+        #expect(model.panelSize(screenWidth: 1512) == CGSize(width: 180 + 2 * PanelMetrics.liveSideWidth, height: 32))
+        model.widgets.toggleCountdown(now: now)
+        #expect(model.liveTimer?.kind == .countdown, "a timer with an end comes before the stopwatch")
+        model.music.receive(snapshotData())
+        #expect(model.liveTimer == nil, "music keeps the island while it plays (R-WID-1)")
+        model.music.receive(snapshotData(sequence: 2, state: "paused"))
+        #expect(model.liveTimer?.kind == .countdown)
+    }
+
+    @Test("A notice widens the compact island and takes the lyrics' place")
+    func sizesNotice() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 32
+        model.music.receive(snapshotData(position: 10))
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        #expect(model.islandLyricHeight > 0)
+        model.showNotice(UIText("Countdown finished"), icon: "timer")
+        #expect(model.islandLyricHeight == 0)
+        #expect(model.panelSize(screenWidth: 1512) == CGSize(width: 180 + 2 * PanelMetrics.noticeSideWidth, height: 32 + PanelMetrics.noticeHeight))
+    }
+
+    @Test("Saves the counter, water, and launchers and restores them")
+    func persistsWidgetData() {
+        let (model, defaults) = quietModel()
+        model.widgets.changeCounter(by: 3)
+        model.widgets.changeWater(by: 2, now: now)
+        model.widgets.setShortcut("Morning", enabled: true)
+        let bookmark = Bookmark.validated(title: "Docs", address: "example.com")!
+        model.widgets.addBookmark(bookmark)
+        model.widgets.notes = "Buy milk"
+        model.widgets.flushNotes()
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.widgets.data.counter.value == 3)
+        #expect(restored.widgets.waterToday(now: now) == 2)
+        #expect(restored.widgets.data.shortcuts == ["Morning"])
+        #expect(restored.widgets.data.bookmarks == [bookmark])
+        #expect(restored.widgets.notes == "Buy milk")
+        restored.widgets.setShortcut("Morning", enabled: false)
+        restored.widgets.removeBookmark(bookmark)
+        #expect(restored.widgets.data.shortcuts.isEmpty)
+        #expect(restored.widgets.data.bookmarks.isEmpty)
+    }
+
+    @Test("Runs only shortcuts the user turned on")
+    func refusesUnknownShortcut() {
+        let (model, _) = quietModel()
+        model.widgets.runShortcut("Delete Everything")
+        #expect(model.notice == nil, "nothing was started, so nothing failed")
+    }
+
+    @Test("New widgets fill a card on the page")
+    func sizesWidgetPages() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        var pageID = ""
+        model.editLayout { layout in
+            pageID = layout.addPage()!
+            for kind in ["clock", "pomodoro", "notes"] { layout.addWidget(kind: kind, wide: false, toTab: pageID) }
+        }
+        let page = model.visibleTabs.first { $0.id == pageID }!
+        #expect(page.widgets.map(\.kind) == ["clock", "pomodoro", "notes"])
+        let layout = model.expandedLayout(for: page, screenWidth: 1512)
+        #expect(layout.height == 34 + 12 + WidgetCardLayout.height + 14)
+        #expect(layout.width == 518, "three small widgets need three units: 22 + 3 × 150 + 2 × 12 + 22")
+    }
+}
+
+@MainActor
+@Suite("System widget readings")
+struct SystemReadingTests {
+    @Test("Shows the last processor value, marked as earlier, until a new reading arrives")
+    func keepsLastProcessorValue() {
+        let defaults = MemoryDefaults()
+        defaults.set(0.42, forKey: "lastCPUUsage")
+        let monitor = SystemMonitor(defaults: defaults)
+        #expect(monitor.cpu == 0.42)
+        #expect(!monitor.cpuIsCurrent)
+        monitor.start()
+        #expect(monitor.cpu == 0.42, "starting keeps the last value instead of a blank")
+        // The kernel updates the counters about once a second, so a reading arrives within about that.
+        let deadline = Date().addingTimeInterval(2.5)
+        while !monitor.cpuIsCurrent && Date() < deadline { RunLoop.main.run(until: Date().addingTimeInterval(SystemMonitor.warmUpInterval)) }
+        #expect(monitor.cpuIsCurrent, "a reading arrives soon after the widget appears")
+        #expect(defaults.object(forKey: "lastCPUUsage") as? Double == monitor.cpu, "and is remembered for next time")
+        monitor.stop()
+    }
+
+    @Test("Ignores a stored value that is not a share")
+    func ignoresInvalidStoredValue() {
+        let defaults = MemoryDefaults()
+        defaults.set(7.0, forKey: "lastCPUUsage")
+        #expect(SystemMonitor(defaults: defaults).cpu == nil)
+    }
+}
+
+@MainActor
+@Suite("Tray and clipboard")
+struct TrayClipboardTests {
+    private func temporaryFolder() throws -> URL {
+        let folder = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-test-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        return folder
+    }
+
+    @Test("The Tray keeps links, follows moved files, forgets deleted ones, and never deletes a file")
+    func keepsFileLinks() throws {
+        let folder = try temporaryFolder()
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let report = folder.appendingPathComponent("Report.txt")
+        let photo = folder.appendingPathComponent("Photo.txt")
+        try Data("a".utf8).write(to: report)
+        try Data("b".utf8).write(to: photo)
+        let defaults = MemoryDefaults()
+        let tray = TrayStore(defaults: defaults)
+        tray.add([report, photo, report, folder.appendingPathComponent("missing.txt")])
+        #expect(tray.items.map(\.name) == ["Report.txt", "Photo.txt"])
+        #expect(TrayStore(defaults: defaults).items.count == 2, "the links are saved")
+
+        let moved = folder.appendingPathComponent("Report final.txt")
+        try FileManager.default.moveItem(at: report, to: moved)
+        try FileManager.default.removeItem(at: photo)
+        tray.refresh()
+        #expect(tray.items.map(\.name) == ["Report final.txt"], "a moved file is followed and a deleted one forgotten")
+
+        tray.clear()
+        #expect(tray.items.isEmpty)
+        #expect(FileManager.default.fileExists(atPath: moved.path), "clearing the Tray never deletes the file (R-WID-7)")
+    }
+
+    @Test("Clipboard history keeps text and images, skips secrets, and deletes everything when turned off")
+    func keepsClipboardHistory() throws {
+        let folder = try temporaryFolder().appendingPathComponent("Clipboard", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: folder.deletingLastPathComponent()) }
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name("ririku-test-\(UUID().uuidString)"))
+        defer { pasteboard.releaseGlobally() }
+        let defaults = MemoryDefaults()
+        let clipboard = ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder)
+
+        pasteboard.clearContents()
+        pasteboard.setString("before", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.isEmpty, "nothing is read while history is off")
+
+        clipboard.setEnabled(true)
+        clipboard.poll()
+        #expect(clipboard.entries.isEmpty, "what was already on the clipboard is not taken")
+        pasteboard.clearContents()
+        pasteboard.setString("hello", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello"])
+
+        pasteboard.clearContents()
+        pasteboard.declareTypes([.string, NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType")], owner: nil)
+        pasteboard.setString("secret", forType: .string)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello"], "content marked as secret is skipped (R-WID-6)")
+
+        let image = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 4, pixelsHigh: 4, bitsPerSample: 8, samplesPerPixel: 4,
+                                     hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+        pasteboard.clearContents()
+        pasteboard.setData(image.representation(using: .png, properties: [:]), forType: .png)
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.kind) == [.image, .text])
+        #expect(FileManager.default.fileExists(atPath: clipboard.imageURL(clipboard.entries[0]).path))
+
+        clipboard.copy(clipboard.entries[1])
+        clipboard.poll()
+        #expect(clipboard.entries.map(\.text) == ["hello", nil], "copying back moves the entry up without a duplicate")
+        #expect(pasteboard.string(forType: .string) == "hello")
+
+        #expect(ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder).entries.count == 2, "the history survives a restart")
+
+        clipboard.setEnabled(false)
+        #expect(clipboard.entries.isEmpty)
+        #expect(!FileManager.default.fileExists(atPath: folder.path), "turning history off deletes it")
+    }
+
+    @Test("The Clipboard tab exists exactly while clipboard history is on")
+    func managesClipboardTab() throws {
+        let folder = try temporaryFolder()
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let defaults = MemoryDefaults()
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name("ririku-test-\(UUID().uuidString)"))
+        defer { pasteboard.releaseGlobally() }
+        let model = AppModel(defaults: defaults, clipboard: ClipboardStore(defaults: defaults, pasteboard: pasteboard, folder: folder))
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
+        model.setClipboardHistory(true)
+        #expect(model.layout.tabs.last?.kind == PanelTab.clipboardKind)
+        model.resetLayout()
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "clipboard"], "resetting keeps the tab while history is on")
+        model.setClipboardHistory(false)
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
+    }
+}
+
+/// A permission whose answer the test chooses, counting how often macOS would have shown its prompt.
+@MainActor
+private final class FakePermission {
+    var state: PermissionState
+    let answer: PermissionState
+    private(set) var prompts = 0
+
+    init(_ state: PermissionState, answer: PermissionState = .granted) {
+        self.state = state
+        self.answer = answer
+    }
+
+    func request() async -> Bool {
+        prompts += 1
+        state = answer
+        return answer == .granted
+    }
+}
+
+@MainActor
+@Suite("Calendar and camera")
+struct CalendarCameraTests {
+    @Test("Adding the Calendar or Camera widget asks for access once; other widgets ask for nothing")
+    func asksWhenAdded() async {
+        let defaults = MemoryDefaults()
+        let calendarAccess = FakePermission(.notDetermined, answer: .denied)
+        let cameraAccess = FakePermission(.notDetermined)
+        let model = AppModel(defaults: defaults,
+                             calendar: CalendarStore(defaults: defaults, status: { calendarAccess.state }, requester: calendarAccess.request),
+                             camera: CameraMirror(status: { cameraAccess.state }, requester: cameraAccess.request))
+        #expect(model.calendar.access == .notDetermined, "nothing is asked at launch (R-WID-3)")
+        #expect(calendarAccess.prompts == 0 && cameraAccess.prompts == 0)
+        let home = model.layout.tabs[0].id
+        #expect(model.addWidget(.clock, toTab: home) == nil)
+        await model.addWidget(.calendar, toTab: home)?.value
+        await model.addWidget(.camera, toTab: home)?.value
+        #expect(model.layout.tabs[0].widgets.map(\.kind).suffix(3) == ["clock", "calendar", "camera"])
+        #expect(calendarAccess.prompts == 1 && cameraAccess.prompts == 1)
+        #expect(model.calendar.access == .denied)
+        #expect(model.camera.access == .granted)
+
+        let calendarWidget = model.layout.tabs[0].widgets.first { $0.kind == "calendar" }!.id
+        model.editLayout { $0.removeWidget(id: calendarWidget) }
+        #expect(model.addWidget(.calendar, toTab: home) == nil, "a denied permission is never asked again")
+        #expect(model.calendar.requestAccessIfNeeded() == nil)
+        #expect(calendarAccess.prompts == 1)
+    }
+
+    @Test("Without access, the Calendar widget reads nothing and the camera stays off")
+    func staysOffWithoutAccess() {
+        let calendar = CalendarStore(defaults: MemoryDefaults(), status: { .denied })
+        calendar.start()
+        #expect(calendar.agenda == nil)
+        #expect(calendar.calendars.isEmpty)
+        calendar.stop()
+
+        let camera = CameraMirror(status: { .denied })
+        let widget = UUID()
+        camera.start(for: widget)
+        #expect(camera.owner == nil)
+    }
+
+    @Test("Calendars turned off in Setup are saved, and other calendars stay on")
+    func savesHiddenCalendars() {
+        let defaults = MemoryDefaults()
+        let calendar = CalendarStore(defaults: defaults, status: { .denied })
+        calendar.setCalendar("work", shown: false)
+        calendar.setCalendar("family", shown: false)
+        calendar.setCalendar("family", shown: true)
+        #expect(CalendarStore(defaults: defaults, status: { .denied }).hiddenCalendars == ["work"])
+    }
+}
+
+/// Languages for the translation tests, so they do not depend on what this Mac offers or has downloaded.
+private let offeredLanguages = ["en", "en-GB", "ja", "id", "zh", "zh-TW", "ko"]
+private let onMacOS15 = ProcessInfo.processInfo.isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 15, minorVersion: 0, patchVersion: 0))
+
+@MainActor
+@Suite("Translate and lyric translation", .enabled(if: onMacOS15, "Translation needs macOS 15"))
+struct TranslationTests {
+    @Test("The Translate tab exists exactly while Translate is on, and turning it off clears the text")
+    func managesTab() {
+        let (model, _) = makeModel()
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.translateKind }, "off by default")
+        model.setTranslateTab(true)
+        #expect(model.layout.tabs.last?.kind == PanelTab.translateKind)
+        model.translate.input = "hello"
+        model.resetLayout()
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "translate"], "resetting keeps the tab while it is on")
+        model.setTranslateTab(false)
+        #expect(!model.layout.tabs.contains { $0.kind == PanelTab.translateKind })
+        #expect(model.translate.input.isEmpty)
+    }
+
+    @Test("Detects the language, translates only downloaded languages, and drops a late result")
+    func translatesText() async throws {
+        let (model, _) = makeModel()
+        let translate = model.translate
+        var downloaded = false
+        translate.languageList = { offeredLanguages }
+        translate.availabilityCheck = { _, _ in downloaded ? .installed : .downloadable }
+        translate.target = "en"
+        translate.input = "今日はいい天気ですね。明日も晴れるといいですね。"
+        await translate.requestTranslation(now: true)?.value
+        #expect(translate.detected == "ja")
+        #expect(translate.state == .needsDownload(source: "ja"), "the panel never starts a download")
+        #expect(translate.job == nil)
+
+        downloaded = true
+        await translate.requestTranslation(now: true)?.value
+        let first = try #require(translate.job)
+        #expect(first.source == "ja" && first.target == "en")
+        translate.input = "おはようございます。今日も一日頑張りましょう。"
+        await translate.requestTranslation(now: true)?.value
+        translate.complete(first, output: "Nice weather")
+        #expect(translate.output.isEmpty, "a result for earlier text is dropped")
+        translate.complete(try #require(translate.job), output: "Good morning")
+        #expect(translate.output == "Good morning")
+        #expect(translate.state == .done)
+
+        translate.swap()
+        #expect(translate.source == "en" && translate.target == "ja")
+        #expect(translate.input == "Good morning", "swapping continues from the translation")
+
+        translate.source = nil
+        translate.target = "en"
+        translate.input = "This sentence is already written in English."
+        await translate.requestTranslation(now: true)?.value
+        #expect(translate.state == .sameLanguage)
+        #expect(translate.job == nil)
+    }
+
+    @Test("Translates a song once, keeps a row under the active line, and never reaches another song")
+    func translatesLyrics() async throws {
+        let (model, _) = makeModel()
+        let music = model.music
+        let translator = music.lyricTranslator
+        translator.languageList = { offeredLanguages }
+        translator.availabilityCheck = { _, _ in .installed }
+        translator.target = "en"
+        model.expanded = true
+        music.receive(snapshotData(position: 10))
+        music.lyricLineCount = 3
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]君の名前を呼んでいた\n[00:10]夜の街で一人きり\n[00:20]I love you\n[00:30]Baby 君だけ\n")
+        let plain = model.islandLyricHeight
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        #expect(translator.job == nil && music.expandedLyricTranslations == nil, "off by default")
+
+        translator.enabled = true
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        let job = try #require(translator.job)
+        #expect(job.source == "ja")
+        #expect(job.indices == [0, 1, 3], "the English line stays as it is; the mixed line is translated")
+        #expect(model.islandLyricHeight == plain + 20, "a row is kept while the song is translated")
+        translator.complete(job, responses: [("0", "I was calling your name"), ("1", "All alone in the night city"), ("3", "Baby, only you")])
+        #expect(music.expandedLyricTranslations == ["I was calling your name", "All alone in the night city", "", "Baby, only you"])
+        #expect(translator.status == .done(source: "ja"))
+        #expect(music.currentLines.map(\.text) == ["君の名前を呼んでいた", "夜の街で一人きり", "I love you", "Baby 君だけ"], "the lyrics never change (R-LYR-6)")
+        model.expanded = false
+        #expect(model.islandLyricHeight == plain, "the compact island shows no translation")
+        model.expanded = true
+
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]別の歌を歌おう\n[00:10]もう一度だけ\n")
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        translator.complete(job, responses: [("0", "Old")])
+        #expect(music.expandedLyricTranslations == [], "a result for the earlier lyrics is dropped (R-LYR-5)")
+
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]I walk alone tonight\n[00:10]Under the city lights\n")
+        await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
+        #expect(translator.status == .sameLanguage)
+        #expect(music.expandedLyricTranslations == nil)
+        #expect(model.islandLyricHeight == plain, "a song already in the target language keeps its height")
     }
 }

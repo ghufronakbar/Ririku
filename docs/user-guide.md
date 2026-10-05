@@ -2,7 +2,7 @@
 
 English · [Bahasa Indonesia](user-guide.id.md) · [日本語](user-guide.ja.md)
 
-This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.3.1. Button names are shown as they appear in the English interface.
+This guide is for everyone who wants to use Ririku, no programming needed. It describes Ririku v0.4.0. Button names are shown as they appear in the English interface.
 
 - [Before you start](#before-you-start)
 - [Install](#install)
@@ -50,7 +50,7 @@ You only need to do this once per downloaded version.
 
 > **Advanced:** if you trust the download, you can instead run `xattr -dr com.apple.quarantine /Applications/Ririku.app` in Terminal.
 
-Ririku has no Dock icon. It lives in the menu bar as a **waveform** icon, and the **Setup** window opens on first launch.
+By default Ririku has no Dock icon and lives in the menu bar as a **waveform** icon; both can be changed in **Setup → General**. The **Setup** window opens on first launch.
 
 ### 3. Connect your browser
 
@@ -73,9 +73,15 @@ Keep **Developer mode** on; browsers need it for extensions that are not from th
 Artwork uses the current video's YouTube thumbnail, which may differ from the album cover shown in YouTube Music. This avoids retaining an earlier song's player-bar image.
 
 - **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
-- **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon.
-- **Controls:** title, artist, and source; the gear button opens **Setup**; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
-- **Close:** move the pointer away or press **Esc**.
+- **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
+- **Tabs and widgets:** the expanded panel shows a page of widgets. **Home** starts with the music controls and the **System** widget (processor, memory, and disk use). The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the first page each time. Arrange pages in **Setup → Layout**.
+- **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
+- **Tray:** drag files onto the notch to open the panel on the **Tray** tab, and drop them there. Click a file to open it, drag it out to another app or folder, or Control-click it for **Show in Finder**, **Send with AirDrop**, and **Remove from Tray**. Drop files on the **AirDrop** card to send them, or click the card to send everything on the Tray.
+- **Clipboard:** with clipboard history on, the **Clipboard** tab lists what you copied. Click an entry to put it back on the clipboard, then paste it where you want.
+- **Translate:** with Translate on, the **Translate** tab translates what you type or paste, 0.6 seconds after you stop typing or when you press Return. The source language is detected unless you choose one; the arrows swap the languages. Click the copy button to copy the translation.
+- **Calendar and Camera:** the Calendar widget shows today's events that have not ended; click it to open the Calendar app. Click the Camera widget to use your camera as a mirror; it turns off when the panel closes or you change tabs.
+- **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
+- **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
 - **Ads:** while YouTube shows an ad, controls are disabled and lyrics pause.
 - **No lyrics:** the island stays compact and briefly shows **Lyrics not found**. Details are in **Setup → Lyrics**.
@@ -84,19 +90,81 @@ Choose **Quit Ririku** from the menu bar icon to quit.
 
 ## Setup
 
-Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Changes apply immediately.
+Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Choose a page in the sidebar; until a browser or a desktop player is set up, Setup opens on **Browser connection**. Changes apply immediately.
+
+### General
+
+**Startup → Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
+
+**Icons:** **Show in Dock** (off by default) and **Show in the menu bar** (on by default). With the Dock icon on, clicking it opens Setup, and Ririku shows its menus (About, Setup, Edit, Window) in the menu bar while it is in front. If you hide both icons, open Ririku again from Finder, Launchpad, or Spotlight, or click the gear in the expanded panel, to come back to Setup.
+
+**Panel:**
+
+- **Show the panel on:** **Automatic** (default) uses the display with a notch, otherwise the main display. You can also choose a display by name; on a display without a notch, the panel sits at the top center. While the chosen display is disconnected, the panel is placed automatically.
+- **Delay before opening** (0–1 s, default 0.15 s) and **Delay before closing** (0.1–2 s, default 0.35 s): how long the pointer rests on the notch before the panel opens, and how long it stays away before the panel closes. Clicking the island opens it at once.
+- **Haptic feedback when the pointer reaches the notch** (off by default): a light tap as the pointer reaches the closed notch, even when it only passes by on the way to the menu bar. It needs a Force Touch trackpad with **Force Click and haptic feedback** turned on in **System Settings → Trackpad** (Setup offers **Open Trackpad settings**); with that off, macOS silences haptic feedback from every app. macOS also plays it only while your finger is on the trackpad, so it comes as the pointer arrives rather than when the panel opens.
+
+### Tutorial
+
+A short tour of the panel and Setup. Each step has a button that opens the page it mentions.
 
 ### Language
 
 **Interface language:** **Follow system** (default), English, Bahasa Indonesia, or 日本語. Follow system uses the first of these languages in **System Settings → General → Language & Region**, otherwise English. Song titles, lyrics, captions, and messages from macOS or websites keep their original language.
 
+### Keyboard
+
+**Open or close the panel:** off until you record a shortcut. Click **Record Shortcut** and press a combination with Command, Option, or Control, for example ⌥⌘N; Esc cancels and **Clear** removes it. The shortcut works from any app and does not need Accessibility permission. If macOS refuses a combination because another app uses it, Setup says so; choose another. Opened with the shortcut, the panel stays open until the pointer has visited it; press the shortcut again or Esc to close it.
+
+### Layout
+
+A live preview of the expanded panel stays at the top; click a tab icon in it to preview another page. Below it, each page has:
+
+- **Page name** (empty shows Home, Page 2, and so on) and **Icon** for the tab bar. The **…** menu beside the page's name moves the page left or right or deletes it; one page always stays.
+- Its widgets from left to right, each **Small** (one unit) or **Wide** (two units). The **…** menu beside a widget moves it left, right, or to another page, or removes it.
+- **Add Widget** lists the widgets that are not on any page yet; each widget can be on one page.
+
+Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on, and the Translate tab while Translate is on.
+
+**Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets, and the Tray; the Clipboard and Translate tabs stay while they are on. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
+
+The widgets and their settings are described under [Widgets](#widgets).
+
+### Widgets
+
+Settings for the widgets; choose where they appear in **Setup → Layout**. In the panel, widgets only show and operate: start a timer, count, open an app.
+
+- **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds. Processor use needs two readings, so when the widget appears it shows the last value, dimmed, for a moment.
+- **Clock:** the time, in your 12- or 24-hour setting, and the date.
+- **Pomodoro:** focus sessions and breaks with start, reset, and skip. Set the focus, short break, and long break lengths, how many focus sessions come before a long break, and whether the next phase starts by itself.
+- **Countdown:** set its length here, or with − and + in the panel before it starts. **Stopwatch:** start, pause, and reset.
+- **Play a sound when a timer ends** (on by default). A running timer keeps going while the panel is closed or Ririku quits, and while no music plays it shows beside the notch.
+- **Network:** download and upload speed of Wi-Fi and Ethernet, read every 2 seconds while visible; the wide widget adds a chart.
+- **Battery:** charge and state, with the estimated time on the wide widget. **Show a notice when charging starts** (on by default) works while the Battery widget is on a page.
+- **Notes:** a plain note you type in the panel, saved on this Mac. **Clear Note…** empties it.
+- **Counter:** a title and a number you count up or down. **Days Left:** a title and a date; it counts the days until the date, or since it. **Water:** glasses toward a daily goal (8 by default), starting at zero each day.
+- **Apps:** up to 12 apps you add with **Add Apps…**; click one in the panel to open it.
+- **Shortcuts:** turn on up to 12 shortcuts from the Shortcuts app; the panel runs only those, through Apple's `shortcuts` command.
+- **Bookmarks:** up to 12 web addresses (http or https) with an optional title; they open in your default browser.
+- **Calendar:** today's events that have not ended, or tomorrow's once today has none left, with timed events before all-day ones. The small widget shows the next event, the wide widget up to three. macOS asks for access to your calendars when you add the widget in **Setup → Layout**; Ririku only reads them and never creates, changes, or deletes an event. Turn off calendars you do not want to see; new calendars are shown.
+- **Camera:** a mirror from your Mac's camera. macOS asks for camera access when you add the widget. The camera turns on only when you click the widget in the panel, never in Setup's preview, and turns off when the panel closes or you change tabs; the green camera light shows while it is on.
+- If you denied access to the calendars or the camera, the widget and this page show **Open System Settings**, which opens **Privacy & Security** so you can allow it; Ririku does not ask again by itself. Ririku is signed ad hoc, so macOS may ask for these permissions again after an update.
+- **Tray:** the number of files and **Clear Tray**. The Tray keeps a link to each file, never a copy, and never moves or deletes a file: removing one from the Tray only forgets it, and a file you delete disappears from the Tray. At most 50 files.
+- **Keep clipboard history** (off by default): while on, Ririku looks at the clipboard twice a second and keeps the last 50 texts and images you copy. It skips content that apps mark as secret, transient, or generated, such as passwords from a password manager, and copied files. Ririku cannot paste for you, which would need Accessibility permission. **Clear History…** deletes the entries, and turning the option off deletes them too.
+- **Translate** (macOS 15 or later, off by default): **Show the Translate tab** and **Translate into**. Translation runs on your Mac with Apple's Translation framework. Each language is downloaded once: open **Languages on this Mac** and click **Download** beside a language, then confirm in the window macOS shows. The panel only translates languages that are already downloaded and otherwise points here. Downloaded languages can be removed in **System Settings → General → Language & Region**.
+
+### Appearance
+
+- **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
+- **Expanded island width** (360–720 pt, default 442): the expanded panel opens at least this wide. A page whose widgets need more room opens wider; the default Home opens at about 518 pt.
+- **Reset to the notch size** restores all three.
+- **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
+- **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
+- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
+
 ### Browser connection
 
 The four install steps above. Come back here after updating Ririku, installing another browser, or moving the app to another folder.
-
-### Startup
-
-**Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a Dock icon or a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
 
 ### Music source
 
@@ -106,15 +174,6 @@ The four install steps above. Come back here after updating Ririku, installing a
 
 - **Automatically follow the active player** (on by default): Ririku follows the browser tab that starts playing.
 - **Active player:** turn automatic mode off to lock one tab. Ririku reconnects to the same tab after a page refresh.
-
-### Appearance
-
-- **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
-- **Expanded island width** (360–720 pt, default 442), used when the panel is hovered or opened.
-- **Reset to the notch size** restores all three.
-- **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
-- **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
-- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
 
 ### Lyrics
 
@@ -128,10 +187,15 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Import LRC…:** use your own `.lrc` file (UTF-8, up to 1 MB) for the current song until Ririku quits.
 - **Offset for this song** and **Earlier/Later by 0.1 s:** see [Fixing timing](#fixing-timing).
 - **Search and choose a lyrics version:** see [Choosing another version](#choosing-another-version).
+- **Translate lyrics** (macOS 15 or later, off by default) and **Translate into:** the translation of each synced line appears under the active line in the expanded panel; the compact island is unchanged. The whole song is translated on your Mac when its lyrics load, lines already in the chosen language are left as they are, and the lyrics themselves never change. The line below shows how the current song is doing; when its language is not downloaded yet, click **Download**. Plain lyrics and captions are not translated.
 
 ### Prototype
 
-**Local demo (no audio)** shows a sample song so you can try the panel without a browser. Turn it off before using real music.
+**Local demo (no audio)** shows a sample song with synced lyrics so you can try the panel without a browser. Turn it off before using real music.
+
+### About
+
+The version, the privacy note, and links to the source code, this guide in your interface language, and the issue tracker. Links open in your browser. With the Dock icon on, **About Ririku** in the app menu opens this page too.
 
 ## Getting better lyrics
 
@@ -197,10 +261,11 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 2. On your browser's extensions page, remove **Ririku — Browser Bridge**.
 3. Move **Ririku.app** to the Trash.
 4. Optionally remove its data. In Finder choose **Go → Go to Folder…** and delete only these items:
-   - `~/Library/Application Support/Ririku`
+   - `~/Library/Application Support/Ririku` (the copied browser extension and the clipboard history)
    - `io.github.lanstheprodigy.ririku.bridge.json` in the `NativeMessagingHosts` folder of each browser you registered, for example `~/Library/Application Support/Google/Chrome/NativeMessagingHosts`
    - `~/Library/Caches/io.github.lanstheprodigy.ririku`
    - `~/Library/Preferences/io.github.lanstheprodigy.ririku.plist` (or run `defaults delete io.github.lanstheprodigy.ririku` in Terminal)
+5. Optionally remove Ririku from the lists in **System Settings → Privacy & Security** where you allowed it: **Calendars**, **Camera**, and **Automation**.
 
 ## Privacy
 
@@ -209,6 +274,10 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - **Artwork:** thumbnails are downloaded from YouTube/Google image servers or Spotify’s `i.scdn.co`; Apple Music artwork is read locally from the Music app. Spotify and Music Automation read playback metadata locally and send controls only when requested.
 - **Browser extension:** runs only on `www.youtube.com` and `music.youtube.com` and uses only the `nativeMessaging` permission. It reads the player state, title, artist, artwork address, and visible captions on the page, and sends them only to the Ririku app on your Mac. It does not read cookies, passwords, or browsing history.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
+- **Widgets:** the widgets work on your Mac and add no network destination. The System and Network widgets read usage counters only while visible, and the Battery widget reads the power source. Notes, the counter, water, timers, and your app, shortcut, and bookmark lists are stored in Ririku's preferences. Shortcuts run through Apple's `shortcuts` command, apps open through macOS, and bookmarks open in your default browser.
+- **Tray and clipboard:** the Tray keeps links to your files in Ririku's preferences. Clipboard history, when on, is kept in `~/Library/Application Support/Ririku/Clipboard`, readable only by your user account, and deleted when you turn it off.
+- **Translation:** text you translate and lyrics are translated on your Mac with Apple's Translation framework and are not sent to a translation service. macOS downloads the languages from Apple once. The text and the translations are kept in memory only.
+- **Calendar and camera:** the Calendar widget reads events on your Mac only while it is visible and stores none of them; only the calendars you turned off are saved. The camera picture is only shown in the panel: it is never recorded, saved, or sent.
 
 ## Known limitations
 
@@ -218,3 +287,4 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - Not notarized by Apple, so the first launch needs confirmation.
 - Lyrics availability and timing depend on LRCLIB.
 - YouTube page changes can break detection until Ririku is updated.
+- Translate and lyric translation need macOS 15 or later. Whether macOS shows its language download prompt correctly from Setup has not been confirmed on every system.

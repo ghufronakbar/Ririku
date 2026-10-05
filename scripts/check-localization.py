@@ -15,8 +15,8 @@ PATTERNS = [re.compile(r'\bt\(' + LITERAL), re.compile(r'\bUIText\(' + LITERAL),
 PLACEHOLDER = re.compile(r'%(?:\d+\$)?@')
 
 
-def load(language):
-    path = ROOT / "Localization" / f"{language}.lproj" / "Localizable.strings"
+def load(language, name="Localizable.strings"):
+    path = ROOT / "Localization" / f"{language}.lproj" / name
     result = subprocess.run(["/usr/bin/plutil", "-convert", "json", "-o", "-", str(path)], capture_output=True, text=True)
     if result.returncode != 0:
         sys.exit(f"{path}: {result.stderr.strip() or result.stdout.strip()}")
@@ -25,7 +25,7 @@ def load(language):
 
 keys = {}
 for folder in SOURCES:
-    for file in sorted(folder.glob("*.swift")):
+    for file in sorted(folder.rglob("*.swift")):
         for number, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
             for pattern in PATTERNS:
                 for match in pattern.finditer(line):
@@ -47,7 +47,14 @@ for language in LANGUAGES:
         problems.append(f"[{language}] unused key: {key}")
 load("en")
 
+# Permission prompts: every usage description in Info.plist needs a translation in InfoPlist.strings.
+usage = set(re.findall(r'"(NS\w+UsageDescription)":', (ROOT / "scripts/build-app.sh").read_text(encoding="utf-8")))
+for language in LANGUAGES:
+    table = load(language, "InfoPlist.strings")
+    problems += [f"[{language}] InfoPlist.strings is missing {key}" for key in sorted(usage - set(table))]
+    problems += [f"[{language}] InfoPlist.strings has an unused key: {key}" for key in sorted(set(table) - usage)]
+
 if problems:
     print("\n".join(problems))
     sys.exit(1)
-print(f"Localization complete: {len(keys)} keys × {', '.join(LANGUAGES)}")
+print(f"Localization complete: {len(keys)} keys and {len(usage)} permission prompts × {', '.join(LANGUAGES)}")
