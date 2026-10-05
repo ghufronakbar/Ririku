@@ -6,10 +6,16 @@ import RirikuCore
 @MainActor
 final class SystemMonitor: ObservableObject {
     static let interval: TimeInterval = 2
+    /// Processor use is the difference between two readings. The kernel adds processor ticks in bursts about once
+    /// a second, so after the widget appears a reading is tried this often until one covers enough time.
+    static let warmUpInterval: TimeInterval = 0.25
     /// Disk use changes slowly, so it is read on every 15th sample (30 s).
     private static let diskEvery = 15
 
+    /// The latest processor use. Until a new reading arrives, it is the last one seen, also from before a restart.
     @Published private(set) var cpu: Double?
+    /// False while `cpu` is the last value from earlier, which the widget dims.
+    @Published private(set) var cpuIsCurrent = false
     @Published private(set) var memoryUsed: UInt64 = 0
     @Published private(set) var diskUsed: UInt64 = 0
     @Published private(set) var diskTotal: UInt64 = 0
@@ -17,10 +23,19 @@ final class SystemMonitor: ObservableObject {
     let processorCount = ProcessInfo.processInfo.activeProcessorCount
 
     private let host = mach_host_self()
+    private let defaults: UserDefaults
     private var viewers = 0
     private var timer: Timer?
     private var lastTicks: CPUTicks?
     private var samples = 0
+    private var warmingUp = false
+    /// Half a second of every processor, at the kernel's tick rate, before a reading counts.
+    private lazy var minimumTicks = Double(processorCount) * Double(max(1, sysconf(Int32(_SC_CLK_TCK)))) / 2
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        cpu = (defaults.object(forKey: "lastCPUUsage") as? Double).flatMap { $0.isFinite && (0...1).contains($0) ? $0 : nil }
+    }
 
     var memoryFraction: Double { SystemStats.fraction(memoryUsed, of: memoryTotal) }
     var diskFraction: Double { SystemStats.fraction(diskUsed, of: diskTotal) }
@@ -31,10 +46,16 @@ final class SystemMonitor: ObservableObject {
         // A fresh baseline, so the first value does not average the time nothing was shown.
         lastTicks = readTicks()
         samples = 0
-        cpu = nil
+        cpuIsCurrent = false
+        warmingUp = true
         readMemory()
         readDisk()
-        let timer = Timer(fire: Date(timeIntervalSinceNow: 0.5), interval: Self.interval, repeats: true) { [weak self] _ in
+        schedule(every: Self.warmUpInterval)
+    }
+
+    private func schedule(every interval: TimeInterval) {
+        timer?.invalidate()
+        let timer = Timer(fire: Date(timeIntervalSinceNow: interval), interval: interval, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.sample() }
         }
         RunLoop.main.add(timer, forMode: .common)
@@ -49,12 +70,27 @@ final class SystemMonitor: ObservableObject {
     }
 
     private func sample() {
-        samples += 1
         if let ticks = readTicks() {
-            if let lastTicks, let usage = SystemStats.cpuUsage(from: lastTicks, to: ticks) { cpu = usage }
-            lastTicks = ticks
+            if let lastTicks {
+                // A reading that covers too little time keeps the baseline, so the ticks add up to the next try.
+                if let usage = SystemStats.cpuUsage(from: lastTicks, to: ticks, minimumTicks: minimumTicks) {
+                    cpu = usage
+                    cpuIsCurrent = true
+                    defaults.set(usage, forKey: "lastCPUUsage")
+                    self.lastTicks = ticks
+                }
+            } else {
+                lastTicks = ticks
+            }
         }
         readMemory()
+        if warmingUp {
+            guard cpuIsCurrent else { return }
+            warmingUp = false
+            schedule(every: Self.interval)
+            return
+        }
+        samples += 1
         if samples % Self.diskEvery == 0 { readDisk() }
     }
 

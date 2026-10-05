@@ -38,7 +38,7 @@ final class AppModel: ObservableObject {
     /// Tabs and widgets of the expanded panel (D-018). Changed through `editLayout`, which keeps it valid.
     @Published private(set) var layout: PanelLayout
     @Published var selectedTabID: String? { didSet { if expanded { geometryChanged?() } } }
-    let system = SystemMonitor()
+    let system: SystemMonitor
     let network = NetworkMonitor()
     let battery = BatteryMonitor()
     let widgets: WidgetStore
@@ -100,6 +100,7 @@ final class AppModel: ObservableObject {
         self.localizer = localizer
         music = MusicModel(lyricsService: lyricsService, defaults: defaults, localizer: localizer)
         widgets = WidgetStore(defaults: defaults)
+        system = SystemMonitor(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
         let storedExtraWidth = defaults.double(forKey: "compactExtraWidth")

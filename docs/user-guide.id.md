@@ -129,7 +129,7 @@ Widget dan pengaturannya dijelaskan di [Widget](#widget).
 
 Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di panel, widget hanya menampilkan dan dioperasikan: memulai timer, menghitung, membuka app.
 
-- **Musik** (lebar: lagu, lirik, bar posisi, dan kontrol; kecil: artwork, judul, dan kontrol) dan **Sistem** (penggunaan prosesor, memori, dan disk; versi lebar juga menampilkan totalnya). Widget Sistem hanya membaca nilai-nilai ini selama terlihat, setiap 2 detik, dan disk setiap 30 detik.
+- **Musik** (lebar: lagu, lirik, bar posisi, dan kontrol; kecil: artwork, judul, dan kontrol) dan **Sistem** (penggunaan prosesor, memori, dan disk; versi lebar juga menampilkan totalnya). Widget Sistem hanya membaca nilai-nilai ini selama terlihat, setiap 2 detik, dan disk setiap 30 detik. Penggunaan prosesor butuh dua kali pembacaan, jadi saat widget muncul, nilai terakhir ditampilkan redup sebentar.
 - **Jam:** waktu, mengikuti pengaturan 12 atau 24 jam Anda, dan tanggal.
 - **Pomodoro:** sesi fokus dan istirahat dengan tombol mulai, reset, dan lompat. Atur durasi fokus, istirahat singkat, dan istirahat panjang, jumlah sesi fokus sebelum istirahat panjang, dan apakah tahap berikutnya mulai sendiri.
 - **Hitung mundur:** atur durasinya di sini, atau dengan − dan + di panel sebelum dimulai. **Stopwatch:** mulai, jeda, dan reset.

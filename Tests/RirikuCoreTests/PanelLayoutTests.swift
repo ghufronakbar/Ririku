@@ -123,6 +123,9 @@ struct SystemStatsTests {
         let old = CPUTicks(user: 100, system: 50, idle: 800, nice: 50)
         #expect(SystemStats.cpuUsage(from: old, to: CPUTicks(user: 130, system: 60, idle: 860, nice: 50)) == 0.4)
         #expect(SystemStats.cpuUsage(from: old, to: old) == nil, "no time passed")
+        let fewTicks = CPUTicks(user: 105, system: 50, idle: 805, nice: 50)
+        #expect(SystemStats.cpuUsage(from: old, to: fewTicks, minimumTicks: 400) == nil, "a few ticks between bursts would give a wrong value")
+        #expect(SystemStats.cpuUsage(from: old, to: fewTicks) == 0.5)
         let wrapped = CPUTicks(user: UInt32.max - 9, system: 0, idle: UInt32.max - 9, nice: 0)
         #expect(SystemStats.cpuUsage(from: wrapped, to: CPUTicks(user: 10, system: 0, idle: 10, nice: 0)) == 0.5, "32-bit counters wrap")
     }

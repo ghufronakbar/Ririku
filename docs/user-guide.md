@@ -128,7 +128,7 @@ The widgets and their settings are described under [Widgets](#widgets).
 
 Settings for the widgets; choose where they appear in **Setup → Layout**. In the panel, widgets only show and operate: start a timer, count, open an app.
 
-- **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds.
+- **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds. Processor use needs two readings, so when the widget appears it shows the last value, dimmed, for a moment.
 - **Clock:** the time, in your 12- or 24-hour setting, and the date.
 - **Pomodoro:** focus sessions and breaks with start, reset, and skip. Set the focus, short break, and long break lengths, how many focus sessions come before a long break, and whether the next phase starts by itself.
 - **Countdown:** set its length here, or with − and + in the panel before it starts. **Stopwatch:** start, pause, and reset.

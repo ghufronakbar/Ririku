@@ -14,12 +14,13 @@ public struct CPUTicks: Equatable, Sendable {
 }
 
 public enum SystemStats {
-    /// Share of time the processors were busy between two samples, from 0 to 1; nil when no time passed.
-    /// The kernel counters are 32-bit, so the differences use wrapping subtraction.
-    public static func cpuUsage(from old: CPUTicks, to new: CPUTicks) -> Double? {
+    /// Share of time the processors were busy between two samples, from 0 to 1; nil when fewer than `minimumTicks`
+    /// passed. The kernel adds ticks in bursts about once a second, so a short gap may see none or only a few, which
+    /// would give a wrong value. The counters are 32-bit, so the differences use wrapping subtraction.
+    public static func cpuUsage(from old: CPUTicks, to new: CPUTicks, minimumTicks: Double = 1) -> Double? {
         let busy = Double(new.user &- old.user) + Double(new.system &- old.system) + Double(new.nice &- old.nice)
         let total = busy + Double(new.idle &- old.idle)
-        guard total > 0 else { return nil }
+        guard total > 0, total >= minimumTicks else { return nil }
         return min(1, busy / total)
     }
 

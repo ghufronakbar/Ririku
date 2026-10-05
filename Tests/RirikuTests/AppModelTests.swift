@@ -635,3 +635,31 @@ struct LocalWidgetTests {
         #expect(layout.width == 518, "three small widgets need three units: 22 + 3 × 150 + 2 × 12 + 22")
     }
 }
+
+@MainActor
+@Suite("System widget readings")
+struct SystemReadingTests {
+    @Test("Shows the last processor value, marked as earlier, until a new reading arrives")
+    func keepsLastProcessorValue() {
+        let defaults = MemoryDefaults()
+        defaults.set(0.42, forKey: "lastCPUUsage")
+        let monitor = SystemMonitor(defaults: defaults)
+        #expect(monitor.cpu == 0.42)
+        #expect(!monitor.cpuIsCurrent)
+        monitor.start()
+        #expect(monitor.cpu == 0.42, "starting keeps the last value instead of a blank")
+        // The kernel updates the counters about once a second, so a reading arrives within about that.
+        let deadline = Date().addingTimeInterval(2.5)
+        while !monitor.cpuIsCurrent && Date() < deadline { RunLoop.main.run(until: Date().addingTimeInterval(SystemMonitor.warmUpInterval)) }
+        #expect(monitor.cpuIsCurrent, "a reading arrives soon after the widget appears")
+        #expect(defaults.object(forKey: "lastCPUUsage") as? Double == monitor.cpu, "and is remembered for next time")
+        monitor.stop()
+    }
+
+    @Test("Ignores a stored value that is not a share")
+    func ignoresInvalidStoredValue() {
+        let defaults = MemoryDefaults()
+        defaults.set(7.0, forKey: "lastCPUUsage")
+        #expect(SystemMonitor(defaults: defaults).cpu == nil)
+    }
+}
