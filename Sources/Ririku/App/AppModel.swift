@@ -20,7 +20,21 @@ final class AppModel: ObservableObject {
         }
     }
     private(set) var localizer: Localizer
-    @Published var expanded = false { didSet { geometryChanged?() } }
+    @Published var expanded = false {
+        didSet {
+            // The panel opens on the first tab again.
+            if !expanded { selectedTabID = nil }
+            geometryChanged?()
+        }
+    }
+    /// Tabs and widgets of the expanded panel (D-018). Changed through `editLayout`, which keeps it valid.
+    @Published private(set) var layout: PanelLayout
+    @Published var selectedTabID: String? { didSet { if expanded { geometryChanged?() } } }
+    let system = SystemMonitor()
+    /// Width of the screen the panel was last placed on, so views lay out the panel for the same screen.
+    var screenWidth: Double = 1512
+    /// Setup shows its pages only while its window is open, so widgets in the preview stop sampling when it closes.
+    @Published var setupWindowOpen = false
     @Published var panelWidth: Double { didSet { defaults.set(panelWidth, forKey: "panelWidth"); geometryChanged?() } }
     /// Compact island size is stored as the amount added to the physical notch, so 0 fits the notch on any Mac.
     @Published var compactExtraWidth: Double { didSet { defaults.set(compactExtraWidth, forKey: "compactExtraWidth"); geometryChanged?() } }
@@ -92,6 +106,8 @@ final class AppModel: ObservableObject {
         hapticFeedback = defaults.bool(forKey: "hapticFeedback")
         let storedShortcut = defaults.data(forKey: "panelShortcut").flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) }
         panelShortcut = storedShortcut?.isValid == true ? storedShortcut : nil
+        let storedLayout = defaults.data(forKey: "panelLayout").flatMap { try? JSONDecoder().decode(PanelLayout.self, from: $0) }
+        layout = (storedLayout ?? .standard).sanitized(widgetKinds: WidgetKind.identifiers)
         music.layoutChanged = { [weak self] in self?.geometryChanged?() }
         music.openSetup = { [weak self] in self?.openSetup?() }
         music.artworkChanged = { [weak self] image in self?.updateAutomaticAccent(for: image) }
@@ -116,6 +132,39 @@ final class AppModel: ObservableObject {
         let extracted = artworkAccent.color(for: image)
         let color: Color = extracted == .white ? .white : Color(nsColor: extracted)
         withAnimation(canAnimate ? .easeInOut(duration: 0.45) : nil) { automaticAccent = color }
+    }
+
+    // MARK: Tabs and widgets
+
+    var visibleTabs: [PanelTab] { layout.visibleTabs }
+
+    /// The selected tab, or the first one.
+    var currentTab: PanelTab {
+        visibleTabs.first { $0.id == selectedTabID } ?? visibleTabs.first ?? PanelLayout.standard.tabs[0]
+    }
+
+    /// The page's own name, or "Home" for the first page and "Page 2", "Page 3", and so on for the others.
+    func tabName(_ tab: PanelTab) -> String {
+        let name = tab.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard name.isEmpty else { return name }
+        let index = layout.tabs.firstIndex { $0.id == tab.id } ?? 0
+        return index == 0 ? t("Home") : t("Page %@", (index + 1).formatted(.number.locale(locale)))
+    }
+
+    /// Applies an edit from Setup, keeps the layout valid, and saves it.
+    func editLayout(_ change: (inout PanelLayout) -> Void) {
+        var edited = layout
+        change(&edited)
+        setLayout(edited)
+    }
+
+    func resetLayout() { setLayout(.standard) }
+
+    private func setLayout(_ newLayout: PanelLayout) {
+        layout = newLayout.sanitized(widgetKinds: WidgetKind.identifiers)
+        defaults.set(try? JSONEncoder().encode(layout), forKey: "panelLayout")
+        if !visibleTabs.contains(where: { $0.id == selectedTabID }) { selectedTabID = nil }
+        geometryChanged?()
     }
 
     // MARK: General settings

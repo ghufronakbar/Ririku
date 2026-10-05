@@ -236,9 +236,11 @@ struct PreferenceTests {
         model.resetIslandSize()
         #expect(model.panelSize(screenWidth: 1512).width == 200)
         model.expanded = true
-        #expect(model.panelSize(screenWidth: 1512).width == 442)
+        #expect(model.panelSize(screenWidth: 1512).width == 518, "Home holds the wide music widget and the system widget")
         #expect(model.panelSize(screenWidth: 400).width == 376, "never wider than the screen minus 24 pt")
         #expect(model.panelSize(screenWidth: 1512).height == 199, "the expanded panel is as tall as its rows")
+        model.editLayout { $0.removeWidget(id: "system") }
+        #expect(model.panelSize(screenWidth: 1512).width == 442, "music alone keeps the expanded island width")
     }
 
     @Test("The expanded panel adds height only for the rows it draws")
@@ -421,5 +423,92 @@ struct GeneralSettingsTests {
         #expect(model.defaultSetupPage == .browserConnection)
         model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3.1"}"#.utf8))
         #expect(model.defaultSetupPage == .general)
+    }
+}
+
+@MainActor
+@Suite("Panel tabs and widgets")
+struct PanelTabTests {
+    @Test("Starts with the standard layout, saves edits, and restores them")
+    func persistsLayout() {
+        let (model, defaults) = makeModel()
+        #expect(model.layout == .standard)
+        model.editLayout { layout in
+            let page = layout.addPage()!
+            layout.moveWidget(id: "system", toTab: page)
+            layout.renameTab(id: page, to: "Stats")
+        }
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.layout == model.layout)
+        #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "Stats"])
+        restored.resetLayout()
+        #expect(restored.layout == .standard)
+    }
+
+    @Test("A stored layout that cannot be read falls back to the standard one")
+    func ignoresBrokenLayout() {
+        let defaults = MemoryDefaults()
+        defaults.set(Data("{broken".utf8), forKey: "panelLayout")
+        #expect(AppModel(defaults: defaults).layout == .standard)
+    }
+
+    @Test("Names pages by position until they are given a name")
+    func namesPages() {
+        let (model, _) = makeModel()
+        model.editLayout { $0.addPage(); $0.addPage() }
+        #expect(model.visibleTabs.map(model.tabName) == ["Home", "Page 2", "Page 3"])
+        model.editLayout { $0.renameTab(id: "home", to: "  ") }
+        #expect(model.tabName(model.visibleTabs[0]) == "Home", "a blank name keeps the default")
+    }
+
+    @Test("Opens on the first tab again after the panel closes")
+    func resetsSelectedTab() {
+        let (model, _) = makeModel()
+        var page = ""
+        model.editLayout { page = $0.addPage()! }
+        model.expanded = true
+        model.selectedTabID = page
+        #expect(model.currentTab.id == page)
+        model.expanded = false
+        #expect(model.currentTab.id == "home")
+        model.expanded = true
+        model.selectedTabID = page
+        model.editLayout { $0.removeTab(id: page) }
+        #expect(model.currentTab.id == "home", "a removed tab falls back to the first one")
+    }
+
+    @Test("Shares the page between widgets and fits the lyrics into the wide music widget")
+    func laysOutPage() {
+        let (model, _) = makeModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        model.expanded = true
+        let layout = model.expandedLayout(for: model.currentTab, screenWidth: 1512)
+        #expect(layout.width == 518)
+        #expect(layout.slotWidths["music"] == 312)
+        #expect(layout.slotWidths["system"] == 150)
+        #expect(!layout.showsTabs, "one tab needs no tab bar")
+        _ = model.panelSize(screenWidth: 1512)
+        #expect(model.lyricTextWidth == 312)
+    }
+
+    @Test("Sizes pages by their tallest widget, and widens the panel for many tabs")
+    func sizesPages() {
+        let (model, _) = makeModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        model.expanded = true
+        var page = ""
+        model.editLayout { page = $0.addPage()!; $0.moveWidget(id: "system", toTab: page) }
+        let systemPage = model.visibleTabs[1]
+        #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).height == 34 + 12 + SystemWidgetLayout.height + 14)
+        #expect(model.expandedLayout(for: systemPage, screenWidth: 1512).showsTabs)
+        model.editLayout { $0.removeWidget(id: "system") }
+        #expect(model.expandedLayout(for: model.visibleTabs[1], screenWidth: 1512).height == 34 + 12 + PanelMetrics.emptyPageHeight + 14)
+        model.editLayout { $0.setWide(false, forWidget: "music") }
+        #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).height == 34 + 12 + MusicWidgetLayout.smallHeight(error: false) + 14)
+        model.editLayout { while $0.addPage() != nil {} }
+        // Eight tab buttons left of the notch and room for as much on the right: 180 + 2 × (14 + 8 × 28 + 7 × 4).
+        #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).width == 712)
     }
 }

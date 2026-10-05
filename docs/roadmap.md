@@ -11,7 +11,7 @@ Each stage lands as one or more focused pull requests with tests, translations (
 | 0 | Rules, decisions, and this roadmap | Done on 2026-10-05 |
 | 1 | Refactor without behavior change: split `AppModel` and `main.swift` into app, music, panel, and Setup parts, and give Setup a sidebar with one page per area | Done on 2026-10-05 |
 | 2 | General settings (D-022): display choice, hover and close delays, Dock and menu bar icons, haptic feedback, keyboard shortcut, tutorial, About | Done on 2026-10-05 |
-| 3 | Tabs and widget framework, layout editor in Setup with a live preview, default layout, Music and System widgets | 0.4.0 |
+| 3 | Tabs and widget framework, layout editor in Setup with a live preview, default layout, Music and System widgets | Done on 2026-10-05 |
 | 4 | Local widgets: clock and date, Pomodoro, countdown, stopwatch, network speed, battery, notes, counter, days left, water, apps, shortcuts, bookmarks | 0.5.0 |
 | 5 | Tray with AirDrop, then clipboard history | 0.5.0 |
 | 6 | Calendar, camera mirror, Translate, then lyric translation | 0.6.0 |
@@ -19,7 +19,7 @@ Each stage lands as one or more focused pull requests with tests, translations (
 ## Panel layout
 
 - The panel is a list of **tabs**. A tab is either a **page of widgets**, where each widget is small (one unit) or wide (two units) and the number of units follows the panel width, or a **tool** that fills the tab (Tray, Clipboard, Translate).
-- **Default layout** (D-018): Home with Music (wide) and System, then Tray. Clipboard and Translate appear as tabs when turned on. Every other widget starts off.
+- **Default layout** (D-018): Home with Music (wide) and System, then Tray. Clipboard and Translate appear as tabs when turned on. Every other widget starts off. Until the Tray ships in stage 5, the default layout is Home alone.
 - **Editing** happens in **Setup → Layout** with a live preview: turn widgets on or off, reorder by dragging, choose small or wide, add widget pages, hide tabs, and **Reset to default layout**. Settings stay out of the panel (R-UI-1).
 - The **compact island** keeps showing music. When nothing is playing, it may show a live widget such as a running timer. Widget notices appear there for about 3 seconds and never open the panel (R-UI-3, R-UI-6).
 

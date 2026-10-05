@@ -26,6 +26,8 @@ struct AppearancePage: View {
                     Slider(value: $model.panelWidth, in: 360...720, step: 2)
                     Text(verbatim: "\(Int(model.panelWidth)) pt").monospacedDigit().frame(width: 60)
                 }
+                Text(model.t("The expanded panel opens at least this wide. A page whose widgets need more room opens wider; see Setup → Layout."))
+                    .font(.caption).foregroundStyle(.secondary)
                 Text(model.t("The compact island starts at the size of the physical notch (%1$@ × %2$@ pt here), so nothing shows beside the camera housing. Widen or heighten it to bring the artwork and the spectrum out from behind the notch; they stay on the left and right edges. Lyrics add their own height below.",
                              "\(Int(model.notchWidth))", "\(Int(model.topHeight))"))
                     .font(.caption).foregroundStyle(.secondary)

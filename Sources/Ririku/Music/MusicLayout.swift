@@ -1,4 +1,4 @@
-/// Row sizes of the expanded music panel. `MusicIslandView` lays out with the same values, so the window is
+/// Row sizes of the expanded panel and the wide music widget. The views lay out with the same values, so the window is
 /// exactly as tall as the rows it draws instead of a guessed constant.
 enum ExpandedLayout {
     static let spacing: Double = 12
@@ -13,6 +13,26 @@ enum ExpandedLayout {
     static let transportSpacing: Double = 24
     /// Two lines of `caption2`, the limit on the command error.
     static let errorHeight: Double = 26
+}
+
+/// Heights of the music widget, which `PanelGeometry` adds up for the panel.
+enum MusicWidgetLayout {
+    static let smallArtworkSize: Double = 40
+    static let smallHeaderSpacing: Double = 10
+
+    static func wideHeight(lyricHeight: Double, error: Bool) -> Double {
+        var height = ExpandedLayout.artworkSize
+            + ExpandedLayout.spacing + ExpandedLayout.seekBarHeight + ExpandedLayout.seekLabelSpacing + ExpandedLayout.timeRowHeight
+            + ExpandedLayout.spacing + ExpandedLayout.transportHeight
+        if lyricHeight > 0 { height += lyricHeight + ExpandedLayout.spacing }
+        if error { height += ExpandedLayout.errorHeight + ExpandedLayout.spacing }
+        return height
+    }
+
+    static func smallHeight(error: Bool) -> Double {
+        smallArtworkSize + smallHeaderSpacing + ExpandedLayout.transportHeight
+            + (error ? ExpandedLayout.errorHeight + ExpandedLayout.spacing : 0)
+    }
 }
 
 /// Lyric row sizes, shared by the models and the views that draw them.

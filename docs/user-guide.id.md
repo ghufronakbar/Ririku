@@ -75,7 +75,8 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 
 - **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**.
-- **Kontrol:** judul, artis, dan sumber; tombol gear membuka **Setup**; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
+- **Tab dan widget:** panel terbuka menampilkan satu halaman widget. **Beranda** dimulai dengan kontrol musik dan widget **Sistem** (penggunaan prosesor, memori, dan disk). Tombol gear di kanan notch membuka **Setup**; jika ada lebih dari satu halaman, ikon tab muncul di kiri notch. Panel selalu terbuka di halaman pertama. Atur halaman di **Setup → Tata letak**.
+- **Kontrol musik:** judul, artis, dan sumber; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
 - **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
 - **Iklan:** saat YouTube menampilkan iklan, kontrol dinonaktifkan dan lirik dijeda.
@@ -111,10 +112,22 @@ Tur singkat tentang panel dan Setup. Setiap langkah punya tombol yang membuka ha
 
 **Buka atau tutup panel:** mati sampai Anda merekam shortcut. Klik **Rekam shortcut** lalu tekan kombinasi dengan Command, Option, atau Control, misalnya ⌥⌘N; Esc membatalkan dan **Hapus** menghilangkannya. Shortcut bekerja dari app mana pun dan tidak butuh izin Accessibility. Jika macOS menolak kombinasi karena dipakai app lain, Setup memberi tahu; pilih kombinasi lain. Bila dibuka dengan shortcut, panel tetap terbuka sampai pointer menyentuhnya; tekan shortcut lagi atau Esc untuk menutup.
 
+### Tata letak
+
+Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dalamnya untuk melihat halaman lain. Di bawahnya, setiap halaman memiliki:
+
+- **Nama halaman** (kosong berarti Beranda, Halaman 2, dan seterusnya) dan **Ikon** untuk bar tab. Menu **…** di samping nama halaman memindahkan halaman ke kiri atau kanan atau menghapusnya; satu halaman selalu tersisa.
+- Widget-widgetnya dari kiri ke kanan, masing-masing **Kecil** (satu unit) atau **Lebar** (dua unit). Menu **…** di samping widget memindahkannya ke kiri, ke kanan, atau ke halaman lain, atau menghapusnya.
+- **Tambah widget** menampilkan widget yang belum ada di halaman mana pun; setiap widget hanya bisa berada di satu halaman.
+
+**Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
+
+Widget: **Musik** (lebar: lagu, lirik, bar posisi, dan kontrol; kecil: artwork, judul, dan kontrol) dan **Sistem** (penggunaan prosesor, memori, dan disk; versi lebar juga menampilkan totalnya). Widget Sistem hanya membaca nilai-nilai ini selama terlihat, setiap 2 detik, dan disk setiap 30 detik.
+
 ### Tampilan
 
 - **Lebar island ringkas** dan **Tinggi island ringkas** dimulai seukuran notch Mac Anda — itu nilai default sekaligus ukuran terkecilnya — dan dapat ditambah hingga 440 pt dan 40 pt. Setup menyebutkan ukuran notch Anda (misalnya 179 × 32 pt). Artwork dan spectrum menempel di sisi kiri dan kanan, jadi keduanya muncul dari balik housing kamera saat island diperlebar; sekitar 240 pt keduanya terlihat penuh.
-- **Lebar island terbuka** (360–720 pt, default 442), dipakai saat panel disentuh pointer atau dibuka.
+- **Lebar island terbuka** (360–720 pt, default 442): panel terbuka minimal selebar ini. Halaman yang widgetnya butuh ruang lebih akan terbuka lebih lebar; Beranda bawaan terbuka sekitar 518 pt.
 - **Kembalikan ke ukuran notch** mengembalikan ketiganya.
 - **Warna aksen:** Otomatis — dari artwork, Peach, Lavender, atau Netral. Mode otomatis mengambil warna dominan thumbnail secara lokal, mencerahkannya untuk latar hitam, dan memakai Netral jika gambar belum tersedia atau hitam-putih. Hasil disimpan di memori, dengan transisi halus kecuali animasi dimatikan atau Reduce Motion aktif. Tidak ada analisis audio atau permintaan jaringan tambahan; pilihan manual sebelumnya tetap dipertahankan.
 - **Transisi panel halus:** matikan agar ukuran panel berubah seketika. **Reduce Motion** macOS juga mematikan animasi dan spectrum.

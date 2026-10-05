@@ -3,7 +3,7 @@ import SwiftUI
 import RirikuCore
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private let model = AppModel()
     private let bridge = BridgeServer()
     private let hotKeys = HotKeyCenter()
@@ -90,14 +90,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                                   styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
             window.title = model.t("Ririku — Setup")
             window.isReleasedWhenClosed = false
+            window.delegate = self
             window.contentView = NSHostingView(rootView: SetupView(model: model))
             window.contentMinSize = NSSize(width: SetupView.minimumSize.width, height: SetupView.minimumSize.height)
             window.center()
             settingsWindow = window
         }
+        model.setupWindowOpen = true
         model.refreshLoginItem()
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        if notification.object as? NSWindow === settingsWindow { model.setupWindowOpen = false }
     }
 
     @objc private func expandPanel() { panel.expandFromMenu() }

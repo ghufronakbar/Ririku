@@ -74,7 +74,8 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 
 - **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
-- **Controls:** title, artist, and source; the gear button opens **Setup**; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
+- **Tabs and widgets:** the expanded panel shows a page of widgets. **Home** starts with the music controls and the **System** widget (processor, memory, and disk use). The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the first page each time. Arrange pages in **Setup → Layout**.
+- **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
 - **Ads:** while YouTube shows an ad, controls are disabled and lyrics pause.
@@ -110,10 +111,22 @@ A short tour of the panel and Setup. Each step has a button that opens the page 
 
 **Open or close the panel:** off until you record a shortcut. Click **Record Shortcut** and press a combination with Command, Option, or Control, for example ⌥⌘N; Esc cancels and **Clear** removes it. The shortcut works from any app and does not need Accessibility permission. If macOS refuses a combination because another app uses it, Setup says so; choose another. Opened with the shortcut, the panel stays open until the pointer has visited it; press the shortcut again or Esc to close it.
 
+### Layout
+
+A live preview of the expanded panel stays at the top; click a tab icon in it to preview another page. Below it, each page has:
+
+- **Page name** (empty shows Home, Page 2, and so on) and **Icon** for the tab bar. The **…** menu beside the page's name moves the page left or right or deletes it; one page always stays.
+- Its widgets from left to right, each **Small** (one unit) or **Wide** (two units). The **…** menu beside a widget moves it left, right, or to another page, or removes it.
+- **Add Widget** lists the widgets that are not on any page yet; each widget can be on one page.
+
+**Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
+
+Widgets: **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds.
+
 ### Appearance
 
 - **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
-- **Expanded island width** (360–720 pt, default 442), used when the panel is hovered or opened.
+- **Expanded island width** (360–720 pt, default 442): the expanded panel opens at least this wide. A page whose widgets need more room opens wider; the default Home opens at about 518 pt.
 - **Reset to the notch size** restores all three.
 - **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.

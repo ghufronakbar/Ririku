@@ -18,6 +18,7 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Follows the active player:** switches to the browser tab that starts playing, or lock one tab manually.
 - **Customizable:** island width, number of lyric lines, manual or artwork-based accent color, animations, and Reduce Motion support.
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
+- **Tabs and widgets:** arrange pages of widgets in the expanded panel in **Setup → Layout**: music with lyrics, and a System widget for processor, memory, and disk use. More widgets are on the [roadmap](docs/roadmap.md).
 - **Fits your setup:** open at login, choose the display, the hover delays, and the Dock and menu bar icons, add haptic feedback, or record a keyboard shortcut for the panel. All optional, in **Setup → General** and **Setup → Keyboard**.
 
 ## Requirements

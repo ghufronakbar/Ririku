@@ -12,6 +12,9 @@ struct TutorialPage: View {
                 step("puzzlepiece.extension", model.t("Connect your music"),
                      model.t("Load the browser extension for YouTube and YouTube Music, or connect the Spotify or Apple Music app."),
                      page: .browserConnection)
+                step("rectangle.3.group", model.t("Arrange the panel"),
+                     model.t("Choose which widgets the expanded panel shows, on which page, and whether each one is small or wide."),
+                     page: .layout)
                 step("text.quote", model.t("Get the right lyrics"),
                      model.t("Lyrics are found automatically. If the timing is off, adjust the offset; if the version is wrong, search for another one."),
                      page: .lyrics)
