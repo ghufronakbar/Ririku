@@ -512,3 +512,126 @@ struct PanelTabTests {
         #expect(model.expandedLayout(for: model.visibleTabs[0], screenWidth: 1512).width == 712)
     }
 }
+
+@MainActor
+@Suite("Local widgets")
+struct LocalWidgetTests {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    private func quietModel() -> (AppModel, UserDefaults) {
+        let (model, defaults) = makeModel()
+        model.widgets.update { $0.timerSound = false }
+        return (model, defaults)
+    }
+
+    @Test("A finished countdown settles and shows a notice without opening the panel")
+    func finishesCountdown() {
+        let (model, _) = quietModel()
+        model.widgets.toggleCountdown(now: now)
+        #expect(model.widgets.data.countdown.endDate == now.addingTimeInterval(600))
+        model.widgets.finishDueTimers(now: now.addingTimeInterval(601))
+        #expect(!model.widgets.data.countdown.clock.isRunning)
+        #expect(model.widgets.data.countdown.remaining(at: now) == 0)
+        #expect(model.notice?.text.key == "Countdown finished")
+        #expect(!model.expanded, "a notice never opens the panel (R-UI-3)")
+        model.widgets.toggleCountdown(now: now.addingTimeInterval(700))
+        #expect(model.widgets.data.countdown.remaining(at: now.addingTimeInterval(700)) == 600, "starting again starts from the full length")
+    }
+
+    @Test("A finished focus session moves to a break")
+    func finishesFocus() {
+        let (model, _) = quietModel()
+        model.widgets.togglePomodoro(now: now)
+        model.widgets.finishDueTimers(now: now.addingTimeInterval(25 * 60))
+        #expect(model.widgets.data.pomodoroState.phase == .shortBreak)
+        #expect(!model.widgets.data.pomodoroState.clock.isRunning)
+        #expect(model.notice?.text.key == "Focus finished · time for a break")
+    }
+
+    @Test("Timers that ended while the app was closed settle quietly")
+    func settlesOnLaunch() {
+        let defaults = MemoryDefaults()
+        let first = WidgetStore(defaults: defaults, now: now)
+        first.toggleCountdown(now: now)
+        var announced = false
+        let second = WidgetStore(defaults: defaults, now: now.addingTimeInterval(3600))
+        second.notice = { _, _ in announced = true }
+        #expect(!second.data.countdown.clock.isRunning)
+        #expect(!announced)
+    }
+
+    @Test("The compact island shows a running timer only while no music plays")
+    func showsLiveTimer() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 32
+        #expect(model.liveTimer == nil)
+        model.widgets.toggleStopwatch(now: now)
+        #expect(model.liveTimer?.kind == .stopwatch)
+        #expect(model.panelSize(screenWidth: 1512) == CGSize(width: 180 + 2 * PanelMetrics.liveSideWidth, height: 32))
+        model.widgets.toggleCountdown(now: now)
+        #expect(model.liveTimer?.kind == .countdown, "a timer with an end comes before the stopwatch")
+        model.music.receive(snapshotData())
+        #expect(model.liveTimer == nil, "music keeps the island while it plays (R-WID-1)")
+        model.music.receive(snapshotData(sequence: 2, state: "paused"))
+        #expect(model.liveTimer?.kind == .countdown)
+    }
+
+    @Test("A notice widens the compact island and takes the lyrics' place")
+    func sizesNotice() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 32
+        model.music.receive(snapshotData(position: 10))
+        model.music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]first\n[00:10]second\n")
+        #expect(model.islandLyricHeight > 0)
+        model.showNotice(UIText("Countdown finished"), icon: "timer")
+        #expect(model.islandLyricHeight == 0)
+        #expect(model.panelSize(screenWidth: 1512) == CGSize(width: 180 + 2 * PanelMetrics.noticeSideWidth, height: 32 + PanelMetrics.noticeHeight))
+    }
+
+    @Test("Saves the counter, water, and launchers and restores them")
+    func persistsWidgetData() {
+        let (model, defaults) = quietModel()
+        model.widgets.changeCounter(by: 3)
+        model.widgets.changeWater(by: 2, now: now)
+        model.widgets.setShortcut("Morning", enabled: true)
+        let bookmark = Bookmark.validated(title: "Docs", address: "example.com")!
+        model.widgets.addBookmark(bookmark)
+        model.widgets.notes = "Buy milk"
+        model.widgets.flushNotes()
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.widgets.data.counter.value == 3)
+        #expect(restored.widgets.waterToday(now: now) == 2)
+        #expect(restored.widgets.data.shortcuts == ["Morning"])
+        #expect(restored.widgets.data.bookmarks == [bookmark])
+        #expect(restored.widgets.notes == "Buy milk")
+        restored.widgets.setShortcut("Morning", enabled: false)
+        restored.widgets.removeBookmark(bookmark)
+        #expect(restored.widgets.data.shortcuts.isEmpty)
+        #expect(restored.widgets.data.bookmarks.isEmpty)
+    }
+
+    @Test("Runs only shortcuts the user turned on")
+    func refusesUnknownShortcut() {
+        let (model, _) = quietModel()
+        model.widgets.runShortcut("Delete Everything")
+        #expect(model.notice == nil, "nothing was started, so nothing failed")
+    }
+
+    @Test("New widgets fill a card on the page")
+    func sizesWidgetPages() {
+        let (model, _) = quietModel()
+        model.notchWidth = 180
+        model.topHeight = 34
+        model.editLayout { layout in
+            let page = layout.addPage()!
+            for kind in ["clock", "pomodoro", "notes"] { layout.addWidget(kind: kind, wide: false, toTab: page) }
+        }
+        let page = model.visibleTabs[1]
+        #expect(page.widgets.map(\.kind) == ["clock", "pomodoro", "notes"])
+        let layout = model.expandedLayout(for: page, screenWidth: 1512)
+        #expect(layout.height == 34 + 12 + WidgetCardLayout.height + 14)
+        #expect(layout.width == 518, "three small widgets need three units: 22 + 3 × 150 + 2 × 12 + 22")
+    }
+}

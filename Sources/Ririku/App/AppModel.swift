@@ -2,9 +2,17 @@ import AppKit
 import SwiftUI
 import RirikuCore
 
+/// A short message in the compact island, such as a finished timer. It never opens the panel (R-UI-3, R-UI-6).
+struct PanelNotice: Equatable {
+    static let duration: Double = 3
+    let id = UUID()
+    let text: UIText
+    let icon: String
+}
+
 /// App-wide state shared by the notch panel and Setup: the interface language, the island's size and accent,
-/// the general settings, and launch at login. Music and lyrics live in `music`; the panel's size is computed
-/// in `PanelGeometry.swift`.
+/// the general settings, the layout, and launch at login. Music and lyrics live in `music`, the local widgets
+/// in `widgets`; the panel's size is computed in `PanelGeometry.swift`.
 @MainActor
 final class AppModel: ObservableObject {
     static let hoverOpenDelayRange = 0.0...1.0
@@ -31,6 +39,10 @@ final class AppModel: ObservableObject {
     @Published private(set) var layout: PanelLayout
     @Published var selectedTabID: String? { didSet { if expanded { geometryChanged?() } } }
     let system = SystemMonitor()
+    let network = NetworkMonitor()
+    let battery = BatteryMonitor()
+    let widgets: WidgetStore
+    @Published private(set) var notice: PanelNotice?
     /// Width of the screen the panel was last placed on, so views lay out the panel for the same screen.
     var screenWidth: Double = 1512
     /// Setup shows its pages only while its window is open, so widgets in the preview stop sampling when it closes.
@@ -87,6 +99,7 @@ final class AppModel: ObservableObject {
         let localizer = Localizer(code: storedLanguage.resolvedCode)
         self.localizer = localizer
         music = MusicModel(lyricsService: lyricsService, defaults: defaults, localizer: localizer)
+        widgets = WidgetStore(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
         panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
         let storedExtraWidth = defaults.double(forKey: "compactExtraWidth")
@@ -111,6 +124,10 @@ final class AppModel: ObservableObject {
         music.layoutChanged = { [weak self] in self?.geometryChanged?() }
         music.openSetup = { [weak self] in self?.openSetup?() }
         music.artworkChanged = { [weak self] image in self?.updateAutomaticAccent(for: image) }
+        widgets.notice = { [weak self] text, icon in self?.showNotice(text, icon: icon) }
+        widgets.changed = { [weak self] in self?.geometryChanged?() }
+        battery.changed = { [weak self] old, new in self?.batteryChanged(from: old, to: new) }
+        updateBatteryListening()
     }
 
     var locale: Locale { localizer.locale }
@@ -164,7 +181,37 @@ final class AppModel: ObservableObject {
         layout = newLayout.sanitized(widgetKinds: WidgetKind.identifiers)
         defaults.set(try? JSONEncoder().encode(layout), forKey: "panelLayout")
         if !visibleTabs.contains(where: { $0.id == selectedTabID }) { selectedTabID = nil }
+        updateBatteryListening()
         geometryChanged?()
+    }
+
+    // MARK: Notices and live widgets
+
+    /// Shows a notice in the compact island for about three seconds.
+    func showNotice(_ text: UIText, icon: String) {
+        let notice = PanelNotice(text: text, icon: icon)
+        self.notice = notice
+        geometryChanged?()
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(PanelNotice.duration))
+            guard let self, self.notice?.id == notice.id else { return }
+            self.notice = nil
+            self.geometryChanged?()
+        }
+    }
+
+    /// A running timer takes the compact island only while no music plays (R-WID-1).
+    var liveTimer: LiveTimer? { music.isPlayingNow ? nil : widgets.liveTimer }
+
+    /// Power source changes are only listened to while the Battery widget is on a page.
+    private func updateBatteryListening() {
+        battery.setActive(layout.tabs.contains { $0.widgets.contains { $0.kind == WidgetKind.battery.rawValue } })
+    }
+
+    private func batteryChanged(from old: BatteryMonitor.Reading?, to new: BatteryMonitor.Reading?) {
+        guard let old, let new, !old.onPower, new.onPower, widgets.data.chargingNotice else { return }
+        let level = new.fraction.formatted(.percent.precision(.fractionLength(0)).locale(locale))
+        showNotice(UIText("Charging · %@", level), icon: "battery.100percent.bolt")
     }
 
     // MARK: General settings

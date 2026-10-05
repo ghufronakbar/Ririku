@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Height of the System widget, which `PanelGeometry` uses for the page.
+/// Rows of the System widget, which fill a widget card.
 enum SystemWidgetLayout {
     static let rowHeight: Double = 26
     static let rowSpacing: Double = 10
-    static let height = 3 * rowHeight + 2 * rowSpacing
+    static let height = WidgetCardLayout.height
 }
 
 /// Processor, memory, and disk use as bars. The wide widget also names the totals.
@@ -22,7 +22,7 @@ struct SystemWidgetView: View {
             row(model.t("Disk"), fraction: monitor.diskTotal == 0 ? nil : monitor.diskFraction,
                 detail: wide && monitor.diskTotal > 0 ? model.t("%1$@ of %2$@", gigabytes(monitor.diskUsed, binary: false), gigabytes(monitor.diskTotal, binary: false)) : nil)
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .widgetCard()
         .onAppear { monitor.start() }
         .onDisappear { monitor.stop() }
     }

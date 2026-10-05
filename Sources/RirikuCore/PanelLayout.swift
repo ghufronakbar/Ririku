@@ -218,8 +218,16 @@ public enum PageGeometry {
     }
 }
 
-/// Decodes an element or skips it, so one unreadable entry does not lose the whole layout.
-private struct Lossy<Element: Decodable>: Decodable {
+/// Decodes an element or skips it, so one unreadable entry does not lose the rest of the stored data.
+struct Lossy<Element: Decodable>: Decodable {
     let value: Element?
     init(from decoder: Decoder) throws { value = try? Element(from: decoder) }
+}
+
+extension KeyedDecodingContainer {
+    /// The stored value, or `fallback` when it is missing or unreadable.
+    func value<T: Decodable>(_ key: Key, or fallback: T) -> T { (try? decodeIfPresent(T.self, forKey: key)) ?? fallback }
+
+    /// The readable elements of a stored array, skipping the others.
+    func elements<T: Decodable>(_ key: Key) -> [T] { ((try? decodeIfPresent([Lossy<T>].self, forKey: key)) ?? []).compactMap(\.value) }
 }

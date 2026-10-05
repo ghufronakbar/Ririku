@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Pages of the Setup window, in sidebar order.
 enum SetupPage: CaseIterable, Identifiable {
-    case general, tutorial, language, keyboard, layout, appearance, browserConnection, musicSource, lyrics, prototype, about
+    case general, tutorial, language, keyboard, layout, widgets, appearance, browserConnection, musicSource, lyrics, prototype, about
 
     var id: Self { self }
 
@@ -14,6 +14,7 @@ enum SetupPage: CaseIterable, Identifiable {
         case .language: return model.t("Language")
         case .keyboard: return model.t("Keyboard")
         case .layout: return model.t("Layout")
+        case .widgets: return model.t("Widgets")
         case .appearance: return model.t("Appearance")
         case .browserConnection: return model.t("Browser connection")
         case .musicSource: return model.t("Music source")
@@ -30,6 +31,7 @@ enum SetupPage: CaseIterable, Identifiable {
         case .language: return "globe"
         case .keyboard: return "keyboard"
         case .layout: return "rectangle.3.group"
+        case .widgets: return "square.grid.2x2"
         case .appearance: return "paintbrush"
         case .browserConnection: return "puzzlepiece.extension"
         case .musicSource: return "music.note"
@@ -76,6 +78,7 @@ struct SetupView: View {
                 case .language: LanguagePage(model: model)
                 case .keyboard: KeyboardPage(model: model)
                 case .layout: LayoutPage(model: model, music: music)
+                case .widgets: WidgetsPage(model: model, widgets: model.widgets)
                 case .appearance: AppearancePage(model: model, music: music)
                 case .browserConnection: BrowserConnectionPage(model: model, music: music)
                 case .musicSource: MusicSourcePage(model: model, music: music)

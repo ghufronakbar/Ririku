@@ -11,6 +11,11 @@ enum PanelMetrics {
     static let tabSpacing: Double = 4
     static let gearWidth: Double = 32
     static let emptyPageHeight: Double = 40
+    /// Room beside the notch for a live timer's icon and time, on each side.
+    static let liveSideWidth: Double = 64
+    /// Room beside the notch for a notice's text, on each side.
+    static let noticeSideWidth: Double = 80
+    static let noticeHeight: Double = 34
 }
 
 /// Where everything goes on one page of the expanded panel.
@@ -52,8 +57,10 @@ extension AppModel {
 
     var reservesTwoLyricRows: Bool { expanded ? currentExpandedLayout.twoLyricRows : music.reservesTwoLyricRows(width: lyricTextWidth) }
     var lyricBlockHeight: Double { music.lyricBlockHeight(width: lyricTextWidth) }
+    /// A notice takes the lyrics' place in the compact island while it shows.
     var islandLyricHeight: Double {
-        expanded ? currentExpandedLayout.lyricHeight : music.islandLyricHeight(expanded: false, width: lyricTextWidth)
+        if expanded { return currentExpandedLayout.lyricHeight }
+        return notice == nil ? music.islandLyricHeight(expanded: false, width: lyricTextWidth) : 0
     }
 
     var currentExpandedLayout: ExpandedPanelLayout { expandedLayout(for: currentTab, screenWidth: screenWidth) }
@@ -82,8 +89,8 @@ extension AppModel {
             switch WidgetKind(rawValue: slot.kind) {
             case .music: return slot.wide ? MusicWidgetLayout.wideHeight(lyricHeight: lyricHeight, error: music.commandError != nil)
                 : MusicWidgetLayout.smallHeight(error: music.commandError != nil)
-            case .system: return SystemWidgetLayout.height
             case nil: return 0
+            default: return WidgetCardLayout.height
             }
         }.max() ?? PanelMetrics.emptyPageHeight
         return ExpandedPanelLayout(width: width,
@@ -101,7 +108,11 @@ extension AppModel {
             return CGSize(width: layout.width, height: layout.height)
         }
         let active = music.current != nil
-        let width = active ? compactWidth : notchWidth
-        return CGSize(width: min(max(0, screenWidth - 24), width), height: islandHeight + (active ? islandLyricHeight : 0))
+        var width = active ? compactWidth : notchWidth
+        // A live timer or a notice widens the island past the notch, so it is not hidden behind the camera housing.
+        if liveTimer != nil { width = max(width, notchWidth + 2 * PanelMetrics.liveSideWidth) }
+        if notice != nil { width = max(width, notchWidth + 2 * PanelMetrics.noticeSideWidth) }
+        let below = notice != nil ? PanelMetrics.noticeHeight : active ? islandLyricHeight : 0
+        return CGSize(width: min(max(0, screenWidth - 24), width), height: islandHeight + below)
     }
 }

@@ -76,6 +76,7 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 - **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**.
 - **Tab dan widget:** panel terbuka menampilkan satu halaman widget. **Beranda** dimulai dengan kontrol musik dan widget **Sistem** (penggunaan prosesor, memori, dan disk). Tombol gear di kanan notch membuka **Setup**; jika ada lebih dari satu halaman, ikon tab muncul di kiri notch. Panel selalu terbuka di halaman pertama. Atur halaman di **Setup → Tata letak**.
+- **Timer dan pemberitahuan:** selama tidak ada musik yang diputar, timer yang berjalan menampilkan ikon dan waktunya di samping notch. Saat timer selesai atau mulai mengisi daya, pemberitahuan singkat muncul di bawah notch sekitar tiga detik; panel tetap tertutup.
 - **Kontrol musik:** judul, artis, dan sumber; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
 - **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
 - **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
@@ -122,7 +123,24 @@ Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dal
 
 **Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
 
-Widget: **Musik** (lebar: lagu, lirik, bar posisi, dan kontrol; kecil: artwork, judul, dan kontrol) dan **Sistem** (penggunaan prosesor, memori, dan disk; versi lebar juga menampilkan totalnya). Widget Sistem hanya membaca nilai-nilai ini selama terlihat, setiap 2 detik, dan disk setiap 30 detik.
+Widget dan pengaturannya dijelaskan di [Widget](#widget).
+
+### Widget
+
+Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di panel, widget hanya menampilkan dan dioperasikan: memulai timer, menghitung, membuka app.
+
+- **Musik** (lebar: lagu, lirik, bar posisi, dan kontrol; kecil: artwork, judul, dan kontrol) dan **Sistem** (penggunaan prosesor, memori, dan disk; versi lebar juga menampilkan totalnya). Widget Sistem hanya membaca nilai-nilai ini selama terlihat, setiap 2 detik, dan disk setiap 30 detik.
+- **Jam:** waktu, mengikuti pengaturan 12 atau 24 jam Anda, dan tanggal.
+- **Pomodoro:** sesi fokus dan istirahat dengan tombol mulai, reset, dan lompat. Atur durasi fokus, istirahat singkat, dan istirahat panjang, jumlah sesi fokus sebelum istirahat panjang, dan apakah tahap berikutnya mulai sendiri.
+- **Hitung mundur:** atur durasinya di sini, atau dengan − dan + di panel sebelum dimulai. **Stopwatch:** mulai, jeda, dan reset.
+- **Bunyikan suara saat timer selesai** (aktif secara default). Timer yang berjalan tetap berjalan saat panel tertutup atau Ririku ditutup, dan selama tidak ada musik yang diputar, timer tampil di samping notch.
+- **Jaringan:** kecepatan unduh dan unggah Wi-Fi dan Ethernet, dibaca setiap 2 detik selama terlihat; versi lebar menambahkan grafik.
+- **Baterai:** daya dan statusnya, dengan perkiraan waktu di versi lebar. **Tampilkan pemberitahuan saat mulai mengisi daya** (aktif secara default) berlaku selama widget Baterai ada di sebuah halaman.
+- **Catatan:** catatan biasa yang Anda ketik di panel, tersimpan di Mac ini. **Hapus catatan…** mengosongkannya.
+- **Penghitung:** judul dan angka yang bisa ditambah atau dikurangi. **Sisa hari:** judul dan tanggal; menghitung hari hingga tanggal itu, atau sejak tanggal itu. **Air minum:** jumlah gelas menuju target harian (default 8), mulai dari nol setiap hari.
+- **App:** hingga 12 app yang ditambahkan lewat **Tambah app…**; klik di panel untuk membukanya.
+- **Shortcut:** aktifkan hingga 12 shortcut dari app Shortcuts; panel hanya menjalankan shortcut itu, lewat perintah `shortcuts` milik Apple.
+- **Bookmark:** hingga 12 alamat web (http atau https) dengan judul opsional; dibuka di browser default Anda.
 
 ### Tampilan
 
@@ -243,6 +261,7 @@ Jika Ririku dipindahkan ke folder lain, klik **Daftarkan ulang** pada langkah 1.
 - **Artwork:** thumbnail diunduh dari server gambar YouTube/Google atau `i.scdn.co` milik Spotify; artwork Apple Music dibaca secara lokal dari app Music. Automation Spotify dan Music membaca metadata secara lokal dan mengirim kontrol saat diminta.
 - **Extension browser:** hanya berjalan di `www.youtube.com` dan `music.youtube.com` dan hanya memakai izin `nativeMessaging`. Extension membaca status pemutar, judul, artis, alamat artwork, dan caption yang terlihat di halaman, lalu mengirimkannya hanya ke app Ririku di Mac Anda. Extension tidak membaca cookies, kata sandi, atau riwayat browsing.
 - **Tersimpan di Mac Anda:** lirik yang ditemukan disimpan 30 hari (maksimal 300 berkas) dan hasil "tidak ditemukan" 30 menit di `~/Library/Caches/io.github.lanstheprodigy.ririku`. Pengaturan dan offset per lagu disimpan di preferensi Ririku; offset mencakup ID video lagu yang pernah Anda sesuaikan.
+- **Widget:** widget bekerja di Mac Anda dan tidak menambah tujuan jaringan. Widget Sistem dan Jaringan membaca penghitung penggunaan hanya selama terlihat, dan widget Baterai membaca sumber daya. Catatan, penghitung, air minum, timer, serta daftar app, shortcut, dan bookmark Anda disimpan di preferensi Ririku. Shortcut dijalankan lewat perintah `shortcuts` milik Apple, app dibuka oleh macOS, dan bookmark dibuka di browser default Anda.
 
 ## Keterbatasan
 

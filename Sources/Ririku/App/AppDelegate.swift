@@ -108,6 +108,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func expandPanel() { panel.expandFromMenu() }
 
-    func applicationWillTerminate(_ notification: Notification) { panel?.stop(); bridge.stop() }
+    func applicationWillTerminate(_ notification: Notification) { model.widgets.flushNotes(); panel?.stop(); bridge.stop() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSetup(); return false }
 }

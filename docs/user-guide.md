@@ -75,6 +75,7 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 - **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
 - **Tabs and widgets:** the expanded panel shows a page of widgets. **Home** starts with the music controls and the **System** widget (processor, memory, and disk use). The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the first page each time. Arrange pages in **Setup → Layout**.
+- **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
 - **Music controls:** title, artist, and source; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
 - **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
@@ -121,7 +122,24 @@ A live preview of the expanded panel stays at the top; click a tab icon in it to
 
 **Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
 
-Widgets: **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds.
+The widgets and their settings are described under [Widgets](#widgets).
+
+### Widgets
+
+Settings for the widgets; choose where they appear in **Setup → Layout**. In the panel, widgets only show and operate: start a timer, count, open an app.
+
+- **Music** (wide: the track, lyrics, seek bar, and controls; small: artwork, title, and controls) and **System** (processor, memory, and disk use; the wide widget also shows the totals). The System widget reads these values only while it is visible, every 2 seconds, and the disk every 30 seconds.
+- **Clock:** the time, in your 12- or 24-hour setting, and the date.
+- **Pomodoro:** focus sessions and breaks with start, reset, and skip. Set the focus, short break, and long break lengths, how many focus sessions come before a long break, and whether the next phase starts by itself.
+- **Countdown:** set its length here, or with − and + in the panel before it starts. **Stopwatch:** start, pause, and reset.
+- **Play a sound when a timer ends** (on by default). A running timer keeps going while the panel is closed or Ririku quits, and while no music plays it shows beside the notch.
+- **Network:** download and upload speed of Wi-Fi and Ethernet, read every 2 seconds while visible; the wide widget adds a chart.
+- **Battery:** charge and state, with the estimated time on the wide widget. **Show a notice when charging starts** (on by default) works while the Battery widget is on a page.
+- **Notes:** a plain note you type in the panel, saved on this Mac. **Clear Note…** empties it.
+- **Counter:** a title and a number you count up or down. **Days Left:** a title and a date; it counts the days until the date, or since it. **Water:** glasses toward a daily goal (8 by default), starting at zero each day.
+- **Apps:** up to 12 apps you add with **Add Apps…**; click one in the panel to open it.
+- **Shortcuts:** turn on up to 12 shortcuts from the Shortcuts app; the panel runs only those, through Apple's `shortcuts` command.
+- **Bookmarks:** up to 12 web addresses (http or https) with an optional title; they open in your default browser.
 
 ### Appearance
 
@@ -242,6 +260,7 @@ If you move Ririku to another folder, click **Register Again** in step 1.
 - **Artwork:** thumbnails are downloaded from YouTube/Google image servers or Spotify’s `i.scdn.co`; Apple Music artwork is read locally from the Music app. Spotify and Music Automation read playback metadata locally and send controls only when requested.
 - **Browser extension:** runs only on `www.youtube.com` and `music.youtube.com` and uses only the `nativeMessaging` permission. It reads the player state, title, artist, artwork address, and visible captions on the page, and sends them only to the Ririku app on your Mac. It does not read cookies, passwords, or browsing history.
 - **Stored on your Mac:** found lyrics are cached for 30 days (up to 300 files) and "not found" results for 30 minutes in `~/Library/Caches/io.github.lanstheprodigy.ririku`. Settings and per-song offsets are stored in Ririku's preferences; offsets include the video IDs of songs you adjusted.
+- **Widgets:** the widgets work on your Mac and add no network destination. The System and Network widgets read usage counters only while visible, and the Battery widget reads the power source. Notes, the counter, water, timers, and your app, shortcut, and bookmark lists are stored in Ririku's preferences. Shortcuts run through Apple's `shortcuts` command, apps open through macOS, and bookmarks open in your default browser.
 
 ## Known limitations
 
