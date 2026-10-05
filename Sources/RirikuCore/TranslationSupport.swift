@@ -26,6 +26,17 @@ public enum TranslationLanguage {
         return own.region.map { language + "-" + $0 } ?? code
     }
 
+    /// The language code that language detection uses: `zh-Hans` or `zh-Hant` for Chinese, otherwise the language
+    /// alone, such as `en` for `en-GB`.
+    public static func recognizerCode(_ code: String) -> String {
+        let own = parts(code)
+        guard let language = own.language else { return code }
+        return language == "zh" ? language + "-" + (own.script ?? "Hans") : language
+    }
+
+    /// True for languages written in the Latin alphabet, such as English and Indonesian.
+    public static func usesLatin(_ code: String) -> Bool { parts(code).script == "Latn" }
+
     private static func parts(_ code: String) -> (language: String?, script: String?, region: String?) {
         let language = Locale.Language(identifier: Locale.Language(identifier: code).maximalIdentifier)
         return (language.languageCode?.identifier, language.script?.identifier, language.region?.identifier)
@@ -40,6 +51,25 @@ public enum LyricTranslationPlan {
         lines.indices.filter { index in
             let line = lines[index]
             return line.unicodeScalars.contains { CharacterSet.letters.contains($0) } && !isInTarget(line)
+        }
+    }
+
+    /// Whether a line is already in the target language, such as an English line in a Japanese song. `targetShare`
+    /// is how likely the line is in the target rather than the source language, from language detection limited to
+    /// the two, which stays reliable for short lines. When the two languages use different alphabets, a line with any
+    /// letter outside the target's alphabet, such as "사랑해 baby" for English, still needs translating.
+    public static func isInTarget(_ line: String, source: String, target: String, targetShare: Double) -> Bool {
+        guard targetShare >= 0.8 else { return false }
+        let targetLatin = TranslationLanguage.usesLatin(target)
+        guard targetLatin != TranslationLanguage.usesLatin(source) else { return true }
+        let letters = line.unicodeScalars.filter { CharacterSet.letters.contains($0) }
+        return letters.allSatisfy { isLatin($0) == targetLatin }
+    }
+
+    private static func isLatin(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.value {
+        case 0x41...0x5A, 0x61...0x7A, 0xC0...0x24F, 0x1E00...0x1EFF: return true
+        default: return false
         }
     }
 

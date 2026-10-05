@@ -913,7 +913,7 @@ struct TranslationTests {
         model.expanded = true
         music.receive(snapshotData(position: 10))
         music.lyricLineCount = 3
-        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]君の名前を呼んでいた\n[00:10]夜の街で一人きり\n[00:20]I love you\n")
+        music.lyrics["YouTube:abc"] = LRCParser.parse("[00:00]君の名前を呼んでいた\n[00:10]夜の街で一人きり\n[00:20]I love you\n[00:30]Baby 君だけ\n")
         let plain = model.islandLyricHeight
         await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
         #expect(translator.job == nil && music.expandedLyricTranslations == nil, "off by default")
@@ -922,12 +922,12 @@ struct TranslationTests {
         await translator.prepare(key: music.lyricTranslationKey, lines: music.lyricTranslationLines)
         let job = try #require(translator.job)
         #expect(job.source == "ja")
-        #expect(job.indices == [0, 1], "the English line stays as it is")
+        #expect(job.indices == [0, 1, 3], "the English line stays as it is; the mixed line is translated")
         #expect(model.islandLyricHeight == plain + 20, "a row is kept while the song is translated")
-        translator.complete(job, responses: [("0", "I was calling your name"), ("1", "All alone in the night city")])
-        #expect(music.expandedLyricTranslations == ["I was calling your name", "All alone in the night city", ""])
+        translator.complete(job, responses: [("0", "I was calling your name"), ("1", "All alone in the night city"), ("3", "Baby, only you")])
+        #expect(music.expandedLyricTranslations == ["I was calling your name", "All alone in the night city", "", "Baby, only you"])
         #expect(translator.status == .done(source: "ja"))
-        #expect(music.currentLines.map(\.text) == ["君の名前を呼んでいた", "夜の街で一人きり", "I love you"], "the lyrics never change (R-LYR-6)")
+        #expect(music.currentLines.map(\.text) == ["君の名前を呼んでいた", "夜の街で一人きり", "I love you", "Baby 君だけ"], "the lyrics never change (R-LYR-6)")
         model.expanded = false
         #expect(model.islandLyricHeight == plain, "the compact island shows no translation")
         model.expanded = true

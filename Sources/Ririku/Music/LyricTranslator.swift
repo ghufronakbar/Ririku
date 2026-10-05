@@ -80,7 +80,10 @@ final class LyricTranslator: ObservableObject {
         switch availability {
         case .installed:
             // Lines already in the target language, such as English lines in a Japanese song, stay as they are.
-            let indices = LyricTranslationPlan.lineIndices(lines) { TranslationService.isClearly($0, in: target) }
+            let indices = LyricTranslationPlan.lineIndices(lines) { line in
+                LyricTranslationPlan.isInTarget(line, source: source, target: target,
+                                                targetShare: TranslationService.targetShare(line, source: source, target: target))
+            }
             update(.translating, job: Job(key: key, source: source, target: target, lines: lines, indices: indices))
         case .downloadable: update(.needsDownload(source: source), job: nil)
         case .unsupported: update(.unsupported(source: source), job: nil)

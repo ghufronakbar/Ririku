@@ -44,12 +44,18 @@ enum TranslationService {
         return recognizer.dominantLanguage.flatMap { TranslationLanguage.match($0.rawValue, in: languages) }
     }
 
-    /// True when a short text is clearly in `language` already, such as an English line in a Japanese song.
-    static func isClearly(_ text: String, in language: String) -> Bool {
+    /// How likely a short text is in `target` rather than `source`, from 0 to 1. Detection limited to the two languages
+    /// stays reliable for short lines, where open detection guesses (it took "Baby" for Slovak on macOS 15.7) and its
+    /// confidence differs between macOS versions.
+    static func targetShare(_ text: String, source: String, target: String) -> Double {
+        let from = NLLanguage(rawValue: TranslationLanguage.recognizerCode(source))
+        let to = NLLanguage(rawValue: TranslationLanguage.recognizerCode(target))
         let recognizer = NLLanguageRecognizer()
+        recognizer.languageConstraints = [from, to]
         recognizer.processString(text)
-        guard let best = recognizer.languageHypotheses(withMaximum: 1).first, best.value >= 0.8 else { return false }
-        return TranslationLanguage.same(best.key.rawValue, language)
+        let hypotheses = recognizer.languageHypotheses(withMaximum: 2)
+        let share = hypotheses[to] ?? 0, other = hypotheses[from] ?? 0
+        return share + other > 0 ? share / (share + other) : 0
     }
 
     /// The name of a language in the interface language, telling apart languages that share a code.

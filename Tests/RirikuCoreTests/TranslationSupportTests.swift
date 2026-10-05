@@ -41,6 +41,27 @@ struct TranslationSupportTests {
         #expect(indices == [0, 4])
     }
 
+    @Test("A line counts as already translated only when detection agrees and its letters fit the target's alphabet")
+    func recognizesTargetLines() {
+        #expect(LyricTranslationPlan.isInTarget("I love you", source: "ja", target: "en", targetShare: 1))
+        #expect(!LyricTranslationPlan.isInTarget("사랑해 baby", source: "ko", target: "en", targetShare: 1), "a mixed line is translated")
+        #expect(!LyricTranslationPlan.isInTarget("君の名前", source: "ja", target: "en", targetShare: 0))
+        #expect(LyricTranslationPlan.isInTarget("君の名前", source: "en", target: "ja", targetShare: 1))
+        #expect(!LyricTranslationPlan.isInTarget("Baby 君の名前", source: "en", target: "ja", targetShare: 1))
+        #expect(LyricTranslationPlan.isInTarget("I miss you", source: "id", target: "en", targetShare: 0.99))
+        #expect(!LyricTranslationPlan.isInTarget("Aku rindu kamu", source: "id", target: "en", targetShare: 0))
+        #expect(!LyricTranslationPlan.isInTarget("Hello", source: "id", target: "en", targetShare: 0.6), "an unsure line is translated")
+    }
+
+    @Test("Language detection codes keep the Chinese script and drop regions")
+    func recognizerCodes() {
+        #expect(TranslationLanguage.recognizerCode("zh") == "zh-Hans")
+        #expect(TranslationLanguage.recognizerCode("zh-TW") == "zh-Hant")
+        #expect(TranslationLanguage.recognizerCode("en-GB") == "en")
+        #expect(TranslationLanguage.recognizerCode("ja") == "ja")
+        #expect(TranslationLanguage.usesLatin("id") && !TranslationLanguage.usesLatin("ko"))
+    }
+
     @Test("Translations line up with their lines, and unknown or stray responses are ignored")
     func assemblesResults() {
         let result = LyricTranslationPlan.assemble(lineCount: 4, responses: [("0", " Your name "), ("3", "In the night"), (nil, "x"), ("9", "y")])
