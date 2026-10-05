@@ -52,7 +52,7 @@ Langkah ini cukup sekali untuk setiap versi yang diunduh.
 
 > **Lanjutan:** jika Anda memercayai unduhannya, Anda juga bisa menjalankan `xattr -dr com.apple.quarantine /Applications/Ririku.app` di Terminal.
 
-Ririku tidak memiliki ikon Dock. App berada di menu bar sebagai ikon **gelombang suara**, dan jendela **Setup** terbuka saat pertama kali dijalankan.
+Secara default Ririku tidak memiliki ikon Dock dan berada di menu bar sebagai ikon **gelombang suara**; keduanya bisa diubah di **Setup → Umum**. Jendela **Setup** terbuka saat pertama kali dijalankan.
 
 ### 3. Menghubungkan browser
 
@@ -74,9 +74,9 @@ Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension ya
 Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga bisa berbeda dari sampul album di YouTube Music. Ini mencegah gambar lagu sebelumnya dari player bar tetap ditampilkan.
 
 - **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
-- **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar.
+- **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**.
 - **Kontrol:** judul, artis, dan sumber; tombol gear membuka **Setup**; bar posisi; serta tombol sebelumnya, putar/jeda, dan berikutnya. Tombol yang tidak disediakan situs dinonaktifkan. Siaran langsung menampilkan **LIVE** dan tidak dapat di-seek.
-- **Menutup:** jauhkan pointer atau tekan **Esc**.
+- **Menutup:** jauhkan pointer, tekan **Esc**, atau tekan shortcut sekali lagi.
 - **Saat dijeda:** artwork dan spectrum tetap tampil, sedangkan lirik keluar dari island sehingga island menyusut kembali seukuran notch. Panel terbuka tetap menampilkannya.
 - **Iklan:** saat YouTube menampilkan iklan, kontrol dinonaktifkan dan lirik dijeda.
 - **Tanpa lirik:** island tetap ringkas dan sebentar menampilkan **Lirik belum ditemukan**. Detailnya ada di **Setup → Lirik**.
@@ -85,28 +85,31 @@ Pilih **Keluar Ririku** dari ikon menu bar untuk keluar.
 
 ## Setup
 
-Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar. Pilih halaman di sidebar; selama belum ada browser yang terhubung, Setup terbuka di **Koneksi browser**. Perubahan langsung berlaku.
+Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar. Pilih halaman di sidebar; selama belum ada browser atau pemutar desktop yang disiapkan, Setup terbuka di **Koneksi browser**. Perubahan langsung berlaku.
+
+### Umum
+
+**Saat login → Buka Ririku saat login** (nonaktif secara default): Ririku terbuka di latar belakang setelah Anda login, tanpa jendela. macOS bisa meminta izin pada kali pertama; jika Setup menyatakan sedang menunggu persetujuan, klik **Buka pengaturan Login Items** lalu aktifkan Ririku di sana. Sakelar ini tidak tersedia selama Ririku berjalan dari lokasi sementara, jadi pindahkan dulu ke **Applications**. Anda juga bisa mematikannya di **System Settings → General → Login Items**.
+
+**Ikon:** **Tampilkan di Dock** (nonaktif secara default) dan **Tampilkan di menu bar** (aktif secara default). Jika ikon Dock aktif, mengkliknya membuka Setup, dan Ririku menampilkan menunya (Tentang, Setup, Edit, Jendela) di menu bar saat sedang di depan. Jika kedua ikon disembunyikan, buka Ririku lagi dari Finder, Launchpad, atau Spotlight, atau klik tombol gear di panel terbuka, untuk kembali ke Setup.
+
+**Panel:**
+
+- **Tampilkan panel di:** **Otomatis** (default) memakai layar dengan notch, atau layar utama bila tidak ada. Anda juga bisa memilih layar berdasarkan namanya; di layar tanpa notch, panel berada di tengah atas. Selama layar pilihan tidak terhubung, panel ditempatkan otomatis.
+- **Jeda sebelum membuka** (0–1 dtk, default 0,15 dtk) dan **Jeda sebelum menutup** (0,1–2 dtk, default 0,35 dtk): berapa lama pointer berada di notch sebelum panel terbuka, dan berapa lama pointer menjauh sebelum panel tertutup. Mengklik island langsung membukanya.
+- **Umpan balik haptik saat pointer mencapai notch** (nonaktif secara default): ketukan ringan saat pointer mencapai notch yang tertutup, meski hanya lewat menuju menu bar. Butuh trackpad Force Touch dengan **Force Click and haptic feedback** aktif di **System Settings → Trackpad** (Setup menyediakan **Buka pengaturan Trackpad**); bila opsi itu mati, macOS meredam haptik dari semua app. macOS juga hanya memainkannya selama jari menyentuh trackpad, jadi ketukan muncul saat pointer tiba, bukan saat panel terbuka.
+
+### Tutorial
+
+Tur singkat tentang panel dan Setup. Setiap langkah punya tombol yang membuka halaman yang dibahas.
 
 ### Bahasa
 
 **Bahasa antarmuka:** **Ikuti sistem** (default), English, Bahasa Indonesia, atau 日本語. Ikuti sistem memakai bahasa pertama yang didukung dari **System Settings → General → Language & Region**, atau English bila tidak ada. Judul lagu, lirik, caption, serta pesan dari macOS atau situs tetap dalam bahasa aslinya.
 
-### Koneksi browser
+### Keyboard
 
-Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau memindahkannya ke folder lain.
-
-### Saat login
-
-**Buka Ririku saat login** (nonaktif secara default): Ririku terbuka di latar belakang setelah Anda login, tanpa ikon Dock maupun jendela. macOS bisa meminta izin pada kali pertama; jika Setup menyatakan sedang menunggu persetujuan, klik **Buka pengaturan Login Items** lalu aktifkan Ririku di sana. Sakelar ini tidak tersedia selama Ririku berjalan dari lokasi sementara, jadi pindahkan dulu ke **Applications**. Anda juga bisa mematikannya di **System Settings → General → Login Items**.
-
-### Sumber musik
-
-**Spotify desktop:** buka Spotify dan putar lagu, lalu aktifkan **Hubungkan Spotify desktop**. Setujui izin Automation macOS. Tidak perlu extension atau API key. Mode otomatis mengikuti pemutar yang mulai bermain; matikan untuk memilih Spotify secara manual. Pilih lirik Auto atau LRCLIB, bukan hanya subtitle. Jika izin ditolak, izinkan Ririku di **System Settings → Privacy & Security → Automation**, lalu klik **Sambungkan ulang Spotify**. Mematikan opsi ini menghentikan polling; pilihannya tersimpan saat restart. Artwork berasal dari `i.scdn.co`; metadata lagu dikirim ke LRCLIB jika lirik otomatis aktif. Playback dan izin masih perlu diuji langsung.
-
-**Apple Music:** buka app Music dan putar lagu, lalu aktifkan **Hubungkan Apple Music** dan setujui izin Automation macOS. Berlaku untuk lagu di library dan streaming Apple Music; stasiun radio dan siaran langsung tanpa durasi tidak ditampilkan. Artwork dibaca secara lokal dari app Music, sehingga tidak ada server gambar yang dihubungi. Jika LRCLIB tidak menemukan lirik, Ririku menampilkan lirik yang tersimpan pada lagu di app Music (**Get Info → Lyrics**) sebagai teks biasa tanpa sinkronisasi. Biasanya ini berlaku untuk file milik Anda sendiri; lirik tersinkron Apple Music tidak tersedia untuk app lain. Pemilihan sumber, lirik, pemulihan izin (**Sambungkan ulang Apple Music**), dan pilihan yang tersimpan bekerja sama seperti Spotify. Playback dan izin masih perlu diuji langsung.
-
-- **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab browser yang mulai memutar.
-- **Pemutar aktif:** matikan mode otomatis untuk mengunci satu tab. Ririku tersambung kembali ke tab yang sama setelah halaman di-refresh.
+**Buka atau tutup panel:** mati sampai Anda merekam shortcut. Klik **Rekam shortcut** lalu tekan kombinasi dengan Command, Option, atau Control, misalnya ⌥⌘N; Esc membatalkan dan **Hapus** menghilangkannya. Shortcut bekerja dari app mana pun dan tidak butuh izin Accessibility. Jika macOS menolak kombinasi karena dipakai app lain, Setup memberi tahu; pilih kombinasi lain. Bila dibuka dengan shortcut, panel tetap terbuka sampai pointer menyentuhnya; tekan shortcut lagi atau Esc untuk menutup.
 
 ### Tampilan
 
@@ -116,6 +119,19 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 - **Warna aksen:** Otomatis — dari artwork, Peach, Lavender, atau Netral. Mode otomatis mengambil warna dominan thumbnail secara lokal, mencerahkannya untuk latar hitam, dan memakai Netral jika gambar belum tersedia atau hitam-putih. Hasil disimpan di memori, dengan transisi halus kecuali animasi dimatikan atau Reduce Motion aktif. Tidak ada analisis audio atau permintaan jaringan tambahan; pilihan manual sebelumnya tetap dipertahankan.
 - **Transisi panel halus:** matikan agar ukuran panel berubah seketika. **Reduce Motion** macOS juga mematikan animasi dan spectrum.
 - **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya), atau 3 (sebelum + saat ini + berikutnya). Bila sebuah lagu punya baris yang terlalu panjang untuk island, baris yang sedang berjalan memakai dua baris selama lagu itu, jadi tingginya tidak berubah-ubah; baris sebelum dan sesudahnya tetap satu baris dan diakhiri “…”. Jadi island yang sempit pun tetap menampilkan baris yang Anda baca secara utuh — perlebar island kalau ingin baris sekitarnya juga terlihat penuh.
+
+### Koneksi browser
+
+Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau memindahkannya ke folder lain.
+
+### Sumber musik
+
+**Spotify desktop:** buka Spotify dan putar lagu, lalu aktifkan **Hubungkan Spotify desktop**. Setujui izin Automation macOS. Tidak perlu extension atau API key. Mode otomatis mengikuti pemutar yang mulai bermain; matikan untuk memilih Spotify secara manual. Pilih lirik Auto atau LRCLIB, bukan hanya subtitle. Jika izin ditolak, izinkan Ririku di **System Settings → Privacy & Security → Automation**, lalu klik **Sambungkan ulang Spotify**. Mematikan opsi ini menghentikan polling; pilihannya tersimpan saat restart. Artwork berasal dari `i.scdn.co`; metadata lagu dikirim ke LRCLIB jika lirik otomatis aktif. Playback dan izin masih perlu diuji langsung.
+
+**Apple Music:** buka app Music dan putar lagu, lalu aktifkan **Hubungkan Apple Music** dan setujui izin Automation macOS. Berlaku untuk lagu di library dan streaming Apple Music; stasiun radio dan siaran langsung tanpa durasi tidak ditampilkan. Artwork dibaca secara lokal dari app Music, sehingga tidak ada server gambar yang dihubungi. Jika LRCLIB tidak menemukan lirik, Ririku menampilkan lirik yang tersimpan pada lagu di app Music (**Get Info → Lyrics**) sebagai teks biasa tanpa sinkronisasi. Biasanya ini berlaku untuk file milik Anda sendiri; lirik tersinkron Apple Music tidak tersedia untuk app lain. Pemilihan sumber, lirik, pemulihan izin (**Sambungkan ulang Apple Music**), dan pilihan yang tersimpan bekerja sama seperti Spotify. Playback dan izin masih perlu diuji langsung.
+
+- **Otomatis ikuti pemutar aktif** (aktif secara default): Ririku mengikuti tab browser yang mulai memutar.
+- **Pemutar aktif:** matikan mode otomatis untuk mengunci satu tab. Ririku tersambung kembali ke tab yang sama setelah halaman di-refresh.
 
 ### Lirik
 
@@ -132,7 +148,11 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 
 ### Prototipe
 
-**Demo lokal (tanpa audio)** menampilkan lagu contoh agar panel bisa dicoba tanpa browser. Matikan sebelum memakai musik sungguhan.
+**Demo lokal (tanpa audio)** menampilkan lagu contoh dengan lirik tersinkron agar panel bisa dicoba tanpa browser. Matikan sebelum memakai musik sungguhan.
+
+### Tentang
+
+Versi, catatan privasi, dan tautan ke kode sumber, panduan ini dalam bahasa antarmuka Anda, dan halaman laporan masalah. Tautan dibuka di browser. Jika ikon Dock aktif, **Tentang Ririku** di menu app juga membuka halaman ini.
 
 ## Mendapatkan lirik yang lebih baik
 

@@ -6,16 +6,22 @@ import RirikuCore
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let model = AppModel()
     private let bridge = BridgeServer()
+    private let hotKeys = HotKeyCenter()
     private var panel: PanelController!
     private var settingsWindow: NSWindow?
     private var statusItem: NSStatusItem!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         signal(SIGPIPE, SIG_IGN)
-        NSApp.setActivationPolicy(.accessory)
         configureMenu()
+        applyIcons()
+        NSApp.mainMenu = MainMenu.make(model, target: self, about: #selector(showAbout), setup: #selector(showSetup))
         panel = PanelController(model: model)
         model.openSetup = { [weak self] in self?.showSetup() }
+        model.iconsChanged = { [weak self] in self?.applyIcons() }
+        model.shortcutChanged = { [weak self] in self?.applyShortcut() }
+        hotKeys.onPress = { [weak self] in self?.panel.toggleFromShortcut() }
+        applyShortcut()
         model.music.sendPacket = { [weak self] data in self?.bridge.send(data) }
         model.music.startDesktopPlayers()
         model.languageChanged = { [weak self] in self?.applyLanguage() }
@@ -51,11 +57,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             items[1].title = model.t("Open music panel")
             items[3].title = model.t("Quit Ririku")
         }
+        NSApp.mainMenu = MainMenu.make(model, target: self, about: #selector(showAbout), setup: #selector(showSetup))
         settingsWindow?.title = model.t("Ririku — Setup")
         bridge.setLanguage(model.localizer.code)
     }
 
-    @objc private func showSetup() {
+    /// With both icons hidden, opening the app again still reaches Setup through `applicationShouldHandleReopen` (R-UI-16).
+    private func applyIcons() {
+        statusItem.isVisible = model.showMenuBarIcon
+        let policy: NSApplication.ActivationPolicy = model.showInDock ? .regular : .accessory
+        guard NSApp.activationPolicy() != policy else { return }
+        NSApp.setActivationPolicy(policy)
+        // Changing the policy can send Setup behind other windows while it is being used.
+        if settingsWindow?.isVisible == true {
+            NSApp.activate(ignoringOtherApps: true)
+            settingsWindow?.makeKeyAndOrderFront(nil)
+        }
+    }
+
+    private func applyShortcut() {
+        let accepted = hotKeys.register(model.recordingShortcut ? nil : model.panelShortcut)
+        model.shortcutMessage = accepted ? nil : UIText("macOS did not accept this shortcut. Another app may already use it; try another.")
+    }
+
+    @objc private func showSetup() { openSetup(on: nil) }
+    @objc private func showAbout() { openSetup(on: .about) }
+
+    private func openSetup(on page: SetupPage?) {
+        model.setupPage = page ?? model.setupPage ?? model.defaultSetupPage
         if settingsWindow == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 640),
                                   styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)

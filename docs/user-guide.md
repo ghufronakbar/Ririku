@@ -50,7 +50,7 @@ You only need to do this once per downloaded version.
 
 > **Advanced:** if you trust the download, you can instead run `xattr -dr com.apple.quarantine /Applications/Ririku.app` in Terminal.
 
-Ririku has no Dock icon. It lives in the menu bar as a **waveform** icon, and the **Setup** window opens on first launch.
+By default Ririku has no Dock icon and lives in the menu bar as a **waveform** icon; both can be changed in **Setup → General**. The **Setup** window opens on first launch.
 
 ### 3. Connect your browser
 
@@ -73,9 +73,9 @@ Keep **Developer mode** on; browsers need it for extensions that are not from th
 Artwork uses the current video's YouTube thumbnail, which may differ from the album cover shown in YouTube Music. This avoids retaining an earlier song's player-bar image.
 
 - **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
-- **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon.
+- **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
 - **Controls:** title, artist, and source; the gear button opens **Setup**; a seek bar; and previous, play/pause, and next. Buttons the website does not offer are disabled. Live streams show **LIVE** and cannot be seeked.
-- **Close:** move the pointer away or press **Esc**.
+- **Close:** move the pointer away, press **Esc**, or press the shortcut again.
 - **Paused:** the artwork and the spectrum stay, and the lyrics leave the island so it shrinks back to the notch. The expanded panel keeps showing them.
 - **Ads:** while YouTube shows an ad, controls are disabled and lyrics pause.
 - **No lyrics:** the island stays compact and briefly shows **Lyrics not found**. Details are in **Setup → Lyrics**.
@@ -84,28 +84,31 @@ Choose **Quit Ririku** from the menu bar icon to quit.
 
 ## Setup
 
-Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Choose a page in the sidebar; until a browser has connected, Setup opens on **Browser connection**. Changes apply immediately.
+Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Choose a page in the sidebar; until a browser or a desktop player is set up, Setup opens on **Browser connection**. Changes apply immediately.
+
+### General
+
+**Startup → Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
+
+**Icons:** **Show in Dock** (off by default) and **Show in the menu bar** (on by default). With the Dock icon on, clicking it opens Setup, and Ririku shows its menus (About, Setup, Edit, Window) in the menu bar while it is in front. If you hide both icons, open Ririku again from Finder, Launchpad, or Spotlight, or click the gear in the expanded panel, to come back to Setup.
+
+**Panel:**
+
+- **Show the panel on:** **Automatic** (default) uses the display with a notch, otherwise the main display. You can also choose a display by name; on a display without a notch, the panel sits at the top center. While the chosen display is disconnected, the panel is placed automatically.
+- **Delay before opening** (0–1 s, default 0.15 s) and **Delay before closing** (0.1–2 s, default 0.35 s): how long the pointer rests on the notch before the panel opens, and how long it stays away before the panel closes. Clicking the island opens it at once.
+- **Haptic feedback when the pointer reaches the notch** (off by default): a light tap as the pointer reaches the closed notch, even when it only passes by on the way to the menu bar. It needs a Force Touch trackpad with **Force Click and haptic feedback** turned on in **System Settings → Trackpad** (Setup offers **Open Trackpad settings**); with that off, macOS silences haptic feedback from every app. macOS also plays it only while your finger is on the trackpad, so it comes as the pointer arrives rather than when the panel opens.
+
+### Tutorial
+
+A short tour of the panel and Setup. Each step has a button that opens the page it mentions.
 
 ### Language
 
 **Interface language:** **Follow system** (default), English, Bahasa Indonesia, or 日本語. Follow system uses the first of these languages in **System Settings → General → Language & Region**, otherwise English. Song titles, lyrics, captions, and messages from macOS or websites keep their original language.
 
-### Browser connection
+### Keyboard
 
-The four install steps above. Come back here after updating Ririku, installing another browser, or moving the app to another folder.
-
-### Startup
-
-**Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a Dock icon or a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
-
-### Music source
-
-**Spotify desktop:** open Spotify and play a song, then enable **Connect Spotify desktop** here. Approve the macOS Automation prompt. No extension or API key is required. Automatic source selection follows whichever player starts playing; disable it to select Spotify manually. Use Auto or LRCLIB lyrics, not subtitles-only. For denied permission, allow Ririku under **System Settings → Privacy & Security → Automation**, then click **Reconnect Spotify**. Turning the toggle off stops polling; the preference survives app restarts. Artwork comes from Spotify’s `i.scdn.co` servers, and song metadata is sent to LRCLIB when automatic lyrics are enabled. Desktop playback and permission approval still need real-device validation.
-
-**Apple Music:** open the Music app and play a song, then enable **Connect Apple Music** here and approve the macOS Automation prompt. It works for songs in your library and Apple Music streaming; radio stations and live streams without a duration are not shown. Artwork is read locally from the Music app, so no image server is contacted. When LRCLIB finds no lyrics, Ririku shows lyrics saved with the song in the Music app (**Get Info → Lyrics**) as plain, unsynced text. This usually applies to your own files; Apple Music’s synced lyrics are not available to other apps. Source selection, lyrics, permission recovery (**Reconnect Apple Music**), and the saved preference work as for Spotify. Playback and permission approval still need real-device validation.
-
-- **Automatically follow the active player** (on by default): Ririku follows the browser tab that starts playing.
-- **Active player:** turn automatic mode off to lock one tab. Ririku reconnects to the same tab after a page refresh.
+**Open or close the panel:** off until you record a shortcut. Click **Record Shortcut** and press a combination with Command, Option, or Control, for example ⌥⌘N; Esc cancels and **Clear** removes it. The shortcut works from any app and does not need Accessibility permission. If macOS refuses a combination because another app uses it, Setup says so; choose another. Opened with the shortcut, the panel stays open until the pointer has visited it; press the shortcut again or Esc to close it.
 
 ### Appearance
 
@@ -115,6 +118,19 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
 - **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
+
+### Browser connection
+
+The four install steps above. Come back here after updating Ririku, installing another browser, or moving the app to another folder.
+
+### Music source
+
+**Spotify desktop:** open Spotify and play a song, then enable **Connect Spotify desktop** here. Approve the macOS Automation prompt. No extension or API key is required. Automatic source selection follows whichever player starts playing; disable it to select Spotify manually. Use Auto or LRCLIB lyrics, not subtitles-only. For denied permission, allow Ririku under **System Settings → Privacy & Security → Automation**, then click **Reconnect Spotify**. Turning the toggle off stops polling; the preference survives app restarts. Artwork comes from Spotify’s `i.scdn.co` servers, and song metadata is sent to LRCLIB when automatic lyrics are enabled. Desktop playback and permission approval still need real-device validation.
+
+**Apple Music:** open the Music app and play a song, then enable **Connect Apple Music** here and approve the macOS Automation prompt. It works for songs in your library and Apple Music streaming; radio stations and live streams without a duration are not shown. Artwork is read locally from the Music app, so no image server is contacted. When LRCLIB finds no lyrics, Ririku shows lyrics saved with the song in the Music app (**Get Info → Lyrics**) as plain, unsynced text. This usually applies to your own files; Apple Music’s synced lyrics are not available to other apps. Source selection, lyrics, permission recovery (**Reconnect Apple Music**), and the saved preference work as for Spotify. Playback and permission approval still need real-device validation.
+
+- **Automatically follow the active player** (on by default): Ririku follows the browser tab that starts playing.
+- **Active player:** turn automatic mode off to lock one tab. Ririku reconnects to the same tab after a page refresh.
 
 ### Lyrics
 
@@ -131,7 +147,11 @@ The four install steps above. Come back here after updating Ririku, installing a
 
 ### Prototype
 
-**Local demo (no audio)** shows a sample song so you can try the panel without a browser. Turn it off before using real music.
+**Local demo (no audio)** shows a sample song with synced lyrics so you can try the panel without a browser. Turn it off before using real music.
+
+### About
+
+The version, the privacy note, and links to the source code, this guide in your interface language, and the issue tracker. Links open in your browser. With the Dock icon on, **About Ririku** in the app menu opens this page too.
 
 ## Getting better lyrics
 

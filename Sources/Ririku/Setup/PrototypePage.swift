@@ -7,9 +7,8 @@ struct PrototypePage: View {
     var body: some View {
         Form {
             Section(model.t("Prototype")) {
-                Text(verbatim: "Ririku 0.3.1 · Native macOS").font(.caption).foregroundStyle(.secondary)
                 Toggle(model.t("Local demo (no audio)"), isOn: $music.demo)
-                Text(model.t("No telemetry or cookies. Song metadata is sent to LRCLIB when automatic search is on; the Search button sends your search terms. Subtitles-only mode does not query LRCLIB. Thumbnails come from YouTube/Google or Spotify image servers."))
+                Text(model.t("Shows a sample song with synced lyrics, so you can try the panel without a browser. Turn it off before playing real music."))
                     .font(.caption).foregroundStyle(.secondary)
             }
         }

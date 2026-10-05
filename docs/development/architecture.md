@@ -17,14 +17,14 @@ Ririku.app          BridgeServer → MusicModel (held by AppModel) → SwiftUI v
                     LyricsService (LRCLIB), ArtworkService, BrowserSetup, Localizer
 ```
 
-Ririku is a menu bar (accessory) app without a Dock icon. The notch panel and the Setup window share one `AppModel`, which owns the interface language, the island's size and accent, and launch at login, and holds a `MusicModel` that owns playback sessions, source selection, commands, artwork, lyrics, and the browser connection steps. Views read the models; they never talk to the browser directly.
+Ririku is a menu bar (accessory) app; a Dock icon is optional. The notch panel and the Setup window share one `AppModel`, which owns the interface language, the island's size and accent, the general settings, and launch at login, and holds a `MusicModel` that owns playback sessions, source selection, commands, artwork, lyrics, and the browser connection steps. Views read the models; they never talk to the browser directly.
 
 ## Swift targets
 
 | Target | Responsibility |
 | --- | --- |
-| `RirikuCore` | Code without UI: the `Browser` catalogue, `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation. |
-| `Ririku` | `App/`: `main.swift`, `AppDelegate` (menu bar, Setup window, bridge wiring), `AppModel`, `ArtworkAccent`, `LoginItem`, `Localization`. `Panel/`: `PanelController` (`NSPanel`, placement, hover, resize animation), `PanelView`, `PanelGeometry` (panel size). `Music/`: `MusicModel` and `MusicModel+Lyrics`, `MusicIslandView`, `MusicLayout`, `ScrollingLyricRows`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `DesktopPlayers`, `BrowserSetup`. `Setup/`: `SetupView` (sidebar) and one view per page. |
+| `RirikuCore` | Code without UI: the `Browser` catalogue, `PlaybackSnapshot` validation and position estimate, `LRCParser` (parse, active line, Japanese display filter), `LyricsQuery` (title/artist normalization, matching, ranking), `Frames` and `LocalSocket` for the bridge, `IslandMotion` interpolation, `PanelDisplay` (which display shows the panel), `HotKey` (shortcut validation and labels). |
+| `Ririku` | `App/`: `main.swift`, `AppDelegate` (menu bar, Dock icon, Setup window, bridge wiring), `AppModel`, `MainMenu`, `HotKeyCenter`, `ArtworkAccent`, `LoginItem`, `Localization`. `Panel/`: `PanelController` (`NSPanel`, placement, hover, resize animation), `PanelView`, `PanelGeometry` (panel size), `ConnectedDisplay`. `Music/`: `MusicModel` and `MusicModel+Lyrics`, `MusicIslandView`, `MusicLayout`, `ScrollingLyricRows`, `DecorativeSpectrum`, `BridgeServer`, `MediaServices` (HTTP client, LRCLIB, artwork), `DesktopPlayers`, `BrowserSetup`. `Setup/`: `SetupView` (sidebar) and one view per page. |
 | `RirikuHost` | Relays framed messages between the browser (stdin/stdout) and the app socket. It names its own browser from its parent process and sends that as the first message. If the app is not running and the first message is `openSetup`, it launches the enclosing `Ririku.app` with `open -g` and retries for up to 4 seconds. |
 
 ## Bridge protocol
@@ -101,13 +101,14 @@ LRCLIB requests retry HTTP 502/503/504 at most three times with bounded backoff.
 
 ## Panel and motion
 
-- The panel is a borderless, non-activating `NSPanel` at status bar level on all Spaces, placed at the top center of the first screen with a top safe-area inset (the notch), otherwise the main screen. The notch width comes from `auxiliaryTopLeftArea`/`auxiliaryTopRightArea`, and 180 pt is only a fallback when a screen does not report them; its height is the top safe-area inset (32 pt on a MacBook Air M2, which measures 179 × 32 pt).
+- The panel is a borderless, non-activating `NSPanel` at status bar level on all Spaces, placed at the top center of the display chosen in **Setup → General** while it is connected, otherwise the first screen with a top safe-area inset (the notch), otherwise the main screen (`PanelDisplay.choose`). A chosen display is stored by its CoreGraphics display UUID, which survives restarts and reconnection, together with its name for Setup. The notch width comes from `auxiliaryTopLeftArea`/`auxiliaryTopRightArea`, and 180 pt is only a fallback when a screen does not report them; its height is the top safe-area inset (32 pt on a MacBook Air M2, which measures 179 × 32 pt).
 - `AppModel.panelSize` (in `PanelGeometry.swift`) computes the frame from the expanded state, size preferences, lyric lines, notices, and errors, and never exceeds the screen minus 24 pt. The lyric heights come from `MusicModel`, given the width a lyric row has.
 - The expanded height is `expandedContentHeight`, the sum of the rows the view draws. `ExpandedLayout` holds those row sizes once and `MusicIslandView` lays out with the same values, so the window never has slack; change a padding there and the height follows. Without lyrics it is 199 pt on a 34 pt strip, and three lyric lines add 86 pt.
 - The compact island is stored as `compactExtraWidth`/`compactExtraHeight`, the amount added to the measured notch, so 0 fits the notch on any Mac and is the default. Artwork and the spectrum are pinned to the leading and trailing edges with a 6 pt inset, so they hide behind the camera housing at the notch size and appear as the island grows (fully visible from about 240 pt); `compactIconSize` shrinks them if the island is shorter than 32 pt. The expanded panel keeps its own absolute width and stays at least the notch plus 120 pt.
 - Lyrics leave the compact island while playback is paused (`islandLyricHeight` requires `isPlayingNow`), so a paused island shrinks back to the notch, while the expanded panel keeps them.
 - Frame changes use `IslandMotion`: 0.32 s smoothstep interpolation driven by a 60 Hz timer that runs only during the resize and keeps the top edge fixed. Reduce Motion or the animation setting disables it.
-- Hover opens after 150 ms. The panel closes once the pointer has been outside it for 350 ms, checked against the pointer position rather than only SwiftUI hover exits, and not while a mouse button is held (seeking). A panel opened from the menu stays open until the pointer has visited it or Escape is pressed. Track changes do not expand the panel.
+- Hover opens after the delay before opening (default 150 ms). The panel closes once the pointer has been outside it for the delay before closing (default 350 ms; the pointer is also checked every 200 ms), checked against the pointer position rather than only SwiftUI hover exits, and not while a mouse button is held (seeking). A panel opened from the menu or the keyboard shortcut stays open until the pointer has visited it, Escape is pressed, or the shortcut is pressed again. Track changes do not expand the panel.
+- With haptic feedback on, `NSHapticFeedbackManager` taps once when the pointer enters the closed island, before the delay before opening. macOS drops haptic feedback once the finger leaves the trackpad, and a quick swipe to the notch often lifts it before the panel opens. Clicks and the shortcut do not tap. macOS also silences app haptics while **Force Click and haptic feedback** is off in the Trackpad settings, so Setup names that setting and links to it.
 - `DecorativeSpectrum` animates five synthetic bars at up to 24 Hz only while playing; it never captures audio.
 
 ## Localization
@@ -133,6 +134,14 @@ The bridge accepts one host connection at a time, so one browser profile is conn
 `LoginItem` wraps `SMAppService.mainApp` (ServiceManagement, macOS 13+), so the app bundle registers itself and no helper tool, launch agent, or Terminal command is needed. macOS owns the state, so nothing is stored in the preferences: Setup reads `SMAppService.mainApp.status` on every render and `AppModel.loginItemRevision` forces a re-read after a toggle and when the Setup window opens, because the user can also change login items in System Settings.
 
 The registration is only offered for the real bundle: a plain executable (`swift run`, tests) reports `unavailable`, and a translocated copy reports `translocated` because the path it would register disappears. `requiresApproval` means macOS wants the user to allow the item, so Setup offers a button that opens the Login Items pane. Turning it off is allowed in every location, so a registration from an earlier copy can be removed.
+
+## Keyboard shortcut
+
+`HotKeyCenter` registers the shortcut with Carbon's `RegisterEventHotKey`, which needs no Accessibility permission (R-UI-17); the press arrives as a Carbon event on the main thread and toggles the panel like the menu item. `HotKey` in `RirikuCore` requires Command, Option, or Control and is stored as JSON with the key code, the Carbon modifier flags, and the key's label from when it was recorded. Setup records with a local key monitor in its own window. While it records, the current shortcut is unregistered so it can be recorded again, and a registration that macOS refuses is reported on the Keyboard page.
+
+## Dock, menu bar, and menus
+
+`AppDelegate.applyIcons` sets `NSStatusItem.isVisible` and switches the activation policy between `.accessory` and `.regular` at runtime; `LSUIElement` stays on in `Info.plist`, so the app starts without a Dock icon and adds it when the setting is on. `MainMenu` provides the app, Edit, and Window menus. They are visible with the Dock icon, and in both modes they give Setup's text fields Copy, Paste, Undo, and Close Window. With both icons hidden, `applicationShouldHandleReopen` opens Setup when the app is opened again (R-UI-16).
 
 ## Identifiers and files
 

@@ -26,7 +26,7 @@ if not re.fullmatch(r"\d+\.\d+\.\d+", version):
 places = {
     "extension/manifest.json": json.loads(read("extension/manifest.json"))["version"],
     "Sources/Ririku/Music/MediaServices.swift": find("Sources/Ririku/Music/MediaServices.swift", r'"Ririku/([^ ]+) \(', "User-Agent version"),
-    "Sources/Ririku/Setup/PrototypePage.swift": find("Sources/Ririku/Setup/PrototypePage.swift", r'"Ririku ([^ ]+) · Native macOS"', "Setup version text"),
+    "Sources/Ririku/Setup/AboutPage.swift": find("Sources/Ririku/Setup/AboutPage.swift", r'"Ririku ([^ ]+) · Native macOS"', "Setup version text"),
 }
 
 problems = [f"{place}: {found} (expected {version})" for place, found in places.items() if found != version]

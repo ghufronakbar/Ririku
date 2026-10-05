@@ -3,9 +3,13 @@ import SwiftUI
 import RirikuCore
 
 /// App-wide state shared by the notch panel and Setup: the interface language, the island's size and accent,
-/// and launch at login. Music and lyrics live in `music`; the panel's size is computed in `PanelGeometry.swift`.
+/// the general settings, and launch at login. Music and lyrics live in `music`; the panel's size is computed
+/// in `PanelGeometry.swift`.
 @MainActor
 final class AppModel: ObservableObject {
+    static let hoverOpenDelayRange = 0.0...1.0
+    static let hoverCloseDelayRange = 0.1...2.0
+
     let music: MusicModel
     @Published var interfaceLanguage: InterfaceLanguage {
         didSet {
@@ -30,9 +34,36 @@ final class AppModel: ObservableObject {
     @Published private(set) var loginItemRevision = 0
     @Published var notchWidth: CGFloat = 180
     @Published var topHeight: CGFloat = 34
+
+    // General settings (D-022).
+    @Published var showInDock: Bool { didSet { defaults.set(showInDock, forKey: "showInDock"); iconsChanged?() } }
+    @Published var showMenuBarIcon: Bool { didSet { defaults.set(showMenuBarIcon, forKey: "showMenuBarIcon"); iconsChanged?() } }
+    /// The display chosen in Setup, by its CoreGraphics UUID; nil places the panel automatically.
+    @Published private(set) var panelDisplayID: String?
+    /// Kept so Setup can still name the chosen display while it is disconnected.
+    @Published private(set) var panelDisplayName: String?
+    @Published var hoverOpenDelay: Double { didSet { defaults.set(hoverOpenDelay, forKey: "hoverOpenDelay") } }
+    @Published var hoverCloseDelay: Double { didSet { defaults.set(hoverCloseDelay, forKey: "hoverCloseDelay") } }
+    @Published var hapticFeedback: Bool { didSet { defaults.set(hapticFeedback, forKey: "hapticFeedback") } }
+    /// Off until the user records one (R-UI-17).
+    @Published var panelShortcut: HotKey? {
+        didSet {
+            defaults.set(panelShortcut.flatMap { try? JSONEncoder().encode($0) }, forKey: "panelShortcut")
+            shortcutChanged?()
+        }
+    }
+    /// While Setup records a shortcut, the current one is released so pressing it again can be recorded.
+    @Published var recordingShortcut = false { didSet { shortcutChanged?() } }
+    @Published var shortcutMessage: UIText?
+    @Published var setupPage: SetupPage?
+    /// Incremented when displays are connected, removed, or rearranged, so Setup lists them again.
+    @Published private(set) var screenRevision = 0
+
     var geometryChanged: (() -> Void)?
     var openSetup: (() -> Void)?
     var languageChanged: (() -> Void)?
+    var iconsChanged: (() -> Void)?
+    var shortcutChanged: (() -> Void)?
     private let defaults: UserDefaults
 
     init(lyricsService: LyricsService = LyricsService(), defaults: UserDefaults = .standard) {
@@ -52,6 +83,15 @@ final class AppModel: ObservableObject {
         defaults.removeObject(forKey: "compactWidth")
         accentName = defaults.string(forKey: "accentName") ?? "Peach"
         animations = defaults.object(forKey: "animations") as? Bool ?? true
+        showInDock = defaults.bool(forKey: "showInDock")
+        showMenuBarIcon = defaults.object(forKey: "showMenuBarIcon") as? Bool ?? true
+        panelDisplayID = defaults.string(forKey: "panelDisplayID")
+        panelDisplayName = defaults.string(forKey: "panelDisplayName")
+        hoverOpenDelay = Self.storedDelay(defaults, "hoverOpenDelay", in: Self.hoverOpenDelayRange) ?? 0.15
+        hoverCloseDelay = Self.storedDelay(defaults, "hoverCloseDelay", in: Self.hoverCloseDelayRange) ?? 0.35
+        hapticFeedback = defaults.bool(forKey: "hapticFeedback")
+        let storedShortcut = defaults.data(forKey: "panelShortcut").flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) }
+        panelShortcut = storedShortcut?.isValid == true ? storedShortcut : nil
         music.layoutChanged = { [weak self] in self?.geometryChanged?() }
         music.openSetup = { [weak self] in self?.openSetup?() }
         music.artworkChanged = { [weak self] image in self?.updateAutomaticAccent(for: image) }
@@ -76,6 +116,34 @@ final class AppModel: ObservableObject {
         let extracted = artworkAccent.color(for: image)
         let color: Color = extracted == .white ? .white : Color(nsColor: extracted)
         withAnimation(canAnimate ? .easeInOut(duration: 0.45) : nil) { automaticAccent = color }
+    }
+
+    // MARK: General settings
+
+    private static func storedDelay(_ defaults: UserDefaults, _ key: String, in range: ClosedRange<Double>) -> Double? {
+        guard let value = defaults.object(forKey: key) as? Double, value.isFinite, range.contains(value) else { return nil }
+        return value
+    }
+
+    /// `nil` returns the panel to automatic placement.
+    func choosePanelDisplay(id: String?, name: String?) {
+        panelDisplayID = id
+        panelDisplayName = id == nil ? nil : name
+        defaults.set(panelDisplayID, forKey: "panelDisplayID")
+        defaults.set(panelDisplayName, forKey: "panelDisplayName")
+        geometryChanged?()
+    }
+
+    func screensChanged() { screenRevision += 1 }
+
+    /// macOS plays haptic feedback only while Force Click and haptic feedback is on in the Trackpad settings.
+    func openTrackpadSettings() {
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Trackpad-Settings.extension")!)
+    }
+
+    /// Setup opens where the music is connected until a browser or desktop player is set up.
+    var defaultSetupPage: SetupPage {
+        music.connectedExtensionVersion == nil && !music.spotifyEnabled && !music.appleMusicEnabled ? .browserConnection : .general
     }
 
     // MARK: Launch at login

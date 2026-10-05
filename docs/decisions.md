@@ -56,6 +56,9 @@ Earlier approved requirements from the planning phase: selectable lyrics source 
 | Repository settings | Private vulnerability reporting enabled and the `translation` label created on 2026-09-19, so `SECURITY.md` and every issue template work; description and topics set | Changed by the maintainer in the GitHub settings. |
 | CI and releases | GitHub Actions on macOS runners: checks, `swift test`, and a bundle build on every push, plus tag-driven draft releases with a zip and checksum | Uses only first-party actions (`actions/checkout`, `actions/upload-artifact`) and `gh`. |
 | Launch at login | `SMAppService.mainApp` registers the app bundle itself; the state is read from macOS instead of being stored in the preferences; unavailable outside the `.app` and while translocated | No helper tool or launch agent. Registration by an ad-hoc signed build still needs validation on a downloaded release. |
+| Keyboard shortcut | Carbon `RegisterEventHotKey` with an application event handler; the shortcut needs Command, Option, or Control and is stored as JSON | Public API that needs no Accessibility permission (R-UI-17), unlike a global `NSEvent` monitor or an event tap. On 2026-10-05, a probe on macOS 15.7, without Accessibility permission, registered ⌥⌘N successfully. |
+| Panel display | The chosen display is stored by its CoreGraphics display UUID (`CGDisplayCreateUUIDFromDisplayID`) plus its name; a disconnected choice falls back to automatic placement | Display numbers can change after a restart or reconnection; the UUID does not. |
+| Dock icon and menus | The activation policy switches between `.accessory` and `.regular` at runtime while `LSUIElement` stays on; a main menu with app, Edit, and Window menus is always installed | Keeps the default start without a Dock icon, and gives Setup the standard editing shortcuts in both modes. |
 | Tests | Swift Testing suites in `Tests/RirikuCoreTests` and `Tests/RirikuTests`, fixtures only | Executable targets can be tested with SwiftPM, so the app model and the browser setup are covered without a UI. |
 
 ## Open questions
@@ -63,7 +66,7 @@ Earlier approved requirements from the planning phase: selectable lyrics source 
 | Question | Status |
 | --- | --- |
 | Spotify desktop and Apple Music Automation approval, playback timing, and controls | Implemented with AppleScript; real playback validation pending |
-| Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; main-screen fallback not fully tested |
+| Behavior on external displays, full screen, Spaces, and Macs without a notch | Open; **Setup → General** can now choose the display (2026-10-05), but placement on an external or notch-less display is untested because only the built-in display was connected |
 | Gatekeeper experience for downloaded ad-hoc builds on each macOS version, and whether updates require confirming again | Validated on 2026-09-18 with the 0.3.1 release zip on macOS 15.7.2: the "Not Opened" dialog, **Done**, then **Open Anyway** in Privacy & Security worked as the user guide describes. macOS 14 and confirming again after an update are still untested |
 | Universal (Intel) builds | Open |
 | Test coverage for SwiftUI views, the browser extension JavaScript, and end-to-end bridge behavior | Open; `swift test` now covers core logic, the app model, localization, and the browser setup helpers |

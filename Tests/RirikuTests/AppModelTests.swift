@@ -347,3 +347,79 @@ struct LyricRowTests {
         #expect(!model.reservesTwoLyricRows)
     }
 }
+
+@MainActor
+@Suite("General settings")
+struct GeneralSettingsTests {
+    @Test("Start with the earlier behavior: no Dock icon, a menu bar icon, the same delays, no haptics, no shortcut")
+    func keepsEarlierDefaults() {
+        let (model, _) = makeModel()
+        #expect(!model.showInDock)
+        #expect(model.showMenuBarIcon)
+        #expect(model.hoverOpenDelay == 0.15)
+        #expect(model.hoverCloseDelay == 0.35)
+        #expect(!model.hapticFeedback)
+        #expect(model.panelShortcut == nil)
+        #expect(model.panelDisplayID == nil)
+    }
+
+    @Test("Saves and restores the general settings")
+    func persistsSettings() {
+        let (model, defaults) = makeModel()
+        var iconChanges = 0
+        model.iconsChanged = { iconChanges += 1 }
+        model.showInDock = true
+        model.showMenuBarIcon = false
+        #expect(iconChanges == 2)
+        model.hoverOpenDelay = 0.4
+        model.hoverCloseDelay = 1.2
+        model.hapticFeedback = true
+        model.panelShortcut = HotKey(keyCode: 45, modifiers: HotKey.command | HotKey.option, key: "N")
+        model.choosePanelDisplay(id: "display-uuid", name: "Studio Display")
+        let restored = AppModel(defaults: defaults)
+        #expect(restored.showInDock)
+        #expect(!restored.showMenuBarIcon)
+        #expect(restored.hoverOpenDelay == 0.4)
+        #expect(restored.hoverCloseDelay == 1.2)
+        #expect(restored.hapticFeedback)
+        #expect(restored.panelShortcut?.label == "⌥⌘N")
+        #expect(restored.panelDisplayID == "display-uuid")
+        #expect(restored.panelDisplayName == "Studio Display")
+        restored.choosePanelDisplay(id: nil, name: "ignored")
+        #expect(restored.panelDisplayName == nil, "automatic placement keeps no display name")
+    }
+
+    @Test("Ignores stored values that are out of range or unreadable")
+    func rejectsInvalidStoredValues() {
+        let defaults = MemoryDefaults()
+        defaults.set(9.0, forKey: "hoverOpenDelay")
+        defaults.set(-1.0, forKey: "hoverCloseDelay")
+        defaults.set(Data("not json".utf8), forKey: "panelShortcut")
+        let model = AppModel(defaults: defaults)
+        #expect(model.hoverOpenDelay == 0.15)
+        #expect(model.hoverCloseDelay == 0.35)
+        #expect(model.panelShortcut == nil)
+        let plain = try! JSONEncoder().encode(HotKey(keyCode: 45, modifiers: 0, key: "N"))
+        defaults.set(plain, forKey: "panelShortcut")
+        #expect(AppModel(defaults: defaults).panelShortcut == nil, "a shortcut without Command, Option, or Control is dropped")
+    }
+
+    @Test("Releases the shortcut while a new one is recorded")
+    func reportsShortcutChanges() {
+        let (model, _) = makeModel()
+        var changes = 0
+        model.shortcutChanged = { changes += 1 }
+        model.recordingShortcut = true
+        model.panelShortcut = HotKey(keyCode: 45, modifiers: HotKey.control, key: "N")
+        model.recordingShortcut = false
+        #expect(changes == 3)
+    }
+
+    @Test("Setup opens where the music is connected until a source is set up")
+    func choosesSetupPage() {
+        let (model, _) = makeModel()
+        #expect(model.defaultSetupPage == .browserConnection)
+        model.music.receive(Data(#"{"protocolVersion":1,"kind":"extension","version":"0.3.1"}"#.utf8))
+        #expect(model.defaultSetupPage == .general)
+    }
+}

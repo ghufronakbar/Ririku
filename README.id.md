@@ -20,7 +20,7 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 - **Mengikuti pemutar aktif:** berpindah ke tab browser yang mulai memutar, atau kunci satu tab secara manual.
 - **Dapat disesuaikan:** lebar island, jumlah baris lirik, warna aksen manual atau dari artwork, animasi, dan dukungan Reduce Motion.
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
-- **Buka saat login (opsional):** satu sakelar di Setup, nonaktif secara default.
+- **Sesuai kebiasaan Anda:** buka saat login, pilih layar, jeda hover, serta ikon Dock dan menu bar, tambahkan umpan balik haptik, atau rekam shortcut keyboard untuk panel. Semuanya opsional, di **Setup → Umum** dan **Setup → Keyboard**.
 
 ## Kebutuhan
 
@@ -40,7 +40,7 @@ Putar lagu di browser tersebut dan arahkan pointer ke notch.
 
 ## Memakai Ririku
 
-- **Membuka panel:** arahkan pointer ke notch, klik island, atau pilih **Buka panel musik** dari ikon gelombang suara di menu bar. Tekan Esc untuk menutup.
+- **Membuka panel:** arahkan pointer ke notch, klik island, pilih **Buka panel musik** dari ikon gelombang suara di menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**. Tekan Esc untuk menutup.
 - **Setup:** klik gear di panel terbuka atau pilih **Setup…** dari ikon menu bar.
 - **Lirik tidak pas?** Di **Setup → Lirik**, atur offset untuk lagu ini, atau gunakan **Cari dan pilih versi lirik** untuk memilih versi dengan durasi yang cocok dengan pemutar.
 - **Tidak sedang memutar musik?** Aktifkan **Setup → Prototipe → Demo lokal** untuk mencoba panel tanpa browser.

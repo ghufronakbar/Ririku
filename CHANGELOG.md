@@ -4,9 +4,15 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Added
+- **Setup → General** (D-022): show a Dock icon (off by default) and hide the menu bar icon (shown by default); choose the display for the panel, or keep **Automatic**; set the delay before the panel opens (0–1 s, default 0.15 s) and before it closes (0.1–2 s, default 0.35 s); and turn on a haptic tap when the pointer reaches the notch (off by default). With both icons hidden, opening Ririku again opens Setup.
+- **Setup → Keyboard:** record a shortcut that opens and closes the panel from any app. It is off until recorded, needs Command, Option, or Control, and uses the Carbon hot key API, so no Accessibility permission is requested.
+- **Setup → Tutorial** with a button to each page it mentions, and **Setup → About** with the version, the privacy note, and links to the source code, the user guide in the interface language, and the issue tracker.
+- App, Edit, and Window menus: visible with the Dock icon, and they make Copy, Paste, Undo, and Close Window work in Setup.
+
 ### Changed
 - **Project scope:** Ririku is becoming a multipurpose notch app. Music controls and synced lyrics stay its core, and the panel will gain tabs with widgets and tools such as system stats, timers, a file tray with AirDrop, clipboard history, a calendar, a camera mirror, and on-device translation (decisions D-017 to D-024). `docs/rules.md` replaces the old scope limits with rules for widgets and tools (R-WID), and the new `docs/roadmap.md` lists the stages.
-- **Setup has a sidebar.** Each former section is now a page: Language, Browser connection, Startup, Music source, Appearance, Lyrics, and Prototype. Until a browser has connected, Setup opens on Browser connection, and the window can now be resized.
+- **Setup has a sidebar** with the pages General, Tutorial, Language, Keyboard, Appearance, Browser connection, Music source, Lyrics, Prototype, and About. **Startup** is now a section of General, and the version and privacy note moved from Prototype to About. Until a browser or a desktop player is set up, Setup opens on Browser connection, otherwise on General. The window can now be resized.
 - **Code layout (developers):** the app target is split into `App/`, `Panel/`, `Music/`, and `Setup/`. `AppModel` keeps the app-wide state and holds a new `MusicModel` for playback, lyrics, and the browser connection; `main.swift` is now only the entry point. The notch panel is unchanged: a demo render of the compact and expanded panel matches the previous build in size and pixels, apart from the animated spectrum.
 
 ## [0.3.1] - 2026-09-18

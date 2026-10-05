@@ -18,7 +18,7 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Follows the active player:** switches to the browser tab that starts playing, or lock one tab manually.
 - **Customizable:** island width, number of lyric lines, manual or artwork-based accent color, animations, and Reduce Motion support.
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
-- **Opens at login (optional):** a single toggle in Setup, off by default.
+- **Fits your setup:** open at login, choose the display, the hover delays, and the Dock and menu bar icons, add haptic feedback, or record a keyboard shortcut for the panel. All optional, in **Setup → General** and **Setup → Keyboard**.
 
 ## Requirements
 
@@ -38,7 +38,7 @@ Play a song in that browser and hover over the notch.
 
 ## Using Ririku
 
-- **Open the panel:** hover over the notch, click the island, or choose **Open music panel** from the waveform icon in the menu bar. Press Esc to close it.
+- **Open the panel:** hover over the notch, click the island, choose **Open music panel** from the waveform icon in the menu bar, or press the shortcut you record in **Setup → Keyboard**. Press Esc to close it.
 - **Setup:** click the gear in the expanded panel or choose **Setup…** from the menu bar icon.
 - **Lyrics out of sync?** In **Setup → Lyrics**, adjust the offset for this song, or use **Search and choose a lyrics version** to pick a version whose duration matches the player.
 - **No music handy?** Turn on **Setup → Prototype → Local demo** to try the panel without a browser.
