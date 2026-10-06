@@ -4,6 +4,9 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Added
+- **Screenshots in the documentation:** the README and the user guide, in all three languages, show the app icon, the compact island, the expanded panel, widget pages, and each Setup page, from `docs/preview`.
+
 ### Changed
 - **New defaults** (D-028): a fresh install starts with a ready-made layout: Home with the music widget; **System** with System, Battery, and Clock; **Focus** with Pomodoro, Countdown, and Notes; **Tools** with Apps, Shortcuts, and Bookmarks; then the Tray. **Reset to Default Layout** restores it. These pages show their names in the interface language until you rename them. The compact island now starts 150 pt wider than the notch, showing the artwork and spectrum; the expanded width defaults to 518 pt, the accent color to Auto, the lyric lines to two, and haptic feedback to on. A layout or setting you already changed is kept; settings you never changed take the new defaults. Widgets that need a permission, the keyboard shortcut, and desktop players stay off.
 - **The panel** opens on the page you last used instead of returning to Home each time. If that page was removed or hidden, it opens on the first one.

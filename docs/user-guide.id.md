@@ -4,7 +4,7 @@
 
 > Terjemahan dari panduan English untuk Ririku v0.4.0. Bila ada perbedaan, versi English yang berlaku.
 
-Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan browser ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau browser.
+Panduan ini untuk siapa pun yang ingin memakai Ririku, tanpa perlu kemampuan pemrograman. Nama tombol ditulis sesuai antarmuka berbahasa Indonesia. Tombol macOS dan browser ditulis dalam English; di komputer Anda namanya mengikuti bahasa sistem atau browser. Tangkapan layar menampilkan antarmuka English.
 
 - [Sebelum mulai](#sebelum-mulai)
 - [Instalasi](#instalasi)
@@ -58,6 +58,8 @@ Secara default Ririku tidak memiliki ikon Dock dan berada di menu bar sebagai ik
 
 Ririku membaca pemutar YouTube di browser melalui extension pendamping kecil. Di **Setup → Koneksi browser**, ikuti empat langkah berikut sekali saja. Setiap langkah menampilkan tanda centang hijau setelah selesai.
 
+<img src="preview/15-browser-connection-setup.png" alt="Setup → Koneksi browser" width="640">
+
 1. **Daftarkan koneksi browser** → klik **Daftarkan**. Ririku mengizinkan setiap browser Chromium yang ditemukan di Mac Anda berkomunikasi dengan salinan app ini, dan menyebut namanya di bawah langkah tersebut.
 2. **Salin folder extension** → klik **Tampilkan di Finder**. Ririku menyalin extension ke `~/Library/Application Support/Ririku/Chrome Extension` dan menampilkannya di Finder.
 3. **Muat extension di browser** → klik **Salin alamat** (bila ada beberapa browser, pilih satu dari menu), tempel alamat itu di address bar browser tersebut, lalu tekan Return. Kemudian:
@@ -70,6 +72,11 @@ Putar sesuatu di browser tersebut, lalu arahkan pointer ke notch.
 Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension yang tidak berasal dari toko resminya. Nama folder extension tetap “Chrome Extension” di semua browser, karena extension-nya sama.
 
 ## Memakai panel
+
+<p align="center">
+  <img src="preview/1-lyrics-notch-preview.png" alt="Island ringkas dengan lirik tersinkron" width="440"><br>
+  <img src="preview/2-music-panel-preview.png" alt="Panel terbuka di halaman Beranda" width="520">
+</p>
 
 Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga bisa berbeda dari sampul album di YouTube Music. Ini mencegah gambar lagu sebelumnya dari player bar tetap ditampilkan.
 
@@ -87,6 +94,13 @@ Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga b
 - **Iklan:** saat YouTube menampilkan iklan, kontrol dinonaktifkan dan lirik dijeda.
 - **Tanpa lirik:** island tetap ringkas dan sebentar menampilkan **Lirik belum ditemukan**. Detailnya ada di **Setup → Lirik**.
 
+Halaman dari satu tata letak yang sudah diatur; milik Anda bergantung pada **Setup → Tata letak**.
+
+| | |
+| --- | --- |
+| ![Halaman Sistem: Sistem, Baterai, dan Jam](preview/3-system-widgets-preview.png) | ![Halaman Fokus: Pomodoro, Hitung mundur, dan Catatan](preview/7-focus-timer-empty-preview.png) |
+| ![Halaman berisi Kalender dan Shortcut](preview/5-today-shortcuts-preview.png) | ![Tab Tray dengan kartu AirDrop](preview/6-airdrop-tray-preview.png) |
+
 Pilih **Keluar Ririku** dari ikon menu bar untuk keluar.
 
 ## Setup
@@ -94,6 +108,8 @@ Pilih **Keluar Ririku** dari ikon menu bar untuk keluar.
 Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar. Pilih halaman di sidebar; selama belum ada browser atau pemutar desktop yang disiapkan, Setup terbuka di **Koneksi browser**. Perubahan langsung berlaku.
 
 ### Umum
+
+<img src="preview/8-general-setup.png" alt="Setup → Umum" width="640">
 
 **Saat login → Buka Ririku saat login** (nonaktif secara default): Ririku terbuka di latar belakang setelah Anda login, tanpa jendela. macOS bisa meminta izin pada kali pertama; jika Setup menyatakan sedang menunggu persetujuan, klik **Buka pengaturan Login Items** lalu aktifkan Ririku di sana. Sakelar ini tidak tersedia selama Ririku berjalan dari lokasi sementara, jadi pindahkan dulu ke **Applications**. Anda juga bisa mematikannya di **System Settings → General → Login Items**.
 
@@ -107,17 +123,25 @@ Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar.
 
 ### Tutorial
 
+<img src="preview/9-tutorial-setup.png" alt="Setup → Tutorial" width="640">
+
 Tur singkat tentang panel dan Setup. Setiap langkah punya tombol yang membuka halaman yang dibahas.
 
 ### Bahasa
+
+<img src="preview/10-language-setup.png" alt="Setup → Bahasa" width="640">
 
 **Bahasa antarmuka:** **Ikuti sistem** (default), English, Bahasa Indonesia, atau 日本語. Ikuti sistem memakai bahasa pertama yang didukung dari **System Settings → General → Language & Region**, atau English bila tidak ada. Judul lagu, lirik, caption, serta pesan dari macOS atau situs tetap dalam bahasa aslinya.
 
 ### Keyboard
 
+<img src="preview/11-keyboard-setup.png" alt="Setup → Keyboard" width="640">
+
 **Buka atau tutup panel:** mati sampai Anda merekam shortcut. Klik **Rekam shortcut** lalu tekan kombinasi dengan Command, Option, atau Control, misalnya ⌥⌘N; Esc membatalkan dan **Hapus** menghilangkannya. Shortcut bekerja dari app mana pun dan tidak butuh izin Accessibility. Jika macOS menolak kombinasi karena dipakai app lain, Setup memberi tahu; pilih kombinasi lain. Bila dibuka dengan shortcut, panel tetap terbuka sampai pointer menyentuhnya; tekan shortcut lagi atau Esc untuk menutup.
 
 ### Tata letak
+
+<img src="preview/12-layout-setup.png" alt="Setup → Tata letak" width="640">
 
 Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dalamnya untuk melihat halaman lain. Di bawahnya, setiap halaman memiliki:
 
@@ -132,6 +156,8 @@ Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disem
 Widget dan pengaturannya dijelaskan di [Widget](#widget).
 
 ### Widget
+
+<img src="preview/13-widgets-setup.png" alt="Setup → Widget" width="640">
 
 Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di panel, widget hanya menampilkan dan dioperasikan: memulai timer, menghitung, membuka app.
 
@@ -156,6 +182,8 @@ Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di
 
 ### Tampilan
 
+<img src="preview/14-appearance-setup.png" alt="Setup → Tampilan" width="640">
+
 - **Lebar island ringkas** dan **Tinggi island ringkas** dapat ditambah dari ukuran notch Mac Anda, ukuran terkecilnya, hingga 440 pt dan 40 pt. Secara default lebarnya 150 pt lebih dari notch dan tingginya sama dengan notch. Setup menyebutkan ukuran notch Anda (misalnya 179 × 32 pt). Artwork dan spectrum menempel di sisi kiri dan kanan, jadi keduanya muncul dari balik housing kamera saat island diperlebar; sekitar 240 pt keduanya terlihat penuh.
 - **Lebar island terbuka** (360–720 pt, default 518): panel terbuka minimal selebar ini. Halaman yang widgetnya butuh ruang lebih, atau bar tab dengan banyak tab, akan terbuka lebih lebar.
 - **Kembalikan ke ukuran notch** membuat island ringkas seukuran notch dan mengembalikan lebar island terbuka ke nilai default.
@@ -169,6 +197,8 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 
 ### Sumber musik
 
+<img src="preview/16-music-source-setup.png" alt="Setup → Sumber musik" width="640">
+
 **Spotify desktop:** buka Spotify dan putar lagu, lalu aktifkan **Hubungkan Spotify desktop**. Setujui izin Automation macOS. Tidak perlu extension atau API key. Mode otomatis mengikuti pemutar yang mulai bermain; matikan untuk memilih Spotify secara manual. Pilih lirik Auto atau LRCLIB, bukan hanya subtitle. Jika izin ditolak, izinkan Ririku di **System Settings → Privacy & Security → Automation**, lalu klik **Sambungkan ulang Spotify**. Mematikan opsi ini menghentikan polling; pilihannya tersimpan saat restart. Artwork berasal dari `i.scdn.co`; metadata lagu dikirim ke LRCLIB jika lirik otomatis aktif. Playback dan izin masih perlu diuji langsung.
 
 **Apple Music:** buka app Music dan putar lagu, lalu aktifkan **Hubungkan Apple Music** dan setujui izin Automation macOS. Berlaku untuk lagu di library dan streaming Apple Music; stasiun radio dan siaran langsung tanpa durasi tidak ditampilkan. Artwork dibaca secara lokal dari app Music, sehingga tidak ada server gambar yang dihubungi. Jika LRCLIB tidak menemukan lirik, Ririku menampilkan lirik yang tersimpan pada lagu di app Music (**Get Info → Lyrics**) sebagai teks biasa tanpa sinkronisasi. Biasanya ini berlaku untuk file milik Anda sendiri; lirik tersinkron Apple Music tidak tersedia untuk app lain. Pemilihan sumber, lirik, pemulihan izin (**Sambungkan ulang Apple Music**), dan pilihan yang tersimpan bekerja sama seperti Spotify. Playback dan izin masih perlu diuji langsung.
@@ -177,6 +207,8 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 - **Pemutar aktif:** matikan mode otomatis untuk mengunci satu tab. Ririku tersambung kembali ke tab yang sama setelah halaman di-refresh.
 
 ### Lirik
+
+<img src="preview/17-lyrics-setup.png" alt="Setup → Lirik" width="640">
 
 - **Utamakan Jepang pada timestamp ganda** (aktif secara default): lihat [Lirik Jepang](#lirik-jepang).
 - **Sumber lirik:**
@@ -195,6 +227,8 @@ Empat langkah instalasi di atas. Kembali ke sini setelah memperbarui Ririku atau
 **Demo lokal (tanpa audio)** menampilkan lagu contoh dengan lirik tersinkron agar panel bisa dicoba tanpa browser. Matikan sebelum memakai musik sungguhan.
 
 ### Tentang
+
+<img src="preview/18-about-setup.png" alt="Setup → Tentang" width="640">
 
 Versi, catatan privasi, dan tautan ke kode sumber, panduan ini dalam bahasa antarmuka Anda, dan halaman laporan masalah. Tautan dibuka di browser. Jika ikon Dock aktif, **Tentang Ririku** di menu app juga membuka halaman ini.
 

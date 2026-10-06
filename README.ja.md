@@ -1,12 +1,23 @@
+<div align="center">
+
+<img src="Resources/AppIcon.png" alt="Ririku のアプリアイコン" width="128">
+
 # Ririku
 
 **Mac のノッチに、音楽と歌詞と便利なウィジェットを。**
 
 [English](README.md) · [Bahasa Indonesia](README.id.md) · 日本語
 
+</div>
+
 > v0.4.0 の英語版 README を翻訳したものです。内容に違いがある場合は英語版が優先されます。
 
 Ririku(リリク、「lyric」から)は、Chromium 系ブラウザの YouTube や YouTube Music で再生中の曲をノッチのすぐ下に表示する、無料のオープンソース macOS アプリです。再生/一時停止、曲送り、シーク、1 行ずつ同期する歌詞に対応しています。展開したパネルには、システム情報、タイマー、カレンダー、AirDrop 対応のファイルトレイ、デバイス上での翻訳など、ウィジェットやツールのページも置けます。SwiftUI/AppKit によるネイティブアプリと小さなブラウザ拡張機能で構成され、アカウントもテレメトリもありません。
+
+<p align="center">
+  <img src="docs/preview/1-lyrics-notch-preview.png" alt="ノッチの下に同期した日本語の歌詞を表示する Ririku のコンパクトなアイランド" width="440"><br>
+  <img src="docs/preview/2-music-panel-preview.png" alt="曲情報、同期歌詞、再生位置のバー、操作ボタンを表示した展開パネル" width="520">
+</p>
 
 > **ステータス:** 初期プロトタイプ(v0.4.0)。[Releases](https://github.com/ghufronakbar/Ririku/releases) からダウンロードするか、[ソースからビルド](docs/development/README.md)できます。Spotify デスクトップと Apple Music（ミュージック App）はセットアップで有効にできます（実機検証は未完了）。
 
@@ -20,6 +31,19 @@ Ririku(リリク、「lyric」から)は、Chromium 系ブラウザの YouTube �
 - **表示言語:** English、Bahasa Indonesia、日本語。macOS の言語に合わせるか、セットアップで選べます。
 - **タブとウィジェット:** **セットアップ → レイアウト** で、展開したパネルにウィジェットのページを配置できます。歌詞付きの音楽、システムとネットワークの使用状況、バッテリー、時計、ポモドーロ・カウントダウン・ストップウォッチのタイマー、メモ、カウンター、残り日数、水分、App・ショートカット・ブックマークのランチャー、カレンダー、カメラミラー、AirDrop 対応のファイル用トレイ、任意のクリップボード履歴、デバイス上での翻訳があります。今後の予定は[ロードマップ](docs/roadmap.md)にあります。
 - **使い方に合わせて:** ログイン時の起動、表示するディスプレイ、ポインタの待ち時間、Dock とメニューバーのアイコン、触覚フィードバック、パネル用のキーボードショートカットを設定できます。どれも任意で、**セットアップ → 一般** と **セットアップ → キーボード** にあります。
+
+## スクリーンショット
+
+ページとウィジェットは自由に配置できます。ここでは作者のレイアウトを表示しています。スクリーンショットは英語の画面です。
+
+| | |
+| --- | --- |
+| ![システム、バッテリー、時計のウィジェット](docs/preview/3-system-widgets-preview.png) | ![ポモドーロ、カウントダウン、メモのウィジェット](docs/preview/4-focus-timer-notes-preview.png) |
+| **システム:** プロセッサ・メモリ・ディスクの使用状況、バッテリー、時計 | **集中:** ポモドーロ、カウントダウン、メモ |
+| ![カレンダーとショートカットのウィジェット](docs/preview/5-today-shortcuts-preview.png) | ![AirDrop カードとトレイ](docs/preview/6-airdrop-tray-preview.png) |
+| 自分で作ったページに置いた**カレンダーとショートカット** | **トレイ:** ファイルを手元に置き、AirDrop で送信 |
+| ![パネルのライブプレビュー付きのセットアップ → レイアウト](docs/preview/12-layout-setup.png) | ![セットアップ → 歌詞](docs/preview/17-lyrics-setup.png) |
+| **セットアップ → レイアウト:** ライブプレビューを見ながらページを配置 | **セットアップ → 歌詞:** ソース、タイミング、翻訳 |
 
 ## 動作環境
 

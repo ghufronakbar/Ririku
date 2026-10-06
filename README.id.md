@@ -1,12 +1,23 @@
+<div align="center">
+
+<img src="Resources/AppIcon.png" alt="Ikon app Ririku" width="128">
+
 # Ririku
 
 **Musik, lirik, dan widget praktis di notch Mac Anda.**
 
 [English](README.md) · Bahasa Indonesia · [日本語](README.ja.md)
 
+</div>
+
 > Terjemahan dari README English untuk v0.4.0. Bila ada perbedaan, versi English yang berlaku.
 
 Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open source yang menampilkan lagu dari YouTube atau YouTube Music di browser Chromium tepat di bawah notch, lengkap dengan putar/jeda, lompat lagu, seek, dan lirik tersinkron per baris. Panel yang terbuka juga memuat halaman widget dan alat, seperti statistik sistem, timer, kalender, tray file dengan AirDrop, dan terjemahan di perangkat. Ririku adalah aplikasi native SwiftUI/AppKit dengan extension browser pendamping yang kecil, tanpa akun, dan tanpa telemetry.
+
+<p align="center">
+  <img src="docs/preview/1-lyrics-notch-preview.png" alt="Island ringkas Ririku di bawah notch, menampilkan lirik Jepang tersinkron" width="440"><br>
+  <img src="docs/preview/2-music-panel-preview.png" alt="Panel terbuka dengan info lagu, lirik tersinkron, bar posisi, dan kontrol" width="520">
+</p>
 
 > **Status:** prototipe awal (v0.4.0). Unduh dari [Releases](https://github.com/ghufronakbar/Ririku/releases) atau [build dari source](docs/development/README.md). Spotify desktop dan Apple Music (app Music) dapat diaktifkan di Setup (pengujian langsung masih diperlukan).
 
@@ -20,6 +31,19 @@ Ririku (リリク, dari kata "lyric") adalah aplikasi macOS gratis dan open sour
 - **Bahasa antarmuka:** English, Bahasa Indonesia, dan 日本語, mengikuti bahasa macOS atau dipilih di Setup.
 - **Tab dan widget:** atur halaman berisi widget di panel terbuka lewat **Setup → Tata letak**: musik dengan lirik, penggunaan sistem dan jaringan, baterai, jam, timer Pomodoro, hitung mundur dan stopwatch, catatan, penghitung, sisa hari, air minum, peluncur untuk app, shortcut, dan bookmark Anda, kalender, cermin kamera, Tray untuk file dengan AirDrop, riwayat clipboard opsional, serta terjemahan di perangkat. Rencana berikutnya ada di [roadmap](docs/roadmap.md).
 - **Sesuai kebiasaan Anda:** buka saat login, pilih layar, jeda hover, serta ikon Dock dan menu bar, tambahkan umpan balik haptik, atau rekam shortcut keyboard untuk panel. Semuanya opsional, di **Setup → Umum** dan **Setup → Keyboard**.
+
+## Tangkapan layar
+
+Halaman dan widget dapat Anda atur sendiri; gambar ini memakai tata letak milik pembuat Ririku. Tangkapan layar menampilkan antarmuka English.
+
+| | |
+| --- | --- |
+| ![Widget Sistem, Baterai, dan Jam](docs/preview/3-system-widgets-preview.png) | ![Widget Pomodoro, Hitung mundur, dan Catatan](docs/preview/4-focus-timer-notes-preview.png) |
+| **Sistem:** penggunaan prosesor, memori, dan disk, baterai, serta jam | **Fokus:** Pomodoro, hitung mundur, dan catatan |
+| ![Widget Kalender dan Shortcut](docs/preview/5-today-shortcuts-preview.png) | ![Kartu AirDrop dan Tray](docs/preview/6-airdrop-tray-preview.png) |
+| **Kalender dan Shortcut** di halaman buatan Anda | **Tray:** simpan file agar mudah dijangkau dan kirim dengan AirDrop |
+| ![Setup → Tata letak dengan pratinjau panel langsung](docs/preview/12-layout-setup.png) | ![Setup → Lirik](docs/preview/17-lyrics-setup.png) |
+| **Setup → Tata letak:** atur halaman dengan pratinjau langsung | **Setup → Lirik:** sumber, timing, dan terjemahan |
 
 ## Kebutuhan
 
