@@ -4,6 +4,9 @@ All notable changes to Ririku are documented here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+### Changed
+- **The panel** opens on the page you last used instead of returning to Home each time. If that page was removed or hidden, it opens on the first one.
+
 ## [0.4.0] - 2026-10-05
 
 Ririku becomes a multipurpose notch app. Music controls and synced lyrics stay its core and the default, and the expanded panel gains pages of widgets and tools that you arrange in Setup. Apple silicon only; signed ad hoc and not notarized. After updating, copy the extension again from **Setup → Browser connection** and reload it in your browser, because its version changed to 0.4.0. An existing layout gets the new Tray tab once.

@@ -462,8 +462,8 @@ struct PanelTabTests {
         #expect(model.tabName(model.visibleTabs[0]) == "Home", "a blank name keeps the default")
     }
 
-    @Test("Opens on the first tab again after the panel closes")
-    func resetsSelectedTab() {
+    @Test("Opens on the tab it was closed on, and on the first tab once that tab is gone")
+    func keepsSelectedTab() {
         let (model, _) = makeModel()
         var page = ""
         model.editLayout { page = $0.addPage()! }
@@ -471,9 +471,8 @@ struct PanelTabTests {
         model.selectedTabID = page
         #expect(model.currentTab.id == page)
         model.expanded = false
-        #expect(model.currentTab.id == "home")
         model.expanded = true
-        model.selectedTabID = page
+        #expect(model.currentTab.id == page, "the panel opens where it was left")
         model.editLayout { $0.removeTab(id: page) }
         #expect(model.currentTab.id == "home", "a removed tab falls back to the first one")
     }

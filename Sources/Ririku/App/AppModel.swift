@@ -28,15 +28,10 @@ final class AppModel: ObservableObject {
         }
     }
     private(set) var localizer: Localizer
-    @Published var expanded = false {
-        didSet {
-            // The panel opens on the first tab again.
-            if !expanded { selectedTabID = nil }
-            geometryChanged?()
-        }
-    }
+    @Published var expanded = false { didSet { geometryChanged?() } }
     /// Tabs and widgets of the expanded panel (D-018). Changed through `editLayout`, which keeps it valid.
     @Published private(set) var layout: PanelLayout
+    /// The tab the panel shows, kept while it is closed so it opens where it was left; nil is the first tab.
     @Published var selectedTabID: String? { didSet { if expanded { geometryChanged?() } } }
     let system: SystemMonitor
     let network = NetworkMonitor()
