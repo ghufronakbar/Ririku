@@ -72,9 +72,9 @@ Keep **Developer mode** on; browsers need it for extensions that are not from th
 
 Artwork uses the current video's YouTube thumbnail, which may differ from the album cover shown in YouTube Music. This avoids retaining an earlier song's player-bar image.
 
-- **Compact island:** by default the island is exactly the size of your Mac's notch, so it stays hidden behind the camera housing; make it wider in **Setup → Appearance** to see the artwork on the left and a decorative spectrum on the right. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
+- **Compact island:** by default the island is 150 pt wider than your Mac's notch, with the artwork on the left and a decorative spectrum on the right; in **Setup → Appearance** you can shrink it to the size of the notch, so it stays hidden behind the camera housing, or make it wider. Lyric lines appear below the notch while music plays. The spectrum is only an animation and settles when playback is paused; it does not analyze audio.
 - **Expand:** hover over the notch or click the island. You can also choose **Open music panel** from the waveform menu bar icon, or press the shortcut you record in **Setup → Keyboard**.
-- **Tabs and widgets:** the expanded panel shows a page of widgets. **Home** starts with the music controls and the **System** widget (processor, memory, and disk use). The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the page you last used. Arrange pages in **Setup → Layout**.
+- **Tabs and widgets:** the expanded panel shows a page of widgets. By default, **Home** holds the music controls; **System** holds the System widget (processor, memory, and disk use), Battery, and Clock; **Focus** holds Pomodoro, Countdown, and Notes; and **Tools** holds Apps, Shortcuts, and Bookmarks, followed by the **Tray**. The gear right of the notch opens **Setup**; with more than one page, tab icons appear left of the notch. The panel opens on the page you last used. Arrange pages in **Setup → Layout**.
 - **Timers and notices:** while no music plays, a running timer shows its icon and time beside the notch. When a timer ends or charging starts, a short notice appears below the notch for about three seconds; the panel stays closed.
 - **Tray:** drag files onto the notch to open the panel on the **Tray** tab, and drop them there. Click a file to open it, drag it out to another app or folder, or Control-click it for **Show in Finder**, **Send with AirDrop**, and **Remove from Tray**. Drop files on the **AirDrop** card to send them, or click the card to send everything on the Tray.
 - **Clipboard:** with clipboard history on, the **Clipboard** tab lists what you copied. Click an entry to put it back on the clipboard, then paste it where you want.
@@ -102,7 +102,7 @@ Open Setup from the gear button in the expanded panel or **Setup…** in the men
 
 - **Show the panel on:** **Automatic** (default) uses the display with a notch, otherwise the main display. You can also choose a display by name; on a display without a notch, the panel sits at the top center. While the chosen display is disconnected, the panel is placed automatically.
 - **Delay before opening** (0–1 s, default 0.15 s) and **Delay before closing** (0.1–2 s, default 0.35 s): how long the pointer rests on the notch before the panel opens, and how long it stays away before the panel closes. Clicking the island opens it at once.
-- **Haptic feedback when the pointer reaches the notch** (off by default): a light tap as the pointer reaches the closed notch, even when it only passes by on the way to the menu bar. It needs a Force Touch trackpad with **Force Click and haptic feedback** turned on in **System Settings → Trackpad** (Setup offers **Open Trackpad settings**); with that off, macOS silences haptic feedback from every app. macOS also plays it only while your finger is on the trackpad, so it comes as the pointer arrives rather than when the panel opens.
+- **Haptic feedback when the pointer reaches the notch** (on by default): a light tap as the pointer reaches the closed notch, even when it only passes by on the way to the menu bar. It needs a Force Touch trackpad with **Force Click and haptic feedback** turned on in **System Settings → Trackpad** (Setup offers **Open Trackpad settings**); with that off, macOS silences haptic feedback from every app. macOS also plays it only while your finger is on the trackpad, so it comes as the pointer arrives rather than when the panel opens.
 
 ### Tutorial
 
@@ -120,13 +120,13 @@ A short tour of the panel and Setup. Each step has a button that opens the page 
 
 A live preview of the expanded panel stays at the top; click a tab icon in it to preview another page. Below it, each page has:
 
-- **Page name** (empty shows Home, Page 2, and so on) and **Icon** for the tab bar. The **…** menu beside the page's name moves the page left or right or deletes it; one page always stays.
+- **Page name** (empty shows the default name: Home, System, Focus, and Tools for the default pages, otherwise Page 2, Page 3, and so on) and **Icon** for the tab bar. The **…** menu beside the page's name moves the page left or right or deletes it; one page always stays.
 - Its widgets from left to right, each **Small** (one unit) or **Wide** (two units). The **…** menu beside a widget moves it left, right, or to another page, or removes it.
 - **Add Widget** lists the widgets that are not on any page yet; each widget can be on one page.
 
 Tools such as the Tray and the Clipboard fill a tab of their own: they can be moved and hidden with **Show in the panel**, but not deleted. The Clipboard tab appears while clipboard history is on, and the Translate tab while Translate is on.
 
-**Add Page** adds pages up to eight, and **Reset to Default Layout** restores Home with the music and system widgets, and the Tray; the Clipboard and Translate tabs stay while they are on. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
+**Add Page** adds pages up to eight, and **Reset to Default Layout** restores the Home, System, Focus, Tools, and Tray tabs described above; the Clipboard and Translate tabs stay while they are on. A page that needs more room than **Expanded island width** opens wider, up to the width of the screen.
 
 The widgets and their settings are described under [Widgets](#widgets).
 
@@ -155,12 +155,12 @@ Settings for the widgets; choose where they appear in **Setup → Layout**. In t
 
 ### Appearance
 
-- **Compact island width** and **Compact island height** both start at the size of your Mac's notch — the default, and the smallest the island can be — and can grow by up to 440 pt and 40 pt. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
-- **Expanded island width** (360–720 pt, default 442): the expanded panel opens at least this wide. A page whose widgets need more room opens wider; the default Home opens at about 518 pt.
-- **Reset to the notch size** restores all three.
-- **Accent color:** Auto — from artwork, Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
+- **Compact island width** and **Compact island height** can grow from the size of your Mac's notch, the smallest the island can be, by up to 440 pt and 40 pt. By default the width is 150 pt more than the notch and the height is the notch's. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
+- **Expanded island width** (360–720 pt, default 518): the expanded panel opens at least this wide. A page whose widgets need more room, or a tab bar with many tabs, opens wider.
+- **Reset to the notch size** sets the compact island to the size of the notch and the expanded width to its default.
+- **Accent color:** Auto — from artwork (default), Peach, Lavender, or Neutral. Auto extracts a dominant color locally from the current thumbnail, brightens it for the black background, and falls back to Neutral while artwork is unavailable or grayscale. Colors are cached in memory and transition smoothly unless animations or Reduce Motion disable them. No audio analysis or additional network request is involved; your existing manual selection is preserved.
 - **Smooth panel transitions:** turn off for instant resizing. macOS **Reduce Motion** also disables animations and the spectrum.
-- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
+- **Show lyrics in the island** and **Lyric lines:** 1 (current), 2 (current + next, the default), or 3 (previous + current + next). When a song has lines too long for the island, the current line uses two rows for the whole song, so the height does not change from line to line; the previous and next lines stay on one row and end with “…”. A narrow island therefore still shows the line you are reading in full — widen the island if you want more of the surrounding lines too.
 
 ### Browser connection
 

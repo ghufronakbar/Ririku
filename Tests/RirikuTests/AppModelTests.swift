@@ -4,10 +4,21 @@ import Testing
 @testable import Ririku
 @testable import RirikuCore
 
+/// Home with the music and system widgets, then the Tray: the small layout the geometry tests measure.
+private let homeAndTray = PanelLayout(tabs: [
+    PanelTab(id: "home", icon: "house", widgets: [WidgetSlot(id: "music", kind: "music", wide: true), WidgetSlot(id: "system", kind: "system", wide: false)]),
+    PanelLayout.toolTab(PanelTab.trayKind)
+])
+
+/// A model with a notch-sized island, a 442 pt expanded width, and the `homeAndTray` layout, so the tests do not
+/// change with the defaults of a fresh install, which `freshDefaults` checks.
 @MainActor
 private func makeModel() -> (AppModel, UserDefaults) {
     let defaults = MemoryDefaults()
     defaults.set(false, forKey: "automaticLyrics")
+    defaults.set(0.0, forKey: "compactExtraWidth")
+    defaults.set(442.0, forKey: "panelWidth")
+    defaults.set(try? JSONEncoder().encode(homeAndTray), forKey: "panelLayout")
     let cache = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("ririku-lyrics-\(UUID().uuidString)")
     let model = AppModel(lyricsService: LyricsService(cacheDirectory: cache), defaults: defaults)
     model.interfaceLanguage = .en
@@ -236,6 +247,8 @@ struct PreferenceTests {
         model.topHeight = 34
         model.resetIslandSize()
         #expect(model.panelSize(screenWidth: 1512).width == 200)
+        #expect(model.panelWidth == AppModel.defaultPanelWidth)
+        model.panelWidth = 442
         model.expanded = true
         #expect(model.panelSize(screenWidth: 1512).width == 518, "Home holds the wide music widget and the system widget")
         #expect(model.panelSize(screenWidth: 400).width == 376, "never wider than the screen minus 24 pt")
@@ -354,16 +367,29 @@ struct LyricRowTests {
 @MainActor
 @Suite("General settings")
 struct GeneralSettingsTests {
-    @Test("Start with the earlier behavior: no Dock icon, a menu bar icon, the same delays, no haptics, no shortcut")
+    @Test("Start with no Dock icon, a menu bar icon, the same delays, haptics on, and no shortcut")
     func keepsEarlierDefaults() {
         let (model, _) = makeModel()
         #expect(!model.showInDock)
         #expect(model.showMenuBarIcon)
         #expect(model.hoverOpenDelay == 0.15)
         #expect(model.hoverCloseDelay == 0.35)
-        #expect(!model.hapticFeedback)
-        #expect(model.panelShortcut == nil)
+        #expect(model.hapticFeedback)
+        #expect(model.panelShortcut == nil, "the shortcut stays off until recorded (R-UI-17)")
         #expect(model.panelDisplayID == nil)
+    }
+
+    @Test("A fresh install starts with the default layout, sizes, accent, and lyric lines")
+    func freshDefaults() {
+        let model = AppModel(defaults: MemoryDefaults())
+        #expect(model.layout == .standard)
+        #expect(model.compactExtraWidth == 150)
+        #expect(model.panelWidth == 518)
+        #expect(model.accentName == "Auto")
+        #expect(model.music.lyricLineCount == 2)
+        #expect(model.music.preferJapaneseLyrics)
+        #expect(model.hapticFeedback)
+        #expect(!model.music.spotifyEnabled && !model.music.appleMusicEnabled, "desktop players stay opt-in (R-SEC-3)")
     }
 
     @Test("Saves and restores the general settings")
@@ -376,7 +402,7 @@ struct GeneralSettingsTests {
         #expect(iconChanges == 2)
         model.hoverOpenDelay = 0.4
         model.hoverCloseDelay = 1.2
-        model.hapticFeedback = true
+        model.hapticFeedback = false
         model.panelShortcut = HotKey(keyCode: 45, modifiers: HotKey.command | HotKey.option, key: "N")
         model.choosePanelDisplay(id: "display-uuid", name: "Studio Display")
         let restored = AppModel(defaults: defaults)
@@ -384,7 +410,7 @@ struct GeneralSettingsTests {
         #expect(!restored.showMenuBarIcon)
         #expect(restored.hoverOpenDelay == 0.4)
         #expect(restored.hoverCloseDelay == 1.2)
-        #expect(restored.hapticFeedback)
+        #expect(!restored.hapticFeedback)
         #expect(restored.panelShortcut?.label == "⌥⌘N")
         #expect(restored.panelDisplayID == "display-uuid")
         #expect(restored.panelDisplayName == "Studio Display")
@@ -433,7 +459,7 @@ struct PanelTabTests {
     @Test("Starts with the standard layout, saves edits, and restores them")
     func persistsLayout() {
         let (model, defaults) = makeModel()
-        #expect(model.layout == .standard)
+        #expect(model.layout == homeAndTray)
         model.editLayout { layout in
             let page = layout.addPage()!
             layout.moveWidget(id: "system", toTab: page)
@@ -444,6 +470,7 @@ struct PanelTabTests {
         #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "Tray", "Stats"])
         restored.resetLayout()
         #expect(restored.layout == .standard)
+        #expect(restored.visibleTabs.map(restored.tabName) == ["Home", "System", "Focus", "Tools", "Tray"])
     }
 
     @Test("A stored layout that cannot be read falls back to the standard one")
@@ -763,7 +790,7 @@ struct TrayClipboardTests {
         model.setClipboardHistory(true)
         #expect(model.layout.tabs.last?.kind == PanelTab.clipboardKind)
         model.resetLayout()
-        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "clipboard"], "resetting keeps the tab while history is on")
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "widgets", "widgets", "widgets", "tray", "clipboard"], "resetting keeps the tab while history is on")
         model.setClipboardHistory(false)
         #expect(!model.layout.tabs.contains { $0.kind == PanelTab.clipboardKind })
     }
@@ -802,10 +829,10 @@ struct CalendarCameraTests {
         #expect(model.calendar.access == .notDetermined, "nothing is asked at launch (R-WID-3)")
         #expect(calendarAccess.prompts == 0 && cameraAccess.prompts == 0)
         let home = model.layout.tabs[0].id
-        #expect(model.addWidget(.clock, toTab: home) == nil)
+        #expect(model.addWidget(.water, toTab: home) == nil)
         await model.addWidget(.calendar, toTab: home)?.value
         await model.addWidget(.camera, toTab: home)?.value
-        #expect(model.layout.tabs[0].widgets.map(\.kind).suffix(3) == ["clock", "calendar", "camera"])
+        #expect(model.layout.tabs[0].widgets.map(\.kind).suffix(3) == ["water", "calendar", "camera"])
         #expect(calendarAccess.prompts == 1 && cameraAccess.prompts == 1)
         #expect(model.calendar.access == .denied)
         #expect(model.camera.access == .granted)
@@ -857,7 +884,7 @@ struct TranslationTests {
         #expect(model.layout.tabs.last?.kind == PanelTab.translateKind)
         model.translate.input = "hello"
         model.resetLayout()
-        #expect(model.layout.tabs.map(\.kind) == ["widgets", "tray", "translate"], "resetting keeps the tab while it is on")
+        #expect(model.layout.tabs.map(\.kind) == ["widgets", "widgets", "widgets", "widgets", "tray", "translate"], "resetting keeps the tab while it is on")
         model.setTranslateTab(false)
         #expect(!model.layout.tabs.contains { $0.kind == PanelTab.translateKind })
         #expect(model.translate.input.isEmpty)

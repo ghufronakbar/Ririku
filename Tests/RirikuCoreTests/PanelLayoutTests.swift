@@ -6,8 +6,14 @@ private let known: Set<String> = ["music", "system"]
 private let tools: Set<String> = ["tray", "clipboard"]
 
 private func decode(_ json: String) -> PanelLayout {
-    (try? JSONDecoder().decode(PanelLayout.self, from: Data(json.utf8)))?.sanitized(widgetKinds: known, toolKinds: tools) ?? .standard
+    ((try? JSONDecoder().decode(PanelLayout.self, from: Data(json.utf8))) ?? PanelLayout(tabs: [])).sanitized(widgetKinds: known, toolKinds: tools)
 }
+
+/// A small layout for the editing tests, so they do not change with the standard layout.
+private let homeAndTray = PanelLayout(tabs: [
+    PanelTab(id: "home", icon: "house", widgets: [WidgetSlot(id: "music", kind: "music", wide: true), WidgetSlot(id: "system", kind: "system", wide: false)]),
+    PanelLayout.toolTab(PanelTab.trayKind)
+])
 
 private extension PanelLayout {
     func tab(_ id: String) -> PanelTab { tabs.first { $0.id == id }! }
@@ -15,13 +21,18 @@ private extension PanelLayout {
 
 @Suite("Panel layout")
 struct PanelLayoutTests {
-    @Test("The standard layout is Home with wide music and small system, then the Tray")
+    @Test("The standard layout is Home with wide music, the System, Focus, and Tools pages, then the Tray")
     func standardLayout() {
         let tabs = PanelLayout.standard.tabs
-        #expect(tabs.map(\.id) == ["home", "tray"])
-        #expect(tabs[1].kind == PanelTab.trayKind)
-        #expect(tabs[0].widgets.map(\.kind) == ["music", "system"])
-        #expect(tabs[0].widgets.map(\.wide) == [true, false])
+        #expect(tabs.map(\.id) == ["home", "system", "focus", "tools", "tray"])
+        #expect(tabs[4].kind == PanelTab.trayKind)
+        #expect(tabs[0].widgets.map(\.kind) == ["music"])
+        #expect(tabs[0].widgets.map(\.wide) == [true])
+        #expect(tabs[1].widgets.map(\.kind) == ["system", "battery", "clock"])
+        #expect(tabs[2].widgets.map(\.kind) == ["pomodoro", "countdown", "notes"])
+        #expect(tabs[3].widgets.map(\.kind) == ["apps", "shortcuts", "bookmarks"])
+        #expect(tabs.flatMap(\.widgets).allSatisfy { !["calendar", "camera"].contains($0.kind) }, "no widget asks for a permission (R-WID-3)")
+        #expect(PanelLayout.standard.sanitized(widgetKinds: Set(tabs.flatMap(\.widgets).map(\.kind)), toolKinds: tools) == .standard)
     }
 
     @Test("Skips unknown widgets, unknown tab kinds, and unreadable entries without losing the rest")
@@ -44,9 +55,11 @@ struct PanelLayoutTests {
 
     @Test("Falls back to the standard layout when nothing visible is left")
     func fallsBackToStandard() {
-        #expect(decode("{}") == .standard)
-        #expect(decode(#"{"tabs": [{"id": "a", "kind": "widgets", "hidden": true}]}"#) == .standard)
-        #expect(decode("not json") == .standard)
+        let fallback = decode("{}")
+        #expect(fallback.tabs.map(\.id) == PanelLayout.standard.tabs.map(\.id))
+        #expect(fallback.tabs.flatMap(\.widgets).map(\.kind) == ["music", "system"], "only the widgets this version knows")
+        #expect(decode(#"{"tabs": [{"id": "a", "kind": "widgets", "hidden": true}]}"#) == fallback)
+        #expect(decode("not json") == fallback)
         #expect(PanelLayout.standard.sanitized(widgetKinds: ["music"], toolKinds: tools).tabs[0].widgets.map(\.kind) == ["music"])
     }
 
@@ -73,7 +86,7 @@ struct PanelLayoutTests {
 
     @Test("Adds, moves, hides, and removes tabs, keeping at least one visible")
     func editsPages() throws {
-        var layout = PanelLayout.standard
+        var layout = homeAndTray
         let added = layout.addPage()
         let page = try #require(added)
         #expect(layout.tabs.map(\.id) == ["home", "tray", page])
@@ -91,7 +104,7 @@ struct PanelLayoutTests {
 
     @Test("Adds each widget once and moves widgets within and between pages")
     func editsWidgets() throws {
-        var layout = PanelLayout.standard
+        var layout = homeAndTray
         let added = layout.addPage()
         let page = try #require(added)
         layout.addWidget(kind: "music", wide: false, toTab: page)
@@ -178,7 +191,7 @@ struct ToolTabTests {
 
     @Test("Adds and removes a tool's tab")
     func addsAndRemovesTools() {
-        var layout = PanelLayout.standard
+        var layout = homeAndTray
         layout.addTool(PanelTab.clipboardKind)
         layout.addTool(PanelTab.clipboardKind)
         #expect(layout.tabs.map(\.kind) == ["widgets", "tray", "clipboard"])

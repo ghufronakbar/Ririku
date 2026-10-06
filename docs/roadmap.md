@@ -19,7 +19,7 @@ Each stage lands as one or more focused pull requests with tests, translations (
 ## Panel layout
 
 - The panel is a list of **tabs**. A tab is either a **page of widgets**, where each widget is small (one unit) or wide (two units) and the number of units follows the panel width, or a **tool** that fills the tab (Tray, Clipboard, Translate).
-- **Default layout** (D-018): Home with Music (wide) and System, then Tray. Clipboard and Translate appear as tabs when turned on. Every other widget starts off.
+- **Default layout** (D-018, D-028): Home with Music (wide); System with System, Battery, and Clock; Focus with Pomodoro, Countdown, and Notes; Tools with Apps, Shortcuts, and Bookmarks; then Tray. No widget in it needs a permission (R-WID-3). Clipboard and Translate appear as tabs when turned on. Every other widget starts off.
 - **Editing** happens in **Setup → Layout** with a live preview: turn widgets on or off, reorder by dragging, choose small or wide, add widget pages, hide tabs, and **Reset to default layout**. Settings stay out of the panel (R-UI-1).
 - The **compact island** keeps showing music. When nothing is playing, it may show a live widget such as a running timer. Widget notices appear there for about 3 seconds and never open the panel (R-UI-3, R-UI-6).
 
