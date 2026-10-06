@@ -56,6 +56,8 @@ By default Ririku has no Dock icon and lives in the menu bar as a **waveform** i
 
 Ririku reads the YouTube player in your browser through a small companion extension. In **Setup → Browser connection**, follow the four steps once. Each step shows a green check mark when it is done.
 
+<img src="preview/15-browser-connection-setup.png" alt="Setup → Browser connection" width="640">
+
 1. **Register the browser connection** → click **Register**. Ririku lets every Chromium browser it finds on your Mac talk to this copy of the app, and names them under the step.
 2. **Copy the extension folder** → click **Show in Finder**. Ririku copies the extension to `~/Library/Application Support/Ririku/Chrome Extension` and shows it in Finder.
 3. **Load the extension in your browser** → click **Copy Address** (with several browsers installed, choose one from the menu), paste the address into that browser's address bar, and press Return. Then:
@@ -69,6 +71,11 @@ Now play something in that browser and hover over the notch.
 Keep **Developer mode** on; browsers need it for extensions that are not from their own store. The extension folder is named "Chrome Extension" in every browser, because it is the same extension everywhere.
 
 ## Using the panel
+
+<p align="center">
+  <img src="preview/1-lyrics-notch-preview.png" alt="The compact island with synced lyrics" width="440"><br>
+  <img src="preview/2-music-panel-preview.png" alt="The expanded panel on the Home page" width="520">
+</p>
 
 Artwork uses the current video's YouTube thumbnail, which may differ from the album cover shown in YouTube Music. This avoids retaining an earlier song's player-bar image.
 
@@ -86,6 +93,13 @@ Artwork uses the current video's YouTube thumbnail, which may differ from the al
 - **Ads:** while YouTube shows an ad, controls are disabled and lyrics pause.
 - **No lyrics:** the island stays compact and briefly shows **Lyrics not found**. Details are in **Setup → Lyrics**.
 
+Pages from one arranged layout; yours depends on **Setup → Layout**.
+
+| | |
+| --- | --- |
+| ![The System page: System, Battery, and Clock](preview/3-system-widgets-preview.png) | ![The Focus page: Pomodoro, Countdown, and Notes](preview/7-focus-timer-empty-preview.png) |
+| ![A page with Calendar and Shortcuts](preview/5-today-shortcuts-preview.png) | ![The Tray tab with the AirDrop card](preview/6-airdrop-tray-preview.png) |
+
 Choose **Quit Ririku** from the menu bar icon to quit.
 
 ## Setup
@@ -93,6 +107,8 @@ Choose **Quit Ririku** from the menu bar icon to quit.
 Open Setup from the gear button in the expanded panel or **Setup…** in the menu bar icon. Choose a page in the sidebar; until a browser or a desktop player is set up, Setup opens on **Browser connection**. Changes apply immediately.
 
 ### General
+
+<img src="preview/8-general-setup.png" alt="Setup → General" width="640">
 
 **Startup → Open Ririku at login** (off by default): Ririku opens in the background after you log in, without a window. macOS may ask you to allow it the first time; if Setup says it is waiting for approval, click **Open Login Items settings** and turn Ririku on there. The toggle is unavailable while Ririku runs from a temporary location, so move it to **Applications** first. You can also turn it off in **System Settings → General → Login Items**.
 
@@ -106,17 +122,25 @@ Open Setup from the gear button in the expanded panel or **Setup…** in the men
 
 ### Tutorial
 
+<img src="preview/9-tutorial-setup.png" alt="Setup → Tutorial" width="640">
+
 A short tour of the panel and Setup. Each step has a button that opens the page it mentions.
 
 ### Language
+
+<img src="preview/10-language-setup.png" alt="Setup → Language" width="640">
 
 **Interface language:** **Follow system** (default), English, Bahasa Indonesia, or 日本語. Follow system uses the first of these languages in **System Settings → General → Language & Region**, otherwise English. Song titles, lyrics, captions, and messages from macOS or websites keep their original language.
 
 ### Keyboard
 
+<img src="preview/11-keyboard-setup.png" alt="Setup → Keyboard" width="640">
+
 **Open or close the panel:** off until you record a shortcut. Click **Record Shortcut** and press a combination with Command, Option, or Control, for example ⌥⌘N; Esc cancels and **Clear** removes it. The shortcut works from any app and does not need Accessibility permission. If macOS refuses a combination because another app uses it, Setup says so; choose another. Opened with the shortcut, the panel stays open until the pointer has visited it; press the shortcut again or Esc to close it.
 
 ### Layout
+
+<img src="preview/12-layout-setup.png" alt="Setup → Layout" width="640">
 
 A live preview of the expanded panel stays at the top; click a tab icon in it to preview another page. Below it, each page has:
 
@@ -131,6 +155,8 @@ Tools such as the Tray and the Clipboard fill a tab of their own: they can be mo
 The widgets and their settings are described under [Widgets](#widgets).
 
 ### Widgets
+
+<img src="preview/13-widgets-setup.png" alt="Setup → Widgets" width="640">
 
 Settings for the widgets; choose where they appear in **Setup → Layout**. In the panel, widgets only show and operate: start a timer, count, open an app.
 
@@ -155,6 +181,8 @@ Settings for the widgets; choose where they appear in **Setup → Layout**. In t
 
 ### Appearance
 
+<img src="preview/14-appearance-setup.png" alt="Setup → Appearance" width="640">
+
 - **Compact island width** and **Compact island height** can grow from the size of your Mac's notch, the smallest the island can be, by up to 440 pt and 40 pt. By default the width is 150 pt more than the notch and the height is the notch's. Setup names your notch size (for example 179 × 32 pt). The artwork and the spectrum stay on the left and right edges, so they come out from behind the camera housing as you widen the island; around 240 pt they are fully visible.
 - **Expanded island width** (360–720 pt, default 518): the expanded panel opens at least this wide. A page whose widgets need more room, or a tab bar with many tabs, opens wider.
 - **Reset to the notch size** sets the compact island to the size of the notch and the expanded width to its default.
@@ -168,6 +196,8 @@ The four install steps above. Come back here after updating Ririku, installing a
 
 ### Music source
 
+<img src="preview/16-music-source-setup.png" alt="Setup → Music source" width="640">
+
 **Spotify desktop:** open Spotify and play a song, then enable **Connect Spotify desktop** here. Approve the macOS Automation prompt. No extension or API key is required. Automatic source selection follows whichever player starts playing; disable it to select Spotify manually. Use Auto or LRCLIB lyrics, not subtitles-only. For denied permission, allow Ririku under **System Settings → Privacy & Security → Automation**, then click **Reconnect Spotify**. Turning the toggle off stops polling; the preference survives app restarts. Artwork comes from Spotify’s `i.scdn.co` servers, and song metadata is sent to LRCLIB when automatic lyrics are enabled. Desktop playback and permission approval still need real-device validation.
 
 **Apple Music:** open the Music app and play a song, then enable **Connect Apple Music** here and approve the macOS Automation prompt. It works for songs in your library and Apple Music streaming; radio stations and live streams without a duration are not shown. Artwork is read locally from the Music app, so no image server is contacted. When LRCLIB finds no lyrics, Ririku shows lyrics saved with the song in the Music app (**Get Info → Lyrics**) as plain, unsynced text. This usually applies to your own files; Apple Music’s synced lyrics are not available to other apps. Source selection, lyrics, permission recovery (**Reconnect Apple Music**), and the saved preference work as for Spotify. Playback and permission approval still need real-device validation.
@@ -176,6 +206,8 @@ The four install steps above. Come back here after updating Ririku, installing a
 - **Active player:** turn automatic mode off to lock one tab. Ririku reconnects to the same tab after a page refresh.
 
 ### Lyrics
+
+<img src="preview/17-lyrics-setup.png" alt="Setup → Lyrics" width="640">
 
 - **Prefer Japanese on shared timestamps** (on by default): see [Japanese lyrics](#japanese-lyrics).
 - **Lyrics source:**
@@ -194,6 +226,8 @@ The four install steps above. Come back here after updating Ririku, installing a
 **Local demo (no audio)** shows a sample song with synced lyrics so you can try the panel without a browser. Turn it off before using real music.
 
 ### About
+
+<img src="preview/18-about-setup.png" alt="Setup → About" width="640">
 
 The version, the privacy note, and links to the source code, this guide in your interface language, and the issue tracker. Links open in your browser. With the Dock icon on, **About Ririku** in the app menu opens this page too.
 

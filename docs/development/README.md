@@ -43,7 +43,8 @@ Tests/                     Swift Testing suites for RirikuCore and the app targe
 scripts/                   build-app.sh, make-icon.swift, check-localization.py, check-version.py,
                            check-docs.py, release-notes.py, install-host.py
 samples/                   Original LRC file used by the local demo
-docs/                      User guide, developer docs, project rules, decision log, agent guide
+docs/                      User guide, developer docs, project rules, decision log, agent guide;
+                           preview/ holds the screenshots used by the README and user guide
 .github/                   CI and release workflows, issue and pull request templates
 build/                     Local app bundle output (ignored by Git)
 ```

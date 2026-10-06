@@ -1,10 +1,21 @@
+<div align="center">
+
+<img src="Resources/AppIcon.png" alt="Ririku app icon" width="128">
+
 # Ririku
 
 **Music, lyrics, and handy widgets in your Mac's notch.**
 
 English · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
 
+</div>
+
 Ririku (リリク, from "lyric") is a free, open-source macOS app that shows what is playing in YouTube or YouTube Music in a Chromium browser right under the notch, with play/pause, skip, seek, and line-by-line synced lyrics. The expanded panel also holds pages of widgets and tools, such as system stats, timers, a calendar, a file tray with AirDrop, and on-device translation. It is a native SwiftUI/AppKit app with a small companion browser extension, no account, and no telemetry.
+
+<p align="center">
+  <img src="docs/preview/1-lyrics-notch-preview.png" alt="Ririku's compact island under the notch, showing synced Japanese lyrics" width="440"><br>
+  <img src="docs/preview/2-music-panel-preview.png" alt="The expanded panel with the track, synced lyrics, a seek bar, and controls" width="520">
+</p>
 
 > **Status:** early prototype (v0.4.0). Download it from [Releases](https://github.com/ghufronakbar/Ririku/releases) or [build it from source](docs/development/README.md). Spotify desktop and Apple Music (the Music app) are available as opt-in connections in Setup (live validation pending).
 
@@ -18,6 +29,19 @@ Ririku (リリク, from "lyric") is a free, open-source macOS app that shows wha
 - **Interface languages:** English, Bahasa Indonesia, and 日本語, following your macOS language or chosen in Setup.
 - **Tabs and widgets:** arrange pages of widgets in the expanded panel in **Setup → Layout**: music with lyrics, system and network use, battery, a clock, Pomodoro, countdown and stopwatch timers, notes, a counter, days left, water, launchers for your apps, shortcuts, and bookmarks, a calendar, a camera mirror, a Tray for files with AirDrop, an optional clipboard history, and on-device translation. Future plans are on the [roadmap](docs/roadmap.md).
 - **Fits your setup:** open at login, choose the display, the hover delays, and the Dock and menu bar icons, add haptic feedback, or record a keyboard shortcut for the panel. All optional, in **Setup → General** and **Setup → Keyboard**.
+
+## Screenshots
+
+Pages and widgets are yours to arrange; these show the author's layout.
+
+| | |
+| --- | --- |
+| ![System, Battery, and Clock widgets](docs/preview/3-system-widgets-preview.png) | ![Pomodoro, Countdown, and Notes widgets](docs/preview/4-focus-timer-notes-preview.png) |
+| **System:** processor, memory, and disk use, battery, and clock | **Focus:** Pomodoro, countdown, and a note |
+| ![Calendar and Shortcuts widgets](docs/preview/5-today-shortcuts-preview.png) | ![AirDrop card and the Tray](docs/preview/6-airdrop-tray-preview.png) |
+| **Calendar and Shortcuts** on a page of your own | **Tray:** keep files at hand and send them with AirDrop |
+| ![Setup → Layout with a live preview of the panel](docs/preview/12-layout-setup.png) | ![Setup → Lyrics](docs/preview/17-lyrics-setup.png) |
+| **Setup → Layout:** arrange pages with a live preview | **Setup → Lyrics:** source, timing, and translation |
 
 ## Requirements
 
