@@ -122,7 +122,7 @@ final class MusicModel: ObservableObject {
         automaticSource = defaults.object(forKey: "automaticSource") as? Bool ?? true
         automaticLyrics = defaults.object(forKey: "automaticLyrics") as? Bool ?? true
         let storedLineCount = defaults.integer(forKey: "lyricLineCount")
-        lyricLineCount = (1...3).contains(storedLineCount) ? storedLineCount : 3
+        lyricLineCount = (1...3).contains(storedLineCount) ? storedLineCount : 2
         preferJapaneseLyrics = defaults.object(forKey: "preferJapaneseLyrics") as? Bool ?? true
         showLyrics = defaults.object(forKey: "showLyrics") as? Bool ?? true
         let storedSource = defaults.string(forKey: "lyricSource") ?? "auto"

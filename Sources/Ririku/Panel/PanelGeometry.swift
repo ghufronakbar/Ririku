@@ -35,6 +35,9 @@ extension AppModel {
     /// How far the compact island may grow past the notch, on each axis.
     static let compactWidthRange: Double = 440
     static let compactHeightRange: Double = 40
+    /// A fresh install shows the artwork and spectrum beside the notch, and the expanded panel at the width of Home.
+    static let defaultCompactExtraWidth: Double = 150
+    static let defaultPanelWidth: Double = 518
 
     /// Total compact size, which the sliders in Setup show and set.
     var compactWidth: Double { notchWidth + compactExtraWidth }
@@ -45,7 +48,7 @@ extension AppModel {
     func resetIslandSize() {
         compactExtraWidth = 0
         compactExtraHeight = 0
-        panelWidth = 442
+        panelWidth = Self.defaultPanelWidth
     }
 
     var popupDuration: Double { 0.32 }

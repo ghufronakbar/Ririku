@@ -73,9 +73,9 @@ Biarkan **Developer mode** tetap aktif; browser memerlukannya untuk extension ya
 
 Artwork menggunakan thumbnail YouTube dari video yang sedang diputar, sehingga bisa berbeda dari sampul album di YouTube Music. Ini mencegah gambar lagu sebelumnya dari player bar tetap ditampilkan.
 
-- **Island ringkas:** secara default island berukuran tepat seperti notch Mac Anda, jadi tersembunyi di balik housing kamera; perlebar di **Setup → Tampilan** untuk melihat artwork di kiri dan spectrum dekoratif di kanan. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
+- **Island ringkas:** secara default island 150 pt lebih lebar dari notch Mac Anda, dengan artwork di kiri dan spectrum dekoratif di kanan; di **Setup → Tampilan** Anda bisa mengecilkannya seukuran notch agar tersembunyi di balik housing kamera, atau memperlebarnya. Baris lirik muncul di bawah notch saat musik diputar. Spectrum hanya animasi, mereda saat dijeda, dan tidak menganalisis audio.
 - **Membuka:** arahkan pointer ke notch atau klik island. Bisa juga pilih **Buka panel musik** dari ikon menu bar, atau tekan shortcut yang Anda rekam di **Setup → Keyboard**.
-- **Tab dan widget:** panel terbuka menampilkan satu halaman widget. **Beranda** dimulai dengan kontrol musik dan widget **Sistem** (penggunaan prosesor, memori, dan disk). Tombol gear di kanan notch membuka **Setup**; jika ada lebih dari satu halaman, ikon tab muncul di kiri notch. Panel selalu terbuka di halaman pertama. Atur halaman di **Setup → Tata letak**.
+- **Tab dan widget:** panel terbuka menampilkan satu halaman widget. Secara default, **Beranda** berisi kontrol musik; **Sistem** berisi widget Sistem (penggunaan prosesor, memori, dan disk), Baterai, dan Jam; **Fokus** berisi Pomodoro, Hitung mundur, dan Catatan; dan **Alat** berisi App, Shortcut, dan Bookmark, lalu **Tray**. Tombol gear di kanan notch membuka **Setup**; jika ada lebih dari satu halaman, ikon tab muncul di kiri notch. Panel terbuka di halaman yang terakhir Anda pakai. Atur halaman di **Setup → Tata letak**.
 - **Timer dan pemberitahuan:** selama tidak ada musik yang diputar, timer yang berjalan menampilkan ikon dan waktunya di samping notch. Saat timer selesai atau mulai mengisi daya, pemberitahuan singkat muncul di bawah notch sekitar tiga detik; panel tetap tertutup.
 - **Tray:** seret file ke notch untuk membuka panel di tab **Tray**, lalu lepas di sana. Klik file untuk membukanya, seret keluar ke app atau folder lain, atau Control-klik untuk **Tampilkan di Finder**, **Kirim dengan AirDrop**, dan **Hapus dari Tray**. Lepas file di kartu **AirDrop** untuk mengirimnya, atau klik kartu itu untuk mengirim seluruh isi Tray.
 - **Clipboard:** jika riwayat clipboard aktif, tab **Clipboard** menampilkan yang Anda salin. Klik sebuah item untuk menaruhnya kembali di clipboard, lalu paste di tempat yang Anda mau.
@@ -103,7 +103,7 @@ Buka Setup dari tombol gear di panel terbuka atau **Setup…** di ikon menu bar.
 
 - **Tampilkan panel di:** **Otomatis** (default) memakai layar dengan notch, atau layar utama bila tidak ada. Anda juga bisa memilih layar berdasarkan namanya; di layar tanpa notch, panel berada di tengah atas. Selama layar pilihan tidak terhubung, panel ditempatkan otomatis.
 - **Jeda sebelum membuka** (0–1 dtk, default 0,15 dtk) dan **Jeda sebelum menutup** (0,1–2 dtk, default 0,35 dtk): berapa lama pointer berada di notch sebelum panel terbuka, dan berapa lama pointer menjauh sebelum panel tertutup. Mengklik island langsung membukanya.
-- **Umpan balik haptik saat pointer mencapai notch** (nonaktif secara default): ketukan ringan saat pointer mencapai notch yang tertutup, meski hanya lewat menuju menu bar. Butuh trackpad Force Touch dengan **Force Click and haptic feedback** aktif di **System Settings → Trackpad** (Setup menyediakan **Buka pengaturan Trackpad**); bila opsi itu mati, macOS meredam haptik dari semua app. macOS juga hanya memainkannya selama jari menyentuh trackpad, jadi ketukan muncul saat pointer tiba, bukan saat panel terbuka.
+- **Umpan balik haptik saat pointer mencapai notch** (aktif secara default): ketukan ringan saat pointer mencapai notch yang tertutup, meski hanya lewat menuju menu bar. Butuh trackpad Force Touch dengan **Force Click and haptic feedback** aktif di **System Settings → Trackpad** (Setup menyediakan **Buka pengaturan Trackpad**); bila opsi itu mati, macOS meredam haptik dari semua app. macOS juga hanya memainkannya selama jari menyentuh trackpad, jadi ketukan muncul saat pointer tiba, bukan saat panel terbuka.
 
 ### Tutorial
 
@@ -121,13 +121,13 @@ Tur singkat tentang panel dan Setup. Setiap langkah punya tombol yang membuka ha
 
 Pratinjau langsung panel terbuka selalu ada di bagian atas; klik ikon tab di dalamnya untuk melihat halaman lain. Di bawahnya, setiap halaman memiliki:
 
-- **Nama halaman** (kosong berarti Beranda, Halaman 2, dan seterusnya) dan **Ikon** untuk bar tab. Menu **…** di samping nama halaman memindahkan halaman ke kiri atau kanan atau menghapusnya; satu halaman selalu tersisa.
+- **Nama halaman** (kosong berarti nama bawaan: Beranda, Sistem, Fokus, dan Alat untuk halaman bawaan, selain itu Halaman 2, Halaman 3, dan seterusnya) dan **Ikon** untuk bar tab. Menu **…** di samping nama halaman memindahkan halaman ke kiri atau kanan atau menghapusnya; satu halaman selalu tersisa.
 - Widget-widgetnya dari kiri ke kanan, masing-masing **Kecil** (satu unit) atau **Lebar** (dua unit). Menu **…** di samping widget memindahkannya ke kiri, ke kanan, atau ke halaman lain, atau menghapusnya.
 - **Tambah widget** menampilkan widget yang belum ada di halaman mana pun; setiap widget hanya bisa berada di satu halaman.
 
 Alat seperti Tray dan Clipboard memenuhi tabnya sendiri: bisa dipindah dan disembunyikan lewat **Tampilkan di panel**, tetapi tidak bisa dihapus. Tab Clipboard muncul selama riwayat clipboard aktif, dan tab Terjemahkan selama Terjemahkan aktif.
 
-**Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan Beranda dengan widget musik dan sistem, serta Tray; tab Clipboard dan Terjemahkan tetap ada selama aktif. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
+**Tambah halaman** menambah halaman hingga delapan, dan **Kembalikan ke tata letak bawaan** memulihkan tab Beranda, Sistem, Fokus, Alat, dan Tray seperti di atas; tab Clipboard dan Terjemahkan tetap ada selama aktif. Halaman yang butuh ruang lebih dari **Lebar island terbuka** akan terbuka lebih lebar, hingga selebar layar.
 
 Widget dan pengaturannya dijelaskan di [Widget](#widget).
 
@@ -156,12 +156,12 @@ Pengaturan untuk widget; letak tampilnya dipilih di **Setup → Tata letak**. Di
 
 ### Tampilan
 
-- **Lebar island ringkas** dan **Tinggi island ringkas** dimulai seukuran notch Mac Anda — itu nilai default sekaligus ukuran terkecilnya — dan dapat ditambah hingga 440 pt dan 40 pt. Setup menyebutkan ukuran notch Anda (misalnya 179 × 32 pt). Artwork dan spectrum menempel di sisi kiri dan kanan, jadi keduanya muncul dari balik housing kamera saat island diperlebar; sekitar 240 pt keduanya terlihat penuh.
-- **Lebar island terbuka** (360–720 pt, default 442): panel terbuka minimal selebar ini. Halaman yang widgetnya butuh ruang lebih akan terbuka lebih lebar; Beranda bawaan terbuka sekitar 518 pt.
-- **Kembalikan ke ukuran notch** mengembalikan ketiganya.
-- **Warna aksen:** Otomatis — dari artwork, Peach, Lavender, atau Netral. Mode otomatis mengambil warna dominan thumbnail secara lokal, mencerahkannya untuk latar hitam, dan memakai Netral jika gambar belum tersedia atau hitam-putih. Hasil disimpan di memori, dengan transisi halus kecuali animasi dimatikan atau Reduce Motion aktif. Tidak ada analisis audio atau permintaan jaringan tambahan; pilihan manual sebelumnya tetap dipertahankan.
+- **Lebar island ringkas** dan **Tinggi island ringkas** dapat ditambah dari ukuran notch Mac Anda, ukuran terkecilnya, hingga 440 pt dan 40 pt. Secara default lebarnya 150 pt lebih dari notch dan tingginya sama dengan notch. Setup menyebutkan ukuran notch Anda (misalnya 179 × 32 pt). Artwork dan spectrum menempel di sisi kiri dan kanan, jadi keduanya muncul dari balik housing kamera saat island diperlebar; sekitar 240 pt keduanya terlihat penuh.
+- **Lebar island terbuka** (360–720 pt, default 518): panel terbuka minimal selebar ini. Halaman yang widgetnya butuh ruang lebih, atau bar tab dengan banyak tab, akan terbuka lebih lebar.
+- **Kembalikan ke ukuran notch** membuat island ringkas seukuran notch dan mengembalikan lebar island terbuka ke nilai default.
+- **Warna aksen:** Otomatis — dari artwork (default), Peach, Lavender, atau Netral. Mode otomatis mengambil warna dominan thumbnail secara lokal, mencerahkannya untuk latar hitam, dan memakai Netral jika gambar belum tersedia atau hitam-putih. Hasil disimpan di memori, dengan transisi halus kecuali animasi dimatikan atau Reduce Motion aktif. Tidak ada analisis audio atau permintaan jaringan tambahan; pilihan manual sebelumnya tetap dipertahankan.
 - **Transisi panel halus:** matikan agar ukuran panel berubah seketika. **Reduce Motion** macOS juga mematikan animasi dan spectrum.
-- **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya), atau 3 (sebelum + saat ini + berikutnya). Bila sebuah lagu punya baris yang terlalu panjang untuk island, baris yang sedang berjalan memakai dua baris selama lagu itu, jadi tingginya tidak berubah-ubah; baris sebelum dan sesudahnya tetap satu baris dan diakhiri “…”. Jadi island yang sempit pun tetap menampilkan baris yang Anda baca secara utuh — perlebar island kalau ingin baris sekitarnya juga terlihat penuh.
+- **Tampilkan lirik di island** dan **Jumlah baris lirik:** 1 (saat ini), 2 (saat ini + berikutnya, default), atau 3 (sebelum + saat ini + berikutnya). Bila sebuah lagu punya baris yang terlalu panjang untuk island, baris yang sedang berjalan memakai dua baris selama lagu itu, jadi tingginya tidak berubah-ubah; baris sebelum dan sesudahnya tetap satu baris dan diakhiri “…”. Jadi island yang sempit pun tetap menampilkan baris yang Anda baca secara utuh — perlebar island kalau ingin baris sekitarnya juga terlihat penuh.
 
 ### Koneksi browser
 

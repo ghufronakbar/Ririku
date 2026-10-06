@@ -94,11 +94,26 @@ public struct PanelLayout: Codable, Equatable, Sendable {
         }
     }
 
-    /// Home with the music widget, wide, and the system widget, then the Tray (D-018).
+    /// Home with the music widget, wide; System, Focus, and Tools pages; then the Tray (D-018, D-028).
+    /// No widget here needs a permission (R-WID-3).
     public static let standard = PanelLayout(tabs: [
         PanelTab(id: "home", icon: "house", widgets: [
-            WidgetSlot(id: "music", kind: "music", wide: true),
-            WidgetSlot(id: "system", kind: "system", wide: false)
+            WidgetSlot(id: "music", kind: "music", wide: true)
+        ]),
+        PanelTab(id: "system", icon: "square.grid.2x2", widgets: [
+            WidgetSlot(id: "system", kind: "system", wide: false),
+            WidgetSlot(id: "battery", kind: "battery", wide: false),
+            WidgetSlot(id: "clock", kind: "clock", wide: false)
+        ]),
+        PanelTab(id: "focus", icon: "speedometer", widgets: [
+            WidgetSlot(id: "pomodoro", kind: "pomodoro", wide: false),
+            WidgetSlot(id: "countdown", kind: "countdown", wide: false),
+            WidgetSlot(id: "notes", kind: "notes", wide: false)
+        ]),
+        PanelTab(id: "tools", icon: "sparkles", widgets: [
+            WidgetSlot(id: "apps", kind: "apps", wide: false),
+            WidgetSlot(id: "shortcuts", kind: "shortcuts", wide: false),
+            WidgetSlot(id: "bookmarks", kind: "bookmarks", wide: false)
         ]),
         toolTab(PanelTab.trayKind)
     ])
@@ -128,7 +143,7 @@ public struct PanelLayout: Codable, Equatable, Sendable {
         }
         guard result.contains(where: { !$0.hidden }) else {
             var standard = Self.standard
-            standard.tabs[0].widgets.removeAll { !widgetKinds.contains($0.kind) }
+            for index in standard.tabs.indices { standard.tabs[index].widgets.removeAll { !widgetKinds.contains($0.kind) } }
             standard.tabs.removeAll { !$0.isPage && !toolKinds.contains($0.kind) }
             return standard
         }

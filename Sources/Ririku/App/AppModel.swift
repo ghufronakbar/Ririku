@@ -28,15 +28,10 @@ final class AppModel: ObservableObject {
         }
     }
     private(set) var localizer: Localizer
-    @Published var expanded = false {
-        didSet {
-            // The panel opens on the first tab again.
-            if !expanded { selectedTabID = nil }
-            geometryChanged?()
-        }
-    }
+    @Published var expanded = false { didSet { geometryChanged?() } }
     /// Tabs and widgets of the expanded panel (D-018). Changed through `editLayout`, which keeps it valid.
     @Published private(set) var layout: PanelLayout
+    /// The tab the panel shows, kept while it is closed so it opens where it was left; nil is the first tab.
     @Published var selectedTabID: String? { didSet { if expanded { geometryChanged?() } } }
     let system: SystemMonitor
     let network = NetworkMonitor()
@@ -116,14 +111,14 @@ final class AppModel: ObservableObject {
         translate = TranslateStore(defaults: defaults, defaultTarget: localizer.code)
         system = SystemMonitor(defaults: defaults)
         let storedWidth = defaults.double(forKey: "panelWidth")
-        panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : 442
-        let storedExtraWidth = defaults.double(forKey: "compactExtraWidth")
-        compactExtraWidth = storedExtraWidth.isFinite && (0...Self.compactWidthRange).contains(storedExtraWidth) ? storedExtraWidth : 0
+        panelWidth = storedWidth.isFinite && (360...720).contains(storedWidth) ? storedWidth : Self.defaultPanelWidth
+        let storedExtraWidth = defaults.object(forKey: "compactExtraWidth") as? Double ?? Self.defaultCompactExtraWidth
+        compactExtraWidth = storedExtraWidth.isFinite && (0...Self.compactWidthRange).contains(storedExtraWidth) ? storedExtraWidth : Self.defaultCompactExtraWidth
         let storedExtraHeight = defaults.double(forKey: "compactExtraHeight")
         compactExtraHeight = storedExtraHeight.isFinite && (0...Self.compactHeightRange).contains(storedExtraHeight) ? storedExtraHeight : 0
         // The old absolute width was always wider than the notch, which is what this replaces.
         defaults.removeObject(forKey: "compactWidth")
-        accentName = defaults.string(forKey: "accentName") ?? "Peach"
+        accentName = defaults.string(forKey: "accentName") ?? "Auto"
         animations = defaults.object(forKey: "animations") as? Bool ?? true
         showInDock = defaults.bool(forKey: "showInDock")
         showMenuBarIcon = defaults.object(forKey: "showMenuBarIcon") as? Bool ?? true
@@ -131,7 +126,7 @@ final class AppModel: ObservableObject {
         panelDisplayName = defaults.string(forKey: "panelDisplayName")
         hoverOpenDelay = Self.storedDelay(defaults, "hoverOpenDelay", in: Self.hoverOpenDelayRange) ?? 0.15
         hoverCloseDelay = Self.storedDelay(defaults, "hoverCloseDelay", in: Self.hoverCloseDelayRange) ?? 0.35
-        hapticFeedback = defaults.bool(forKey: "hapticFeedback")
+        hapticFeedback = defaults.object(forKey: "hapticFeedback") as? Bool ?? true
         let storedShortcut = defaults.data(forKey: "panelShortcut").flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) }
         panelShortcut = storedShortcut?.isValid == true ? storedShortcut : nil
         let storedLayout = defaults.data(forKey: "panelLayout").flatMap { try? JSONDecoder().decode(PanelLayout.self, from: $0) }
@@ -192,11 +187,18 @@ final class AppModel: ObservableObject {
     /// The visible Tray tab, which a file dragged onto the notch opens.
     var trayTab: PanelTab? { visibleTabs.first { $0.kind == PanelTab.trayKind } }
 
-    /// A tool's name; for a page, its own name, or "Home" for the first page and "Page 2", "Page 3", and so on.
+    /// A tool's name; for a page, its own name, the translated name of a standard page, or "Home" for the first
+    /// page and "Page 2", "Page 3", and so on.
     func tabName(_ tab: PanelTab) -> String {
         if let tool = ToolKind(rawValue: tab.kind) { return tool.title(self) }
         let name = tab.name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard name.isEmpty else { return name }
+        switch tab.id {
+        case "system": return t("System")
+        case "focus": return t("Focus")
+        case "tools": return t("Tools")
+        default: break
+        }
         // Pages are numbered among pages only, so a tool tab in between does not skip a number.
         let index = layout.tabs.filter(\.isPage).firstIndex { $0.id == tab.id } ?? 0
         return index == 0 ? t("Home") : t("Page %@", (index + 1).formatted(.number.locale(locale)))
